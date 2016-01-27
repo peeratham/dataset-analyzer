@@ -114,9 +114,5 @@ public class CommandLoader {
         }
         
 	}
-	
-	public static void main(String[] args){
-		loadCommand();
-		System.out.println(COMMAND_TO_BLOCKSPEC);
-	}
+
 }

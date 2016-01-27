@@ -24,7 +24,7 @@ public class PathRecorder extends Sequence implements PathKeeper{
 				st.push("Script@pos("+script.getPosition()[0]+","+script.getPosition()[1]+")");
 			}
 			public void visitBlock(Block block) throws VisitFailure {
-				st.push(block.getCommand()+":"+block.getBlockSpec().getSpec()+":"+block.getArgs());
+				st.push(block.toString());
 			}
 		}
 		

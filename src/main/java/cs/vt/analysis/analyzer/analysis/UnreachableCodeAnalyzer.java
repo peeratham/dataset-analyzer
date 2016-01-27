@@ -26,8 +26,9 @@ public class UnreachableCodeAnalyzer extends BaseAnalyzer {
 	private Visitor detector;
 	private List<String> messages = new ArrayList<String>();
 	private Stack<String> path = new Stack();
+	private AnalysisReport report = new AnalysisReport();
 	
-	public UnreachableCodeAnalyzer(ScratchProject project){
+	public UnreachableCodeAnalyzer(final ScratchProject project){
 		super(project, null);
 		
 		class BroadCastCollector implements Visitor{
@@ -66,7 +67,8 @@ public class UnreachableCodeAnalyzer extends BaseAnalyzer {
 						for(String elm: path) { 
 							fullPath +=elm+"/";
 						}
-						System.out.println(fullPath);
+						
+						report.addRecord(fullPath);
 					}
 				}
 				throw new VisitFailure();
@@ -84,14 +86,15 @@ public class UnreachableCodeAnalyzer extends BaseAnalyzer {
 		this.path = pathRecorder.getPath();
 		super.analysisVisitor = detector;
 		
+		report.setProjectID(project.getProjectID());
 		
 	}
 	
-
-
-	public void getReport() {
-		
-		
+	public AnalysisReport getReport() {
+		//TODO
+		report.setTitle("UnreachableCode");
+		report.addSummary("count", report.result.size());
+		return report;	
 	}
 
 }

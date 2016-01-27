@@ -42,8 +42,7 @@ public class UnreachableCodeAnalyzerTest {
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
 		analyzer = new UnreachableCodeAnalyzer(project);
 		analyzer.analyze();
-		System.out.println(analyzer.getReport().getSummary());
-		System.out.println(analyzer.getReport().getFullReport());
+
 	}
 	
 	@Test

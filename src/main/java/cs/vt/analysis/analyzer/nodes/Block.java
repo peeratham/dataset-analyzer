@@ -52,10 +52,17 @@ public class Block implements Visitable {
 
 	@Override
 	public String toString() {
-		return stringify(this);
+		String result="";
+		try {
+			result = stringify(this);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
-	private String stringify(Block obj) {
+	private String stringify(Block obj) throws Exception {
 		String pattern = "(%.(?:\\.[A-z]+)?)";	//http://www.regexplanet.com/advanced/java/index.html
 
 		pattern = "%[A-z]\\.[A-z]+|%[A-z]";		
@@ -104,7 +111,14 @@ public class Block implements Visitable {
 				}
 		}
 		String[] result = argString.toArray(new String[argString.size()]);
-		String formattedString = String.format(fmt,result);
+		String formattedString = "";
+		try{
+			formattedString = String.format(fmt,result);
+		}catch(Exception e){
+//			System.err.println(obj);
+//			System.err.println(obj.getPreviousBlock());
+			throw new Exception();
+		}
 		if(blockSpec.getFlag()!=null){
 			if(blockSpec.getFlag().equals("e")||blockSpec.getFlag().contains("c")){
 				formattedString += "\nend";
