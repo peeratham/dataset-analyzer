@@ -13,6 +13,7 @@ public class BlockSpec {
 	private String spec;
 	private List<Object> defaults;
 	private String flag;
+	private List<String> parts;
 
 	public BlockSpec(String category, String shape, String name, String spec, List<Object> defaults) {
 		this.category = category;
@@ -26,13 +27,14 @@ public class BlockSpec {
 		// TODO Auto-generated constructor stub
 	}
 
-	public BlockSpec(String category,String flag, String shape, String name, String spec, List<Object> defaults) {
+	public BlockSpec(String category,String flag, String shape, String name, String spec, List<Object> defaults, List<String> parts) {
 		this.category = category;
 		this.flag = flag;
 		this.shape = shape;
 		this.command = name;
 		this.spec = spec;
 		this.defaults = defaults;
+		this.parts = parts;
 	}
 
 	public String getShape() {
@@ -45,6 +47,10 @@ public class BlockSpec {
 
 	public String getSpec() {
 		return spec;
+	}
+	
+	public List<String> getParts() {
+		return parts;
 	}
 	
 	public static BlockSpec parseCustomBlockSpec(JSONArray jsonCustomBlock){
