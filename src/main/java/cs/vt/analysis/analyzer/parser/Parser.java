@@ -73,8 +73,7 @@ public class Parser {
 		
 		if(command.equals("procDef")){	//CustomBlock
 			Block customBlockArg = new Block();
-			BlockSpec customBlockSpec = BlockSpec.parseCustomBlockSpec(blockArray);
-			CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC.put((String) blockArray.get(1), customBlockSpec);
+			BlockSpec customBlockSpec = CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC.get((String) blockArray.get(1));
 			customBlockArg.setCommand(command);
 			customBlockArg.setBlockSpec(customBlockSpec);
 			args.add(customBlockArg);
@@ -136,6 +135,22 @@ public class Parser {
 		result.setArgs(args);
 		
 		return result;
+
+	}
+
+	public void loadCustomBlock(JSONArray firstBlockArray) {	
+		
+			try{
+				Block customBlockArg = new Block();
+				BlockSpec customBlockSpec = BlockSpec.parseCustomBlockSpec(firstBlockArray);
+				CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC.put((String) firstBlockArray.get(1), customBlockSpec);
+//			
+				
+			} catch(Exception e){
+				System.err.println("Error Parsing Scriptable");
+				System.err.println(e);
+			}
+		
 
 	}
 }

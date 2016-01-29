@@ -64,11 +64,6 @@ public class Block implements Visitable {
 	}
 	
 	private String stringify(Block obj) throws Exception {
-		String pattern = "(%.(?:\\.[A-z]+)?)";	//http://www.regexplanet.com/advanced/java/index.html
-
-		pattern = "%[A-z]\\.[A-z]+|%[A-z]";		
-//		String fmt = obj.getBlockSpec().getSpec().replaceAll(pattern, "%s");
-		
 		
 		ArrayList<Object> args = (ArrayList<Object>) getArgs();
 		if(args == null){
@@ -88,15 +83,7 @@ public class Block implements Visitable {
 						argString.add(o.toString());
 					}
 					
-				}else if(o instanceof ArrayList){
-//					if(obj.getBlockSpec().getShape().equals("stack")){
-//						fmt += "%s";
-//					}
-//					
-//					if(obj.getBlockSpec().getFlag().equals("e")){
-//						fmt += "else";
-//					}
-					
+				}else if(o instanceof ArrayList){			
 					String nested = "";
 					for(Object el : (ArrayList<Object>)o){
 						nested += "\n";
@@ -104,7 +91,6 @@ public class Block implements Visitable {
 					}
 					
 					nested = nested.replace("\n", "\n    ");
-//					nested += "\nend";
 					argString.add(nested);
 					
 				}else{
@@ -117,14 +103,17 @@ public class Block implements Visitable {
 					}else{
 						argString.add(String.valueOf(o));
 					}
-					
 				}
 		}
-//		String[] result = argString.toArray(new String[argString.size()]);
+		
 		String formattedString = "";
 		try{
-//			formattedString = String.format(fmt,result);
-			List<Object> parts = this.blockSpec.getParts();
+			List<Object> parts = null;
+			try{
+			parts = this.blockSpec.getParts();
+			}catch(Exception e){
+				System.err.println(this);;
+			}
 			ArrayList<String> formattedStringArray = new ArrayList<String>();
 			for (int i = 0; i < parts.size(); i++) {
 				if(parts.get(i) instanceof String){
@@ -138,11 +127,8 @@ public class Block implements Visitable {
 
 		}catch(Exception e){
 			System.err.println(obj);
-			System.err.println(obj.getPreviousBlock());
 			throw new Exception();
 		}
-		
-		
 		
 		if(blockSpec.getFlag()!=null){
 			if(blockSpec.getFlag().equals("e")||blockSpec.getFlag().contains("c")){
@@ -152,7 +138,6 @@ public class Block implements Visitable {
 		
 		
 		return formattedString;
-		
 	}
 	
 	public boolean hasCommand(String command){

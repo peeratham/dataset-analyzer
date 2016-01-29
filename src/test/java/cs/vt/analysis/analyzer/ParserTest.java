@@ -123,11 +123,19 @@ public class ParserTest {
 	
 	@Test
 	public void testOnRealDataset() throws IOException, ParseException {
-		String projectSrc = Util.retrieveProjectOnline(TestConstant.UNREACHABLECODE_PROJECT_1);
+		String projectSrc = Util.retrieveProjectOnline(94772062);
 		project = ScratchProject.loadProject(projectSrc);
 		System.out.println(project);
 	}
 	
+	@Test
+	public void testCustomBlockDependency() throws Exception {
+		String projectSrc = Util.retrieveProjectOnline(TestConstant.BUG);
+//		JSONArray scriptableInput = TestUtil.getScriptable(projectSrc,TestConstant.TEST_CUSTOMBLOCK_DEPENDENCY);
+//		Script script = parser.loadScript(scriptableInput.get(0));
+		project = ScratchProject.loadProject(projectSrc);
+		System.out.println(project);
+	}
 	
 
 }

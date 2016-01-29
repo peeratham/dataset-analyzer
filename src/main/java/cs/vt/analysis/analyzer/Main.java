@@ -66,6 +66,7 @@ public class Main {
 		File[] files = datasetDirectory.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			try {
+				System.out.println(files[i]);
 				String string = FileUtils.readFileToString(files[i]);
 				project = ScratchProject.loadProject(string);
 				UnreachableCodeAnalyzer analyzer = new UnreachableCodeAnalyzer(project);

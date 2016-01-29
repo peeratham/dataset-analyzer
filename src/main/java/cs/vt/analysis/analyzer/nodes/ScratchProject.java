@@ -68,6 +68,24 @@ public class ScratchProject implements Visitable{
 		if(stageObj.containsKey("scripts")){
 			JSONArray stageScripts = (JSONArray)stageObj.get("scripts");
 			Scriptable stage = new Scriptable();
+			
+			//first parse any custom blocks
+			for (int j = 0; j < stageScripts.size(); j++) {
+				JSONArray scriptJSON = (JSONArray) ((JSONArray)stageScripts.get(j)).get(2);
+				JSONArray firstBlockJSON = (JSONArray) scriptJSON.get(0);
+				String command = (String) firstBlockJSON.get(0);
+				
+				if(command.equals("procDef")){
+					try{						
+						parser.loadCustomBlock(firstBlockJSON);
+					} catch(Exception e){
+						System.err.println("Error Parsing CustomBlocks in Scriptable: Stage");
+						System.err.println(e);
+					}
+				}
+				
+			}
+			//scripts
 			for (int j = 0; j < stageScripts.size(); j++) {
 				Script scrpt=null;
 				try{
@@ -98,6 +116,7 @@ public class ScratchProject implements Visitable{
 			Scriptable s = new Scriptable();
 			String spriteName = (String)sprite.get("objName");
 			JSONArray scripts = (JSONArray)sprite.get("scripts");
+			
 			s.setName(spriteName);
 			if(scripts==null){	//empty script
 				project.addScriptable(spriteName, s);
@@ -106,15 +125,15 @@ public class ScratchProject implements Visitable{
 			
 			//parse custom block for each sprite first
 			for (int j = 0; j < scripts.size(); j++) {
-				Script scrpt=null;
+				
 				JSONArray scriptJSON = (JSONArray) ((JSONArray)scripts.get(j)).get(2);
 				JSONArray firstBlockJSON = (JSONArray) scriptJSON.get(0);
 				String command = (String) firstBlockJSON.get(0);
 				
 				if(command.equals("procDef")){
 					try{
-						scrpt = parser.loadScript(scripts.remove(j));
-						s.addScript(scrpt);
+						parser.loadCustomBlock(firstBlockJSON);
+						
 					}catch(Exception e){
 						System.err.println("Error Parsing Custom Block for Scriptable:"+spriteName);
 						e.printStackTrace();
