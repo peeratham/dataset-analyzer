@@ -118,7 +118,7 @@ public class ParserTest {
 		boolean test = false; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
 		String stringInput = Util.retrieveProjectOnline(projectID); //real:43026762, test:93160273
 		project = ScratchProject.loadProject(stringInput);
-//		System.out.println(project);
+		System.out.println(project);
 	}
 	
 	@Test
@@ -127,6 +127,7 @@ public class ParserTest {
 		project = ScratchProject.loadProject(projectSrc);
 		System.out.println(project);
 	}
+	
 	
 
 

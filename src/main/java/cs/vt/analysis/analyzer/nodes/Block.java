@@ -3,6 +3,7 @@ package cs.vt.analysis.analyzer.nodes;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs.vt.analysis.analyzer.parser.Insert;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
@@ -66,7 +67,7 @@ public class Block implements Visitable {
 		String pattern = "(%.(?:\\.[A-z]+)?)";	//http://www.regexplanet.com/advanced/java/index.html
 
 		pattern = "%[A-z]\\.[A-z]+|%[A-z]";		
-		String fmt = obj.getBlockSpec().getSpec().replaceAll(pattern, "%s");
+//		String fmt = obj.getBlockSpec().getSpec().replaceAll(pattern, "%s");
 		
 		
 		ArrayList<Object> args = (ArrayList<Object>) getArgs();
@@ -110,15 +111,30 @@ public class Block implements Visitable {
 					argString.add(String.valueOf(o));
 				}
 		}
-		String[] result = argString.toArray(new String[argString.size()]);
+//		String[] result = argString.toArray(new String[argString.size()]);
 		String formattedString = "";
 		try{
-			formattedString = String.format(fmt,result);
+//			formattedString = String.format(fmt,result);
+			List<Object> parts = this.blockSpec.getParts();
+			ArrayList<String> formattedStringArray = new ArrayList<String>();
+			for (int i = 0; i < parts.size(); i++) {
+				if(parts.get(i) instanceof String){
+					formattedStringArray.add((String)parts.get(i));
+				}else if(parts.get(i) instanceof Insert){
+					formattedStringArray.add(argString.remove(0));
+				}
+				
+			}
+			formattedString = String.join("", formattedStringArray);
+
 		}catch(Exception e){
-//			System.err.println(obj);
-//			System.err.println(obj.getPreviousBlock());
+			System.err.println(obj);
+			System.err.println(obj.getPreviousBlock());
 			throw new Exception();
 		}
+		
+		
+		
 		if(blockSpec.getFlag()!=null){
 			if(blockSpec.getFlag().equals("e")||blockSpec.getFlag().contains("c")){
 				formattedString += "\nend";

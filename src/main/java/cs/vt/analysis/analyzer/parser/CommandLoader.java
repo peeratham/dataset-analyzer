@@ -5,13 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -105,7 +102,7 @@ public class CommandLoader {
             	String shape = SHAPE_FLAGS.get(flag);
             	String category = CATEGORY_IDS.get(categoryID);
             	
-            	List<String> parts = parseToParts(spec);
+            	
             	
             	if(flag.contains("c")){
 					spec += "%s";
@@ -114,30 +111,22 @@ public class CommandLoader {
 				if(flag.equals("e")){
 					spec += "%s\nelse%s";
 				}
-            	COMMAND_TO_BLOCKSPEC.put(name, new BlockSpec(category, flag, shape, name, spec, defaults, parts));
+				
+				BlockSpec bSpec = new BlockSpec();
+				bSpec.setCategory(category);
+				bSpec.setFlag(flag);
+				bSpec.setShape(shape);
+				bSpec.setCommand(name);
+				bSpec.setSpec(spec);
+				bSpec.setDefaults(defaults);
+				List<Object> parts = BlockSpec.parseToParts(spec);
+				bSpec.setParts(parts);
+            	COMMAND_TO_BLOCKSPEC.put(name, bSpec);
         	}
         }
         
 	}
 
-	private static ArrayList<String> parseToParts(String spec) {
-    	String pattern = "(%.(?:\\.[A-z]+)?)";
-    	Pattern r = Pattern.compile(pattern);
-    	Matcher m = r.matcher(spec);
-
-    	ArrayList<String> result = new ArrayList<String>();
-    	int end = 0;
-    	while(m.find()){
-    		result.add(spec.substring(end, m.start()));
-    		end = m.end();
-    		result.add(m.group());
-    	}
-    	if(end!=spec.length()){
-    		result.add(spec.substring(end,spec.length()));
-    	}
-    	return result;
-	}
-	
 	public static void main(String[] args){
 		loadCommand();
 		System.out.println(COMMAND_TO_BLOCKSPEC);
