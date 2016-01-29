@@ -96,11 +96,11 @@ public class ParserTest {
 		boolean test = true; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
 		
 		String stringInput = Util.retrieveProjectOnline(projectID); //real:43026762, test:93160273
-		JSONArray scriptableInput = getScriptable(stringInput,"testNestedToString");
+		JSONArray scriptableInput = TestUtil.getScriptable(stringInput,"testNestedToString");
 		Script script = parser.loadScript(scriptableInput.get(0));
-		int endCount = 	count("end", script.toString());
+		int endCount = 	TestUtil.count("end", script.toString());
 		assertEquals(endCount,2);
-		int elseCount = 	count("else", script.toString());
+		int elseCount = 	TestUtil.count("else", script.toString());
 		assertEquals(elseCount,1);
 	}
 	
@@ -108,7 +108,7 @@ public class ParserTest {
 	public void testForever() throws Exception {
 		boolean test = true; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
 		String stringInput = Util.retrieveProjectOnline(projectID); //real:43026762, test:93160273
-		JSONArray scriptableInput = getScriptable(stringInput,"testForever");
+		JSONArray scriptableInput = TestUtil.getScriptable(stringInput,"testForever");
 		Script script = parser.loadScript(scriptableInput.get(0));
 		System.out.println(script);
 	}
@@ -129,34 +129,5 @@ public class ParserTest {
 	}
 	
 	
-
-
-	private JSONArray getScriptable(String inputString, String name) throws ParseException {
-		JSONObject jsonObject = (JSONObject) jsonParser.parse(inputString);
-		JSONArray children = (JSONArray)jsonObject.get("children");
-		JSONObject sprite = null;
-		for (int i = 0; i < children.size(); i++) {
-			sprite = (JSONObject) children.get(i);
-			if(!sprite.containsKey("objName")){ //not a sprite
-				continue;
-			}
-			String spriteName = (String)sprite.get("objName");
-			if(spriteName.equals(name)){
-				JSONArray scripts = (JSONArray)sprite.get("scripts");
-				return scripts;
-			}
-		}
-		return null;
-		
-	}
-	
-	public int count(String word, String line){
-	    Pattern pattern = Pattern.compile(word);
-	    Matcher matcher = pattern.matcher(line);
-	    int counter = 0;
-	    while (matcher.find())
-	        counter++;
-	    return counter;
-	}
 
 }

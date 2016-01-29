@@ -2,6 +2,8 @@ package cs.vt.analysis.analyzer;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -10,7 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import cs.vt.analysis.analyzer.nodes.Block;
+import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.parser.Parser;
+import cs.vt.analysis.analyzer.parser.Util;
 
 public class BlockTest {
 	JSONParser jsonParser = new JSONParser();
@@ -78,8 +82,11 @@ public class BlockTest {
 	}
 	
 	@Test
-	public void testNestedBlockEquals() throws ParseException {
-		//TODO add testNestedBlockEquals()
+	public void testToStringOnEmptyBlockInput() throws Exception {
+		String stringInput = Util.retrieveProjectOnline(TestConstant.PARSER_TEST_PROJECT);
+		JSONArray scriptableInput = TestUtil.getScriptable(stringInput,TestConstant.TEST_EMPTYBLOCKINPUT);
+		Script script = parser.loadScript(scriptableInput.get(0));
+		System.out.println(script);
 	}
 	
 	

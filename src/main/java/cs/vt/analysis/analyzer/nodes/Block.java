@@ -108,7 +108,16 @@ public class Block implements Visitable {
 					argString.add(nested);
 					
 				}else{
-					argString.add(String.valueOf(o));
+					if(o==null && (obj.getBlockSpec().getFlag().contains("c")|
+							obj.getBlockSpec().getFlag().contains("e"))){
+						String e = "\n"+String.valueOf(o);
+						e = e.replace("\n", "\n    ");
+						argString.add(e);
+						
+					}else{
+						argString.add(String.valueOf(o));
+					}
+					
 				}
 		}
 //		String[] result = argString.toArray(new String[argString.size()]);
