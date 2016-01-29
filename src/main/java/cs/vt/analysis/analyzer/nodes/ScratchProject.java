@@ -11,6 +11,7 @@ import org.json.simple.parser.ParseException;
 
 import cs.vt.analysis.analyzer.parser.CommandLoader;
 import cs.vt.analysis.analyzer.parser.Parser;
+import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
@@ -52,7 +53,7 @@ public class ScratchProject implements Visitable{
 		return "Project:"+projectID+"\n\n"+sb.toString();
 	}
 
-	public static ScratchProject loadProject(String jsonInputString) throws ParseException {
+	public static ScratchProject loadProject(String jsonInputString) throws ParseException, ParsingException {
 		JSONParser jsonParser = new JSONParser();
 		Object obj = jsonParser.parse(jsonInputString);
 		JSONObject jsonObject = (JSONObject) obj;
@@ -60,7 +61,7 @@ public class ScratchProject implements Visitable{
 		return loadProject(jsonObject);
 	}
 
-	public static ScratchProject loadProject(JSONObject jsonObject) {
+	public static ScratchProject loadProject(JSONObject jsonObject) throws ParsingException {
 		ScratchProject project = new ScratchProject();
 		CommandLoader.loadCommand();
 		JSONObject stageObj = jsonObject;
@@ -102,8 +103,13 @@ public class ScratchProject implements Visitable{
 		
 		if(stageObj.containsKey("info")){
 			JSONObject infoObj = (JSONObject)stageObj.get("info");
-			int projectID = Integer.parseInt((String)((JSONObject)infoObj).get("projectID"));
-			project.setProjectID(projectID);
+			if((String)((JSONObject)infoObj).get("projectID")!=null){
+				int projectID = Integer.parseInt((String)((JSONObject)infoObj).get("projectID"));
+				project.setProjectID(projectID);
+			}else{
+				throw new ParsingException("Project ID Not Found");
+			}
+			
 		}
 		
 		JSONArray children = (JSONArray)jsonObject.get("children");

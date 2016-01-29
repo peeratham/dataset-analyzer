@@ -23,6 +23,7 @@ import org.json.simple.parser.ParseException;
 
 import cs.vt.analysis.analyzer.analysis.UnreachableCodeAnalyzer;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
+import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.visitor.DownUp;
 import cs.vt.analysis.analyzer.visitor.Identity;
 import cs.vt.analysis.analyzer.visitor.Printer;
@@ -68,7 +69,12 @@ public class Main {
 			try {
 				System.out.println(files[i]);
 				String string = FileUtils.readFileToString(files[i]);
-				project = ScratchProject.loadProject(string);
+				try {
+					project = ScratchProject.loadProject(string);
+				} catch (ParsingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				UnreachableCodeAnalyzer analyzer = new UnreachableCodeAnalyzer(project);
 				analyzer.analyze();
 				System.out.println(analyzer.getReport().getSummary());

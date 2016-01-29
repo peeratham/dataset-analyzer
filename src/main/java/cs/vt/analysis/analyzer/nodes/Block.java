@@ -64,6 +64,9 @@ public class Block implements Visitable {
 	}
 	
 	private String stringify(Block obj) throws Exception {
+		if(obj.command.equals("Position")){
+			return "UNDEFINED";
+		}
 		
 		ArrayList<Object> args = (ArrayList<Object>) getArgs();
 		if(args == null){

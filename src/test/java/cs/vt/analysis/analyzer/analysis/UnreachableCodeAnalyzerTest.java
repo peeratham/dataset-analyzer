@@ -14,6 +14,7 @@ import cs.vt.analysis.analyzer.Main;
 import cs.vt.analysis.analyzer.TestConstant;
 import cs.vt.analysis.analyzer.analysis.UnreachableCodeAnalyzer;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
+import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 
 public class UnreachableCodeAnalyzerTest {
@@ -37,7 +38,7 @@ public class UnreachableCodeAnalyzerTest {
 	}
 
 	@Test
-	public void test() throws ParseException, IOException {
+	public void test() throws ParseException, IOException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(TestConstant.UNREACHABLECODE_PROJECT_0);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
 		analyzer = new UnreachableCodeAnalyzer(project);
@@ -46,7 +47,7 @@ public class UnreachableCodeAnalyzerTest {
 	}
 	
 	@Test
-	public void testOnRealDataset() throws IOException, ParseException {
+	public void testOnRealDataset() throws IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(TestConstant.UNREACHABLECODE_PROJECT_1);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
 		analyzer = new UnreachableCodeAnalyzer(project);

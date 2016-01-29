@@ -19,6 +19,7 @@ import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.parser.Parser;
+import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 
 public class ParserTest {
@@ -83,7 +84,7 @@ public class ParserTest {
 	}
 	
 	@Test
-	public void testCustomBlock() throws IOException, ParseException{
+	public void testCustomBlock() throws IOException, ParseException, ParsingException{
 		boolean test = true; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
 		String stringInput = Util.retrieveProjectOnline(projectID);
 		project = ScratchProject.loadProject(stringInput);
@@ -113,29 +114,36 @@ public class ParserTest {
 		System.out.println(script);
 	}
 	
-	@Test
-	public void test() throws Exception {
-		boolean test = false; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
-		String stringInput = Util.retrieveProjectOnline(projectID); //real:43026762, test:93160273
-		project = ScratchProject.loadProject(stringInput);
-		System.out.println(project);
-	}
+
 	
 	@Test
-	public void testOnRealDataset() throws IOException, ParseException {
-		String projectSrc = Util.retrieveProjectOnline(94772062);
+	public void testOnSpriteWithNoScript() throws IOException, ParseException, ParsingException {
+		String projectSrc = Util.retrieveProjectOnline(96035727);
 		project = ScratchProject.loadProject(projectSrc);
 		System.out.println(project);
 	}
 	
 	@Test
 	public void testCustomBlockDependency() throws Exception {
-		String projectSrc = Util.retrieveProjectOnline(TestConstant.BUG);
+		String projectSrc = Util.retrieveProjectOnline(TestConstant.CUSTOMBLOCK_DEPENDENCY);
 //		JSONArray scriptableInput = TestUtil.getScriptable(projectSrc,TestConstant.TEST_CUSTOMBLOCK_DEPENDENCY);
 //		Script script = parser.loadScript(scriptableInput.get(0));
 		project = ScratchProject.loadProject(projectSrc);
 		System.out.println(project);
 	}
 	
-
+	@Test
+	public void testParsingUndefinedBlock() throws IOException, ParseException, ParsingException {
+		String projectSrc = Util.retrieveProjectOnline(96033699);
+		project = ScratchProject.loadProject(projectSrc);
+		System.out.println(project);
+	}
+	
+	@Test
+	public void testOnRealDataset() throws IOException, ParseException, ParsingException {
+//		String projectSrc = Util.retrieveProjectOnline(96033699);
+//		project = ScratchProject.loadProject(projectSrc);
+//		System.out.println(project);
+	}
+		
 }

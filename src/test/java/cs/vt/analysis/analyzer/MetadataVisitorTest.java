@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import cs.vt.analysis.analyzer.analysis.UnreachableCodeAnalyzer;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
+import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 
 public class MetadataVisitorTest {
@@ -35,7 +36,7 @@ public class MetadataVisitorTest {
 	}
 
 	@Test
-	public void test() throws ParseException {
+	public void test() throws ParseException, ParsingException {
 		project = ScratchProject.loadProject(inputString);
 
 	}
