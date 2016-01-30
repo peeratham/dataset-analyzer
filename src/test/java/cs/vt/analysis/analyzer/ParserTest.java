@@ -111,7 +111,6 @@ public class ParserTest {
 		String stringInput = Util.retrieveProjectOnline(projectID); //real:43026762, test:93160273
 		JSONArray scriptableInput = TestUtil.getScriptable(stringInput,"testForever");
 		Script script = parser.loadScript(scriptableInput.get(0));
-		System.out.println(script);
 	}
 	
 
@@ -120,30 +119,38 @@ public class ParserTest {
 	public void testOnSpriteWithNoScript() throws IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(96035727);
 		project = ScratchProject.loadProject(projectSrc);
-		System.out.println(project);
 	}
 	
 	@Test
 	public void testCustomBlockDependency() throws Exception {
 		String projectSrc = Util.retrieveProjectOnline(TestConstant.CUSTOMBLOCK_DEPENDENCY);
-//		JSONArray scriptableInput = TestUtil.getScriptable(projectSrc,TestConstant.TEST_CUSTOMBLOCK_DEPENDENCY);
-//		Script script = parser.loadScript(scriptableInput.get(0));
 		project = ScratchProject.loadProject(projectSrc);
-		System.out.println(project);
 	}
 	
 	@Test
 	public void testParsingUndefinedBlock() throws IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(96033699);
 		project = ScratchProject.loadProject(projectSrc);
-		System.out.println(project);
+		assert(project.toString().contains("UNDEFINED"));
+	}
+
+	
+	@Test(expected=ParsingException.class)
+	public void testCustomBlockWithNoDefinition() throws IOException, ParseException, ParsingException {
+		String projectSrc = Util.retrieveProjectOnline(96072285);
+		project = ScratchProject.loadProject(projectSrc);
 	}
 	
 	@Test
 	public void testOnRealDataset() throws IOException, ParseException, ParsingException {
-//		String projectSrc = Util.retrieveProjectOnline(96033699);
-//		project = ScratchProject.loadProject(projectSrc);
-//		System.out.println(project);
+		String projectSrc = Util.retrieveProjectOnline(92821254);
+		try{
+			project = ScratchProject.loadProject(projectSrc);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		System.out.println(project);
 	}
 		
 }

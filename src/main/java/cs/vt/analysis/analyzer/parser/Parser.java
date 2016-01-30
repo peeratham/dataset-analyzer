@@ -3,7 +3,12 @@ package cs.vt.analysis.analyzer.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONArray;
+
+
+
 
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.BlockSpec;
@@ -15,11 +20,17 @@ import cs.vt.analysis.analyzer.nodes.Script;
 
 
 public class Parser {
+	static Logger logger = Logger.getLogger(Parser.class);
+	 
 	public Parser(){
+        PropertyConfigurator
+        .configure(Parser.class.getClassLoader()
+                    .getResource("log4j.properties"));
+        
 		CommandLoader.loadCommand();
 	}
 
-	public Script loadScript(Object s) throws Exception {
+	public Script loadScript(Object s) throws ParsingException {
 		Script script = new Script();
 		JSONArray scriptArray = (JSONArray)s;
 		int x = ((Number)scriptArray.remove(0)).intValue();
@@ -55,7 +66,7 @@ public class Parser {
         return script;
 	}
 	
-	public Block loadBlock(Object b) throws Exception{
+	public Block loadBlock(Object b) throws ParsingException{
 		JSONArray blockArray = (JSONArray)b;
 		Block result = new Block();
 		
@@ -66,9 +77,17 @@ public class Parser {
 		
 		
 		if(command.equals("call")){ // CustomBlockType call
-			blockSpec = CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC.get((String) blockArray.remove(1));			
+			String signature = (String) blockArray.remove(1);
+			blockSpec = CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC.get(signature);
+			if(blockSpec==null){
+				throw new ParsingException("Custom Block: "+signature+" is not defined");
+			}
 		} else{
 			blockSpec = CommandLoader.COMMAND_TO_BLOCKSPEC.get(command);
+			
+			if(!command.equals("Position")&&blockSpec==null){
+				throw new ParsingException("Block: "+command+" is not defined");
+			}
 		}
 		
 		if(command.equals("procDef")){	//CustomBlock
@@ -94,34 +113,22 @@ public class Parser {
 					JSONArray blocks = (JSONArray)blockArray.get(argi);	//it's a list of blocks
 					
 					Block previous = null;
-					try{
-						previous = loadBlock(blocks.get(0));
-					} catch(Exception e){
-						throw new ParsingException("Error Parsing Block:"+e);
-					}
+					previous = loadBlock(blocks.get(0));
+
 					((List)arg).add(previous);	//		add first block
 					result.setFirstChild(previous);
 					
 					for (int argj = 1; argj < blocks.size(); argj++) {
 						Block current  = null;
-						try{
-							current = loadBlock(blocks.get(argj));
-						}catch(Exception e){
-							throw new ParsingException("Error Parsing Block:"+e);
-						}
+						current = loadBlock(blocks.get(argj));
 			        	previous.setNextBlock(current);
 			        	((List)arg).add(current);
 			        	previous = current;	
-//						((List)arg).add(loadBlock(blocks.get(argj)));
 					}
 					result.setNestedBlocks(arg);
 					
 				}else{
-					try{
-						arg = loadBlock(blockArray.get(argi)); //block
-					}catch(Exception e){
-						throw new ParsingException("Error Parsing Block:"+blockArray);
-					}
+					arg = loadBlock(blockArray.get(argi)); //block
 				}
 			}else{
 				arg = blockArray.get(argi); //primitive
@@ -138,17 +145,15 @@ public class Parser {
 
 	}
 
-	public void loadCustomBlock(JSONArray firstBlockArray) {	
+	public void loadCustomBlock(JSONArray firstBlockArray) throws ParsingException {	
 		
 			try{
 				Block customBlockArg = new Block();
 				BlockSpec customBlockSpec = BlockSpec.parseCustomBlockSpec(firstBlockArray);
 				CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC.put((String) firstBlockArray.get(1), customBlockSpec);
-//			
 				
 			} catch(Exception e){
-				System.err.println("Error Parsing Scriptable");
-				System.err.println(e);
+				throw new ParsingException(e);
 			}
 		
 

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,7 +16,11 @@ import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
+
 public class ScratchProject implements Visitable{
+	static Logger logger = Logger.getLogger(ScratchProject.class);
+	
+
 	int projectID;
 	private Map<String, Scriptable> scriptables;
 	static Parser parser;
@@ -66,6 +71,18 @@ public class ScratchProject implements Visitable{
 		CommandLoader.loadCommand();
 		JSONObject stageObj = jsonObject;
 		
+		if(stageObj.containsKey("info")){
+			JSONObject infoObj = (JSONObject)stageObj.get("info");
+			if((String)((JSONObject)infoObj).get("projectID")!=null){
+				int projectID = Integer.parseInt((String)((JSONObject)infoObj).get("projectID"));
+				project.setProjectID(projectID);
+				logger.info("Load projectID:"+projectID);
+			}else{
+				throw new ParsingException("Project ID Not Found");
+			}
+			
+		}
+		
 		if(stageObj.containsKey("scripts")){
 			JSONArray stageScripts = (JSONArray)stageObj.get("scripts");
 			Scriptable stage = new Scriptable();
@@ -79,9 +96,9 @@ public class ScratchProject implements Visitable{
 				if(command.equals("procDef")){
 					try{						
 						parser.loadCustomBlock(firstBlockJSON);
-					} catch(Exception e){
-						System.err.println("Error Parsing CustomBlocks in Scriptable: Stage");
-						System.err.println(e);
+					} catch(ParsingException e){
+						logger.error("Error parsing a custom block in Stage:"+firstBlockJSON);
+						throw new ParsingException(e);
 					}
 				}
 				
@@ -94,23 +111,14 @@ public class ScratchProject implements Visitable{
 					stage.setName("Stage");
 					stage.addScript(scrpt);
 				} catch(Exception e){
-					System.err.println("Error Parsing Scriptable: Stage");
-					System.err.println(e);
+					logger.error("Error parsing a script in Stage:"+stageScripts.get(j));
+					throw new ParsingException(e);
 				}
 			}
 			project.addScriptable("Stage", stage);
 		}
 		
-		if(stageObj.containsKey("info")){
-			JSONObject infoObj = (JSONObject)stageObj.get("info");
-			if((String)((JSONObject)infoObj).get("projectID")!=null){
-				int projectID = Integer.parseInt((String)((JSONObject)infoObj).get("projectID"));
-				project.setProjectID(projectID);
-			}else{
-				throw new ParsingException("Project ID Not Found");
-			}
-			
-		}
+		
 		
 		JSONArray children = (JSONArray)jsonObject.get("children");
 		
@@ -140,9 +148,10 @@ public class ScratchProject implements Visitable{
 					try{
 						parser.loadCustomBlock(firstBlockJSON);
 						
-					}catch(Exception e){
-						System.err.println("Error Parsing Custom Block for Scriptable:"+spriteName);
-						e.printStackTrace();
+					}catch(ParsingException e){
+						logger.error("Error Parsing Custom Block in Scriptable:"+spriteName);
+						logger.error("=>"+firstBlockJSON);
+						throw new ParsingException(e);
 					}
 				}
 			}
@@ -150,13 +159,15 @@ public class ScratchProject implements Visitable{
 			//parse script
 			for (int j = 0; j < scripts.size(); j++) {
 				Script scrpt=null;
+				String scriptStr = scripts.get(j).toString();
 				try{
 					scrpt = parser.loadScript(scripts.get(j));
 					s.addScript(scrpt);
-				}catch(Exception e){
-					System.err.println("Error Parsing Scriptable:"+spriteName);
-					System.err.println("Index:"+j+" json:"+scripts.get(j));
-					e.printStackTrace();
+				}catch(ParsingException e){
+					logger.error("Error Parsing a script in Scriptable:"+spriteName);
+					logger.error("=>"+scriptStr);
+					logger.error("==>"+e.getMessage());
+					throw new ParsingException(e);
 				}
 			}
 			project.addScriptable(spriteName, s);
