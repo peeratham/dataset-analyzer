@@ -20,10 +20,18 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 public class ScratchProject implements Visitable{
 	static Logger logger = Logger.getLogger(ScratchProject.class);
 	
-
+	static Parser parser;
 	int projectID;
 	private Map<String, Scriptable> scriptables;
-	static Parser parser;
+	
+	
+	public ScratchProject(){
+		scriptables = new HashMap<String,Scriptable>();
+		parser = new Parser();
+	}
+	private void setProjectID(int projectID) {
+		this.projectID = projectID;
+	}
 	
 	public int getProjectID(){
 		return projectID;
@@ -32,32 +40,15 @@ public class ScratchProject implements Visitable{
 	public void addScriptable(String name, Scriptable obj) {
 		this.scriptables.put(name, obj);
 	}
-
-	public ScratchProject(){
-		scriptables = new HashMap<String,Scriptable>();
-		parser = new Parser();
-	}
 	
 	public Scriptable getScriptable(String name) {
 		return scriptables.get(name);
 	}
 	
-	
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		Iterator it = scriptables.entrySet().iterator();
-		while(it.hasNext()){
-			Map.Entry<String, Scriptable> pair = (Map.Entry<String, Scriptable>)it.next();
-			sb.append(pair.getKey());
-			sb.append("\n");
-			sb.append(pair.getValue());
-			sb.append("\n\n");
-		}
-		return "Project:"+projectID+"\n\n"+sb.toString();
+	public Map<String, Scriptable> getAllScriptables() {
+		return scriptables;
 	}
-
+	
 	public static ScratchProject loadProject(String jsonInputString) throws ParseException, ParsingException {
 		JSONParser jsonParser = new JSONParser();
 		Object obj = jsonParser.parse(jsonInputString);
@@ -66,7 +57,7 @@ public class ScratchProject implements Visitable{
 		return loadProject(jsonObject);
 	}
 
-	public static ScratchProject loadProject(JSONObject jsonObject) throws ParsingException {
+	private static ScratchProject loadProject(JSONObject jsonObject) throws ParsingException {
 		ScratchProject project = new ScratchProject();
 		CommandLoader.loadCommand();
 		JSONObject stageObj = jsonObject;
@@ -80,7 +71,6 @@ public class ScratchProject implements Visitable{
 			}else{
 				throw new ParsingException("Project ID Not Found");
 			}
-			
 		}
 		
 		if(stageObj.containsKey("scripts")){
@@ -117,8 +107,6 @@ public class ScratchProject implements Visitable{
 			}
 			project.addScriptable("Stage", stage);
 		}
-		
-		
 		
 		JSONArray children = (JSONArray)jsonObject.get("children");
 		
@@ -175,19 +163,22 @@ public class ScratchProject implements Visitable{
 		return project;
 	}
 
-	private void setProjectID(int projectID) {
-		this.projectID = projectID;
-		
-	}
-
-	public Map<String, Scriptable> getScriptables() {
-		return scriptables;
-		
-	}
-
 	public void accept(Visitor v) throws VisitFailure {
-		v.visitProject(this);
-		
+		v.visitProject(this);		
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		Iterator it = scriptables.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Scriptable> pair = (Map.Entry<String, Scriptable>)it.next();
+			sb.append(pair.getKey());
+			sb.append("\n");
+			sb.append(pair.getValue());
+			sb.append("\n\n");
+		}
+		return "Project:"+projectID+"\n\n"+sb.toString();
 	}
 
 }

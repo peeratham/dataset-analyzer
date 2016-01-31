@@ -21,15 +21,7 @@ public class ScratchProjectTest {
 	ScratchProject project;
 	@Before
 	public void setUp() throws Exception {
-		try {
-			InputStream in = Main.class.getClassLoader().getResource("project03.json").openStream();
-			Object obj = jsonParser.parse((new BufferedReader(new InputStreamReader(in))));
-            JSONObject jsonObject = (JSONObject) obj;
-            project = new ScratchProject().loadProject(jsonObject);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 	}
 
 	@After
@@ -38,8 +30,7 @@ public class ScratchProjectTest {
 
 	@Test
 	public void testLoadProject() {
-		Map<String, Scriptable> scriptables= project.getScriptables();
-		assertEquals(3, scriptables.size());
+
 	}
 
 }

@@ -27,7 +27,7 @@ public class BasicVisitor implements Visitor{
 
 
 	public void visitProject(ScratchProject scratchProject) throws VisitFailure {
-		for (String name : scratchProject.getScriptables().keySet()) {
+		for (String name : scratchProject.getAllScriptables().keySet()) {
 			scratchProject.getScriptable(name).accept(this);;
 		}
 	}
