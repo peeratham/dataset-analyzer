@@ -38,19 +38,21 @@ public class UnreachableCodeAnalyzerTest {
 	}
 
 	@Test
-	public void test() throws ParseException, IOException, ParsingException {
+	public void test() throws ParseException, IOException, ParsingException, AnalysisException {
 		String projectSrc = Util.retrieveProjectOnline(TestConstant.UNREACHABLECODE_PROJECT_0);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
-		analyzer = new UnreachableCodeAnalyzer(project);
+		analyzer = new UnreachableCodeAnalyzer();
+		analyzer.addProject(project);
 		analyzer.analyze();
 
 	}
 	
 	@Test
-	public void testOnRealDataset() throws IOException, ParseException, ParsingException {
+	public void testOnRealDataset() throws IOException, ParseException, ParsingException, AnalysisException {
 		String projectSrc = Util.retrieveProjectOnline(TestConstant.UNREACHABLECODE_PROJECT_1);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
-		analyzer = new UnreachableCodeAnalyzer(project);
+		analyzer = new UnreachableCodeAnalyzer();
+		analyzer.addProject(project);
 		analyzer.analyze();
 		System.out.println(analyzer.getReport().getSummary());
 		System.out.println(analyzer.getReport().getFullReport());

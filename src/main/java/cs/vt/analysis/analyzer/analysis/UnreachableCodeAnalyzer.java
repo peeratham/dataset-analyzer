@@ -19,7 +19,7 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 
 
 
-public class UnreachableCodeAnalyzer extends BaseAnalyzer {
+public class UnreachableCodeAnalyzer extends VisitorBasedAnalyzer {
 	
 	private BlockAnalyzer blockAnalyzer;
 	private TopDown analysisVisitor;
@@ -28,8 +28,13 @@ public class UnreachableCodeAnalyzer extends BaseAnalyzer {
 	private Stack<String> path = new Stack();
 	private AnalysisReport report = new AnalysisReport();
 	
-	public UnreachableCodeAnalyzer(final ScratchProject project){
-		super(project, null);
+//	public UnreachableCodeAnalyzer(){
+//		super(null,null);
+//		
+//	}
+	
+	public UnreachableCodeAnalyzer(){
+		super(null, null);
 		
 		class BroadCastCollector implements Visitor{
 			public void visitProject(ScratchProject scratchProject)
@@ -86,12 +91,14 @@ public class UnreachableCodeAnalyzer extends BaseAnalyzer {
 		this.path = pathRecorder.getPath();
 		super.analysisVisitor = detector;
 		
-		report.setProjectID(project.getProjectID());
+		
 		
 	}
 	
+	@Override
 	public AnalysisReport getReport() {
 		//TODO
+		report.setProjectID(project.getProjectID());
 		report.setTitle("UnreachableCode");
 		report.addSummary("count", report.result.size());
 		return report;	

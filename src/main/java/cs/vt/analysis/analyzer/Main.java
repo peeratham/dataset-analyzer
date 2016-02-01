@@ -8,6 +8,9 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.parser.ParseException;
 
+import cs.vt.analysis.analyzer.analysis.AnalysisConfigurator;
+import cs.vt.analysis.analyzer.analysis.AnalysisException;
+import cs.vt.analysis.analyzer.analysis.Analyzer;
 import cs.vt.analysis.analyzer.analysis.UnreachableCodeAnalyzer;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.ParsingException;
@@ -18,18 +21,39 @@ public class Main {
 	public static void main(String[] args) {
         // Configure Log4J
         PropertyConfigurator.configure(Main.class.getClassLoader().getResource("log4j.properties"));
+        AnalysisConfigurator config = new AnalysisConfigurator();
+        config.addData("C:\\Users\\Peeratham\\workspace\\scratch-dataset");
         
-        String pathToDataset = "C:\\Users\\Peeratham\\workspace\\scratch-dataset";
-        File datasetDirectory = new File(pathToDataset);
+        File datasetDirectory = config.getDatasetDirectory();
+        try {
+			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableCodeAnalyzer");
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
      
 		File[] files = datasetDirectory.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			try {
 				ScratchProject project = ScratchProject.loadProject(FileUtils.readFileToString(files[i]));
-				UnreachableCodeAnalyzer analyzer = new UnreachableCodeAnalyzer(project);
-				analyzer.analyze();
-				logger.info(analyzer.getReport().getSummary());
-				logger.info(analyzer.getReport().getFullReport());
+				for (Analyzer a : config.listAnalyzers()) {
+					a.addProject(project);
+					try {
+						a.analyze();
+						logger.info(a.getReport().getSummary());
+						logger.info(a.getReport().getFullReport());
+					} catch (AnalysisException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
 			} catch (IOException e) {
 				logger.error("Fail to read file:"+e.getMessage());
 			} catch (ParseException e) {
@@ -40,7 +64,7 @@ public class Main {
 				logger.error(e.getMessage());
 				e.printStackTrace();
 			}
-			
+
 		}
 		
 		
