@@ -6,20 +6,16 @@ import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
 
-abstract class VisitorBasedAnalyzer extends BaseAnalyzer {
+public class VisitorBasedAnalyzer extends BaseAnalyzer {
 	public ScratchProject project;
-	public Visitor analysisVisitor;
+	public AnalysisVisitor analysisVisitor;
 	
-	public VisitorBasedAnalyzer(ScratchProject project, Visitor v){
-		this.project = project; 
-		this.analysisVisitor = v;
-	}
 	
 	public void addProject(ScratchProject project){
 		this.project = project;
 	}
 	
-	public void addVisitor(Visitor v){
+	public void addAnalysisVisitor(AnalysisVisitor v){
 		this.analysisVisitor = v;
 	}
 	
@@ -32,6 +28,14 @@ abstract class VisitorBasedAnalyzer extends BaseAnalyzer {
 			}
 
 	}
+
+	@Override
+	public AnalysisReport getReport() {
+		AnalysisReport report =analysisVisitor.getReport();
+		report.setProjectID(project.getProjectID());
+		return report;
+	}
+
 	
 	
 

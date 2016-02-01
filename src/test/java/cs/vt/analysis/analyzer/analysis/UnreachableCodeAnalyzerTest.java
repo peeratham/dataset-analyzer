@@ -12,13 +12,13 @@ import org.junit.Test;
 
 import cs.vt.analysis.analyzer.Main;
 import cs.vt.analysis.analyzer.TestConstant;
-import cs.vt.analysis.analyzer.analysis.UnreachableCodeAnalyzer;
+
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 
 public class UnreachableCodeAnalyzerTest {
-	UnreachableCodeAnalyzer analyzer;
+	
 	
 	File[] dataset;
 	
@@ -37,25 +37,20 @@ public class UnreachableCodeAnalyzerTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void test() throws ParseException, IOException, ParsingException, AnalysisException {
-		String projectSrc = Util.retrieveProjectOnline(TestConstant.UNREACHABLECODE_PROJECT_0);
-		ScratchProject project = ScratchProject.loadProject(projectSrc);
-		analyzer = new UnreachableCodeAnalyzer();
-		analyzer.addProject(project);
-		analyzer.analyze();
 
-	}
+	
 	
 	@Test
-	public void testOnRealDataset() throws IOException, ParseException, ParsingException, AnalysisException {
+	public void testAnalysisVisitorPlugin() throws IOException, ParseException, ParsingException, AnalysisException{
 		String projectSrc = Util.retrieveProjectOnline(TestConstant.UNREACHABLECODE_PROJECT_1);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
-		analyzer = new UnreachableCodeAnalyzer();
+		VisitorBasedAnalyzer analyzer = new VisitorBasedAnalyzer();
+		analyzer.addAnalysisVisitor(new UnreachableAnalysisVisitor());
 		analyzer.addProject(project);
 		analyzer.analyze();
 		System.out.println(analyzer.getReport().getSummary());
 		System.out.println(analyzer.getReport().getFullReport());
+		
 	}
 
 }

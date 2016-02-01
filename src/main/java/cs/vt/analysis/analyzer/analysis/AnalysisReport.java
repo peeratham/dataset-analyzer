@@ -34,6 +34,7 @@ public class AnalysisReport {
 
 	public void setProjectID(int projectID) {
 		this.projectID = projectID;
+		summary.put("projectID", projectID);
 	}
 
 

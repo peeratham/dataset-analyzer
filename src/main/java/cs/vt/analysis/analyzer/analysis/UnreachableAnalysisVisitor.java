@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import cs.vt.analysis.analyzer.BlockAnalyzer;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
@@ -17,25 +16,13 @@ import cs.vt.analysis.analyzer.visitor.TopDown;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
-
-
-public class UnreachableCodeAnalyzer extends VisitorBasedAnalyzer {
-	
-	private BlockAnalyzer blockAnalyzer;
-	private TopDown analysisVisitor;
-	private Visitor detector;
+public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisitor {
 	private List<String> messages = new ArrayList<String>();
-	private Stack<String> path = new Stack();
+	private Stack<String> path = new Stack<String>();
 	private AnalysisReport report = new AnalysisReport();
 	
-//	public UnreachableCodeAnalyzer(){
-//		super(null,null);
-//		
-//	}
-	
-	public UnreachableCodeAnalyzer(){
-		super(null, null);
-		
+	public UnreachableAnalysisVisitor(){
+		super(null,null);
 		class BroadCastCollector implements Visitor{
 			public void visitProject(ScratchProject scratchProject)
 					throws VisitFailure {}
@@ -87,21 +74,14 @@ public class UnreachableCodeAnalyzer extends VisitorBasedAnalyzer {
 		}
 
 		PathRecorder pathRecorder = new PathRecorder(new UnreachableScriptCollector());
-		detector = new Sequence(new TopDown(new BroadCastCollector()), pathRecorder);
+		first = new TopDown(new BroadCastCollector());
+		then = pathRecorder;
 		this.path = pathRecorder.getPath();
-		super.analysisVisitor = detector;
-		
-		
-		
-	}
-	
-	@Override
-	public AnalysisReport getReport() {
-		//TODO
-		report.setProjectID(project.getProjectID());
-		report.setTitle("UnreachableCode");
-		report.addSummary("count", report.result.size());
-		return report;	
 	}
 
+	public AnalysisReport getReport() {
+		report.setTitle("UnreachableCode");
+		report.addSummary("count", report.result.size());
+		return report;
+	}
 }

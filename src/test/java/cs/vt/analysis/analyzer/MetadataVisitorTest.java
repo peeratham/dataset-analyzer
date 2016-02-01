@@ -9,13 +9,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import cs.vt.analysis.analyzer.analysis.UnreachableCodeAnalyzer;
+
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 
 public class MetadataVisitorTest {
-	UnreachableCodeAnalyzer analyzer;
+	
 	ScratchProject project;
 	File[] dataset;
 	String inputString;

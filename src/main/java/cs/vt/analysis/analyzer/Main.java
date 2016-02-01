@@ -11,7 +11,6 @@ import org.json.simple.parser.ParseException;
 import cs.vt.analysis.analyzer.analysis.AnalysisConfigurator;
 import cs.vt.analysis.analyzer.analysis.AnalysisException;
 import cs.vt.analysis.analyzer.analysis.Analyzer;
-import cs.vt.analysis.analyzer.analysis.UnreachableCodeAnalyzer;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 
@@ -26,7 +25,7 @@ public class Main {
         
         File datasetDirectory = config.getDatasetDirectory();
         try {
-			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableCodeAnalyzer");
+			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
 		} catch (InstantiationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
