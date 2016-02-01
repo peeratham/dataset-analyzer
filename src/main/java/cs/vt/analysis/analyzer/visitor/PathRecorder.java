@@ -8,9 +8,11 @@ import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 
 public class PathRecorder extends Sequence implements PathKeeper{
-	private Stack<String> st = new Stack<String>();
-	public PathRecorder(Visitor emitter) {
+	private Stack<String> pathRecord = new Stack<String>();
+	private Visitor checker = null;
+	public PathRecorder(Visitor checker) {
 		super(null, null);
+		this.checker = checker;
 				
 		class PathRecorderEnter implements Visitor{
 
@@ -18,13 +20,13 @@ public class PathRecorder extends Sequence implements PathKeeper{
 					throws VisitFailure {} 
 			public void visitScriptable(Scriptable scriptable)
 					throws VisitFailure {
-				st.push(scriptable.getName());
+				pathRecord.push(scriptable.getName());
 			}
 			public void visitScript(Script script) throws VisitFailure {
-				st.push("Script@pos("+script.getPosition()[0]+","+script.getPosition()[1]+")");
+				pathRecord.push("Script@pos("+script.getPosition()[0]+","+script.getPosition()[1]+")");
 			}
 			public void visitBlock(Block block) throws VisitFailure {
-				st.push(block.toString());
+				pathRecord.push(block.toString());
 			}
 		}
 		
@@ -34,26 +36,26 @@ public class PathRecorder extends Sequence implements PathKeeper{
 					throws VisitFailure {}
 
 			public void visitScriptable(Scriptable scriptable)
-					throws VisitFailure { st.pop();}
+					throws VisitFailure { pathRecord.pop();}
 
-			public void visitScript(Script script) throws VisitFailure { st.pop();}
+			public void visitScript(Script script) throws VisitFailure { pathRecord.pop();}
 
-			public void visitBlock(Block block) throws VisitFailure { st.pop();}
+			public void visitBlock(Block block) throws VisitFailure { pathRecord.pop();}
 			
 		}
 		
-		((PathKeeper)emitter).setPath(st);
-		first = new Sequence(new PathRecorderEnter(), new Choice(emitter, new All(this)));
+		((PathKeeper)this.checker).registerPathListener(pathRecord);
+		first = new Sequence(new PathRecorderEnter(), new Choice(this.checker, new All(this)));
 		then = new PathRecorderExit();
 	}
 	
 	public Stack<String> getPath(){
-		return st;
+		return pathRecord;
 	}
 
 	
-	public void setPath(Stack<String> path) {
-		this.st = path;
+	public void registerPathListener(Stack<String> path) {
+		this.pathRecord = path;
 		
 	}
 	

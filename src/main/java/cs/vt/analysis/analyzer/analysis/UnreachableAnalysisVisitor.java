@@ -35,17 +35,19 @@ public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisi
 			public void visitBlock(Block block) throws VisitFailure {
 				if(block.getCommand().contains("broadcast")){
 					List<String> args = (List<String>) block.getArgs();
-					messages.add(args.get(0));	
+					messages.add(args.get(0));
 				}
 			}
 		}
+		
+		
 	
-		class UnreachableScriptCollector extends Stop implements PathKeeper{
+		class UnreachableScriptCollector extends Stop implements PathKeeper {
 			Stack<String> path;
 			
 			public UnreachableScriptCollector(){}
 			
-			public void setPath(Stack path){
+			public void registerPathListener(Stack<String> path){
 				this.path = path;
 			}
 
@@ -72,9 +74,9 @@ public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisi
 			}
 			
 		}
-
-		PathRecorder pathRecorder = new PathRecorder(new UnreachableScriptCollector());
+		
 		first = new TopDown(new BroadCastCollector());
+		PathRecorder pathRecorder = new PathRecorder(new UnreachableScriptCollector());
 		then = pathRecorder;
 		this.path = pathRecorder.getPath();
 	}
