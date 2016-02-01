@@ -4,7 +4,7 @@ import cs.vt.analysis.analyzer.nodes.ScratchProject;
 
 abstract class BaseAnalyzer implements Analyzer{
 	public ScratchProject project;
-	public void addProject(ScratchProject project){
+	public void setProject(ScratchProject project){
 		this.project = project;
 	}
 	public abstract void analyze() throws AnalysisException;

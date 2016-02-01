@@ -11,7 +11,7 @@ public class VisitorBasedAnalyzer extends BaseAnalyzer {
 	public AnalysisVisitor analysisVisitor;
 	
 	
-	public void addProject(ScratchProject project){
+	public void setProject(ScratchProject project){
 		this.project = project;
 	}
 	

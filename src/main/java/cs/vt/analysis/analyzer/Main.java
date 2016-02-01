@@ -10,7 +10,9 @@ import org.json.simple.parser.ParseException;
 
 import cs.vt.analysis.analyzer.analysis.AnalysisConfigurator;
 import cs.vt.analysis.analyzer.analysis.AnalysisException;
+import cs.vt.analysis.analyzer.analysis.AnalysisVisitor;
 import cs.vt.analysis.analyzer.analysis.Analyzer;
+import cs.vt.analysis.analyzer.analysis.VisitorBasedAnalyzer;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 
@@ -41,12 +43,15 @@ public class Main {
 		for (int i = 0; i < files.length; i++) {
 			try {
 				ScratchProject project = ScratchProject.loadProject(FileUtils.readFileToString(files[i]));
-				for (Analyzer a : config.listAnalyzers()) {
-					a.addProject(project);
+				for (Class k : config.listAnalyzers()) {
+					AnalysisVisitor v = (AnalysisVisitor) k.newInstance();
+					VisitorBasedAnalyzer analyzer = new VisitorBasedAnalyzer();
+					analyzer.addAnalysisVisitor(v);
+					analyzer.setProject(project);
 					try {
-						a.analyze();
-						logger.info(a.getReport().getSummary());
-						logger.info(a.getReport().getFullReport());
+						analyzer.analyze();
+						logger.info(analyzer.getReport().getSummary());
+						logger.info(analyzer.getReport().getFullReport());
 					} catch (AnalysisException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -62,6 +67,12 @@ public class Main {
 				logger.error("Fail to load project:"+files[i]);
 				logger.error(e.getMessage());
 				e.printStackTrace();
+			} catch (InstantiationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 
 		}
