@@ -73,7 +73,7 @@ public class ParserTest {
 		assertEquals(next.getCommand(), "doIf");
 		
 		assertTrue(next.hasNestedBlocks());
-		Block firstChild = next.getFirstChild();
+		Block firstChild = next.getNestedBlocks().get(0);
 		assertEquals(firstChild.getCommand(), "broadcast:");
 		
 		next = firstChild.getNextBlock();
@@ -100,9 +100,9 @@ public class ParserTest {
 		JSONArray scriptableInput = TestUtil.getScriptable(stringInput,"testNestedToString");
 		Script script = parser.loadScript(scriptableInput.get(0));
 		int endCount = 	TestUtil.count("end", script.toString());
-		assertEquals(endCount,2);
+		assertEquals(2,endCount);
 		int elseCount = 	TestUtil.count("else", script.toString());
-		assertEquals(elseCount,1);
+		assertEquals(1,elseCount);
 	}
 	
 	@Test

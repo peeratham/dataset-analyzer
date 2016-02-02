@@ -7,5 +7,6 @@ public class TestConstant {
 	public static final String TEST_EMPTYBLOCKINPUT = "TEST_EMPTYBLOCKINPUT";
 	public static final String TEST_CUSTOMBLOCK_DEPENDENCY = "testCustomBlockDependency";
 	public static final Integer CUSTOMBLOCK_DEPENDENCY = 95571363;
+	public static final int PATH_TEST_PROJECT = 96331243;
 	
 }

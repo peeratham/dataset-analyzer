@@ -11,6 +11,7 @@ public class Script implements Visitable {
 	private List<Block> blocks;
 	private int xPos;
 	private int yPos;
+	private Scriptable parent;
 
 	
 	
@@ -51,6 +52,14 @@ public class Script implements Visitable {
 	public void accept(Visitor v) throws VisitFailure {
 		v.visitScript(this);
 		
+	}
+	
+	public void setParent(Scriptable s){
+		parent = s;
+	}
+
+	public Scriptable getParent() {
+		return parent;
 	}
 
 }

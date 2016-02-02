@@ -100,6 +100,7 @@ public class ScratchProject implements Visitable{
 					scrpt = parser.loadScript(stageScripts.get(j));
 					stage.setName("Stage");
 					stage.addScript(scrpt);
+					scrpt.setParent(stage);
 				} catch(Exception e){
 					logger.error("Error parsing a script in Stage:"+stageScripts.get(j));
 					throw new ParsingException(e);
@@ -111,17 +112,17 @@ public class ScratchProject implements Visitable{
 		JSONArray children = (JSONArray)jsonObject.get("children");
 		
 		for (int i = 0; i < children.size(); i++) {
-			JSONObject sprite = (JSONObject) children.get(i);
-			if(!sprite.containsKey("objName")){ //not a sprite
+			JSONObject spriteJSON = (JSONObject) children.get(i);
+			if(!spriteJSON.containsKey("objName")){ //not a sprite
 				continue;
 			}
-			Scriptable s = new Scriptable();
-			String spriteName = (String)sprite.get("objName");
-			JSONArray scripts = (JSONArray)sprite.get("scripts");
+			Scriptable sprite = new Scriptable();
+			String spriteName = (String)spriteJSON.get("objName");
+			JSONArray scripts = (JSONArray)spriteJSON.get("scripts");
 			
-			s.setName(spriteName);
+			sprite.setName(spriteName);
 			if(scripts==null){	//empty script
-				project.addScriptable(spriteName, s);
+				project.addScriptable(spriteName, sprite);
 				continue;
 			}
 			
@@ -150,7 +151,8 @@ public class ScratchProject implements Visitable{
 				String scriptStr = scripts.get(j).toString();
 				try{
 					scrpt = parser.loadScript(scripts.get(j));
-					s.addScript(scrpt);
+					sprite.addScript(scrpt);
+					scrpt.setParent(sprite);
 				}catch(ParsingException e){
 					logger.error("Error Parsing a script in Scriptable:"+spriteName);
 					logger.error("=>"+scriptStr);
@@ -158,7 +160,7 @@ public class ScratchProject implements Visitable{
 					throw new ParsingException(e);
 				}
 			}
-			project.addScriptable(spriteName, s);
+			project.addScriptable(spriteName, sprite);
 		}
 		return project;
 	}

@@ -1,14 +1,12 @@
 package cs.vt.analysis.analyzer.parser;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONArray;
-
-
-
 
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.BlockSpec;
@@ -41,34 +39,33 @@ public class Parser {
 		
 		List<Block> blocks = new ArrayList<Block>();
 		
-		Block previous = null;
-		try{
-			previous = loadBlock(jsonBlocks.get(0));
-		} catch(Exception e){
-			throw new ParsingException("Error Parsing Block:"+e);
-		}
-		blocks.add(previous);	//		add first block
 		
-        for (int i = 1; i < jsonBlocks.size(); i++)
-        {	
-        	Block current = null;
+		Iterator blockIter = jsonBlocks.iterator();
+		Block previous = null;
+		
+		while(blockIter.hasNext()){
+			Block current = null;
         	try{
-        		current = loadBlock(jsonBlocks.get(i));
+        		current = loadBlock(blockIter.next());
         	} catch (Exception e){
         		throw new ParsingException("Error Parsing Block:"+e);
         	}
-        	previous.setNextBlock(current);
+        	if(previous!=null){
+        		previous.setNextBlock(current);
+        	}
+        	current.setPreviousBlock(previous);
+        	current.setParent(script);
         	blocks.add(current);
         	previous = current;	
-        	
-        }
+		}
+		
         script.setBlocks(blocks);
         return script;
 	}
 	
 	public Block loadBlock(Object b) throws ParsingException{
 		JSONArray blockArray = (JSONArray)b;
-		Block result = new Block();
+		Block resultBlock = new Block();
 		
 		ArrayList<Object> args = new ArrayList<Object>();
 
@@ -96,10 +93,10 @@ public class Parser {
 			customBlockArg.setCommand(command);
 			customBlockArg.setBlockSpec(customBlockSpec);
 			args.add(customBlockArg);
-			result.setCommand(command);
-			result.setBlockSpec(blockSpec);
-			result.setArgs(args);
-			return result;
+			resultBlock.setCommand(command);
+			resultBlock.setBlockSpec(blockSpec);
+			resultBlock.setArgs(args);
+			return resultBlock;
 		}
 		blockArray.remove(0);
 		
@@ -108,24 +105,24 @@ public class Parser {
 		for (int argi = 0; argi < blockArray.size(); argi++) {
 			if(blockArray.get(argi) instanceof JSONArray){
 				if(((JSONArray)blockArray.get(argi)).get(0) instanceof JSONArray){	//nested blocks
-					result.hasNestedBlocks(true);
+					resultBlock.hasNestedBlocks(true);
 					arg = new ArrayList<Block>();//stack shape insert (nested blocks) will be list of blocks
 					JSONArray blocks = (JSONArray)blockArray.get(argi);	//it's a list of blocks
 					
 					Block previous = null;
-					previous = loadBlock(blocks.get(0));
-
-					((List)arg).add(previous);	//		add first block
-					result.setFirstChild(previous);
-					
-					for (int argj = 1; argj < blocks.size(); argj++) {
-						Block current  = null;
-						current = loadBlock(blocks.get(argj));
-			        	previous.setNextBlock(current);
-			        	((List)arg).add(current);
-			        	previous = current;	
+					Iterator blockSequenceIter = blocks.iterator();
+					while(blockSequenceIter.hasNext()){
+						Block current = loadBlock(blockSequenceIter.next());
+						((List)arg).add(current);
+						if(previous!=null){
+							previous.setNextBlock(current);
+						}
+						current.setPreviousBlock(previous);
+						current.setParent(resultBlock);
+						previous = current;
 					}
-					result.setNestedBlocks(arg);
+					resultBlock.setFirstChild((Block)((List)arg).get(0));
+					resultBlock.setNestedBlocks(arg);
 					
 				}else{
 					arg = loadBlock(blockArray.get(argi)); //block
@@ -137,11 +134,11 @@ public class Parser {
 			args.add(arg);	
 		}
 		
-		result.setCommand(command);
-		result.setBlockSpec(blockSpec);
-		result.setArgs(args);
+		resultBlock.setCommand(command);
+		resultBlock.setBlockSpec(blockSpec);
+		resultBlock.setArgs(args);
 		
-		return result;
+		return resultBlock;
 
 	}
 

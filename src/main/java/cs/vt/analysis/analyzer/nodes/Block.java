@@ -19,6 +19,15 @@ public class Block implements Visitable {
 	private boolean hasNestedBlocks = false;
 	private Block firstChild;
 	private List<Block> nestedBlocks;
+	private Object parent;
+
+	public Object getParent() {
+		return parent;
+	}
+
+	public void setParent(Object parent) {
+		this.parent = parent;
+	}
 
 	public Block() {
 	}
@@ -230,6 +239,34 @@ public class Block implements Visitable {
 	
 	public List<Block> getNestedBlocks(){
 		return nestedBlocks;
+	}
+
+	public String getPath() {
+		ArrayList<String> path = new ArrayList<String>();
+		Block current = this;
+		
+		do {
+			
+			if (current.hasNestedBlocks) {
+				path.add(0, current.getCommand());
+			} else {
+				path.add(0, current.toString());
+			}
+			
+			if (current.getPreviousBlock()==null &&!(current.getParent() instanceof Block)) {
+				break;
+			}else{
+				current = (Block) current.getParent();
+			}
+		} while (true);
+		
+		Script scrpt = (Script) current.getParent();
+		String scriptString = "Script@x"+scrpt.getPosition()[0]+" y"+scrpt.getPosition()[1];
+		path.add(0,scriptString);
+		Scriptable scrptable = scrpt.getParent();
+		path.add(0, scrptable.getName());;
+			
+		return String.join("/", path);
 	}
 
 }
