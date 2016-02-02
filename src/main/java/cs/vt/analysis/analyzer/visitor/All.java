@@ -1,5 +1,7 @@
 package cs.vt.analysis.analyzer.visitor;
 
+import java.util.ArrayList;
+
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
@@ -50,10 +52,11 @@ public class All implements Visitor{
 
 	public void visitBlock(Block block) throws VisitFailure{
 		if(block.hasNestedBlocks()){
-			block.getFirstChild().accept(v);
-		}
-		if(block.getNextBlock()!=null){
-			block.getNextBlock().accept(v);
+			for(ArrayList<Block> group: block.getNestedGroup()){
+				for(Block b : group){
+					b.accept(v);
+				}
+			}	
 		}
 	}
 }

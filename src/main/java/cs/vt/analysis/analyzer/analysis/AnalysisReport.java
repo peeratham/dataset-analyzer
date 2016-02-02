@@ -40,25 +40,25 @@ public class AnalysisReport {
 
 
 
-	public void addSummary(String key, Object value) {
-		summary.put(key, value);
+	private void generateSummary() {
+		summary.put("count", result.size());
 	}
 	
-	public JSONObject getSummary(){
+	public JSONObject getJSONReport(){
+		generateSummary();
 		JSONObject container = new JSONObject();
 		JSONObject report = new JSONObject();
-		report.put("summary", summary);
-		report.put("full-summary", result);
+		container.put("Analysis",title);
+		report.put("Summary", summary);
+		report.put("Records", result);
 		
 		
-		container.put("report",report);
-		container.put("title",title);
+		container.put("Report",report);
+		
 		return container;
 	}
 	
-	public String getFullReport(){
-		return summary +"\n" + result;
-	}
+
 	
 	public void addRecord(String record) {
 		result.add(record);

@@ -4,11 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
+
+
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Script;
@@ -30,7 +33,8 @@ public class MatchTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	
+	@Ignore
 	@Test
 	public void testBasicMatcher() throws Exception {
 		String patternInput = "[57,161,[[\"whenGreenFlag\"],[\"say:duration:elapsed:from:\", \"message\", \"sec\"]]]";
@@ -50,6 +54,7 @@ public class MatchTest {
 		assertEquals(binding.get("message"), "Hello!");
 	}
 	
+	@Ignore
 	@Test
 	public void testMatchRecursivelyInNestedBlock() throws Exception{
 		String patternInput = "[339,268,[[\"broadcast:\",\"MESSAGE\"],[\"changeGraphicEffect:by:\",\"EFFECT\",25]]]";

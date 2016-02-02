@@ -19,6 +19,7 @@ public class Block implements Visitable {
 	private boolean hasNestedBlocks = false;
 	private Block firstChild;
 	private List<Block> nestedBlocks;
+	private List<ArrayList<Block>> nestedGroup = new ArrayList<ArrayList<Block>>();
 	private Object parent;
 
 	public Object getParent() {
@@ -74,9 +75,6 @@ public class Block implements Visitable {
 	}
 	
 	private String stringify(Block obj, ArrayList<Object> args) throws Exception {
-		if(obj.command.equals("?")){
-			return "?";
-		}
 		if(obj.command.equals("Position")){
 			return "UNDEFINED";
 		}
@@ -248,14 +246,14 @@ public class Block implements Visitable {
 	public Block getFirstChild() {
 		return this.firstChild;
 	}
-
-	public void setNestedBlocks(Object arg) {
-		this.nestedBlocks = (List<Block>) arg;
+	
+	public void addNestedBlocks(Object arg) {
 		
+		nestedGroup.add((ArrayList<Block>) arg);
 	}
 	
-	public List<Block> getNestedBlocks(){
-		return nestedBlocks;
+	public List<ArrayList<Block>> getNestedGroup(){
+		return nestedGroup;
 	}
 
 	public String getPath() {

@@ -121,8 +121,7 @@ public class Parser {
 						current.setParent(resultBlock);
 						previous = current;
 					}
-					resultBlock.setFirstChild((Block)((List)arg).get(0));
-					resultBlock.setNestedBlocks(arg);
+					resultBlock.addNestedBlocks(arg);
 					
 				}else{
 					arg = loadBlock(blockArray.get(argi)); //block

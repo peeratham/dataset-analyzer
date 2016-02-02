@@ -18,39 +18,24 @@ import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 
 public class UnreachableCodeAnalyzerTest {
-	
-	
 	File[] dataset;
 	
-
 	@Before
-	public void setUp() throws Exception {
-
-//		InputStream in = Main.class.getClassLoader()
-//				.getResource("93160218.json").openStream();
-//		inputString = IOUtils.toString(in);
-//		in.close();
-		
-	}
+	public void setUp() throws Exception {}
 
 	@After
 	public void tearDown() throws Exception {
 	}
-
-
-	
 	
 	@Test
 	public void testAnalysisVisitorPlugin() throws IOException, ParseException, ParsingException, AnalysisException{
-		String projectSrc = Util.retrieveProjectOnline(TestConstant.UNREACHABLECODE_PROJECT_0);
+		String projectSrc = Util.retrieveProjectOnline(92574146);//TestConstant.UNREACHABLECODE_PROJECT_0);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
 		VisitorBasedAnalyzer analyzer = new VisitorBasedAnalyzer();
 		analyzer.addAnalysisVisitor(new UnreachableAnalysisVisitor());
 		analyzer.setProject(project);
 		analyzer.analyze();
-		System.out.println(analyzer.getReport().getSummary());
-		System.out.println(analyzer.getReport().getFullReport());
-		
+		System.out.println(analyzer.getReport().getJSONReport());
 	}
 
 }

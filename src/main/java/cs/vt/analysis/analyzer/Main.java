@@ -50,8 +50,7 @@ public class Main {
 					analyzer.setProject(project);
 					try {
 						analyzer.analyze();
-						logger.info(analyzer.getReport().getSummary());
-						logger.info(analyzer.getReport().getFullReport());
+						logger.info(analyzer.getReport().getJSONReport());
 					} catch (AnalysisException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

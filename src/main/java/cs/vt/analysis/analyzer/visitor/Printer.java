@@ -8,7 +8,7 @@ import cs.vt.analysis.analyzer.nodes.Scriptable;
 public class Printer implements Visitor {
 
 	public void visitProject(ScratchProject scratchProject) throws VisitFailure {
-		System.out.println("project");
+		System.out.println("ProjectID:"+scratchProject.getProjectID());
 	}
 
 	public void visitScript(Script script) throws VisitFailure {
@@ -20,7 +20,7 @@ public class Printer implements Visitor {
 	}
 
 	public void visitBlock(Block block) throws VisitFailure {
-		System.out.println(block);
+		System.out.println(block.getCommand());
 		
 	}
 

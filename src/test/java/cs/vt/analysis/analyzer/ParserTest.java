@@ -73,7 +73,7 @@ public class ParserTest {
 		assertEquals(next.getCommand(), "doIf");
 		
 		assertTrue(next.hasNestedBlocks());
-		Block firstChild = next.getNestedBlocks().get(0);
+		Block firstChild = next.getNestedGroup().get(0).get(0);
 		assertEquals(firstChild.getCommand(), "broadcast:");
 		
 		next = firstChild.getNextBlock();
