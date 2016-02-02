@@ -62,4 +62,14 @@ public class Script implements Visitable {
 		return parent;
 	}
 
+	public Object getPath() {
+		ArrayList<String> path = new ArrayList<String>();
+		String firstBlock = this.getBlocks().get(0).getCompactString();
+		String scriptPath = "Script@x"+this.getPosition()[0]+" y"+this.getPosition()[1]+"["+firstBlock+"]";
+		path.add(0,scriptPath);
+		Scriptable scrptable = this.getParent();
+		path.add(0, scrptable.getName());
+		return String.join("/", path);
+	}
+
 }

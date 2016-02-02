@@ -64,7 +64,8 @@ public class Block implements Visitable {
 	public String toString() {
 		String result="";
 		try {
-			result = stringify(this);
+			ArrayList<Object> args = (ArrayList<Object>) getArgs();
+			result = stringify(this, args);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,12 +73,15 @@ public class Block implements Visitable {
 		return result;
 	}
 	
-	private String stringify(Block obj) throws Exception {
+	private String stringify(Block obj, ArrayList<Object> args) throws Exception {
+		if(obj.command.equals("?")){
+			return "?";
+		}
 		if(obj.command.equals("Position")){
 			return "UNDEFINED";
 		}
 		
-		ArrayList<Object> args = (ArrayList<Object>) getArgs();
+		
 		if(args == null){
 			args = (ArrayList<Object>) blockSpec.getDefaults();
 		}
@@ -151,6 +155,19 @@ public class Block implements Visitable {
 		
 		return formattedString;
 	}
+	
+	public String getCompactString() {
+		String result = "";
+		result +=this.getCommand();
+		if(this.command.equals("procDef")){
+			result += this.getArgs();
+		}
+		if(this.command.equals("doIfElse")){
+			result += "("+((ArrayList)(this.getArgs())).get(0)+")";
+		}
+		return result;
+	}
+	
 	
 	public boolean hasCommand(String command){
 		return this.command.equals(command);
@@ -253,7 +270,7 @@ public class Block implements Visitable {
 				path.add(0, current.toString());
 			}
 			
-			if (current.getPreviousBlock()==null &&!(current.getParent() instanceof Block)) {
+			if (!(current.getParent() instanceof Block)) {
 				break;
 			}else{
 				current = (Block) current.getParent();
@@ -261,10 +278,11 @@ public class Block implements Visitable {
 		} while (true);
 		
 		Script scrpt = (Script) current.getParent();
-		String scriptString = "Script@x"+scrpt.getPosition()[0]+" y"+scrpt.getPosition()[1];
+		String firstBlock = scrpt.getBlocks().get(0).getCompactString();
+		String scriptString = "Script@x"+scrpt.getPosition()[0]+" y"+scrpt.getPosition()[1]+"["+firstBlock+"]";
 		path.add(0,scriptString);
 		Scriptable scrptable = scrpt.getParent();
-		path.add(0, scrptable.getName());;
+		path.add(0, scrptable.getName());
 			
 		return String.join("/", path);
 	}
