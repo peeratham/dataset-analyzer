@@ -27,22 +27,16 @@ public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisi
 
 			public void visitScriptable(Scriptable scriptable)
 					throws VisitFailure {
-				if(scriptable.getName().equals("Sprite16")){
-					System.out.println(scriptable);
-				}
-				
 			}
 
 			public void visitScript(Script script) throws VisitFailure {
-					System.out.println(script);
-				
 			}
 			
 			public void visitBlock(Block block) throws VisitFailure {
-//				if(block.getCommand().contains("roadcast")){
-//					List<String> args = (List<String>) block.getArgs();
-//					messages.add(args.get(0));
-//				}
+				if(block.getCommand().contains("roadcast")){
+					List<String> args = (List<String>) block.getArgs();
+					messages.add(args.get(0));
+				}
 			}
 		}
 
