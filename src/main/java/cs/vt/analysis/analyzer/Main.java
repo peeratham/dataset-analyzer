@@ -27,7 +27,8 @@ public class Main {
         
         File datasetDirectory = config.getDatasetDirectory();
         try {
-			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
+//			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
+			config.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
 		} catch (InstantiationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

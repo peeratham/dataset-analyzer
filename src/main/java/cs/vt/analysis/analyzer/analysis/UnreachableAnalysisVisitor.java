@@ -64,7 +64,7 @@ public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisi
 	}
 	
 	public AnalysisReport getReport() {
-		report.setTitle("UnreachableCode");
+		report.setTitle("Unreachable Code");
 		return report;
 	}
 }
