@@ -150,8 +150,6 @@ public class ParserTest {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		System.out.println(project);
 	}
 	
 	@Test
@@ -159,6 +157,7 @@ public class ParserTest {
 		String projectSrc = Util.retrieveProjectOnline(96725247);
 		JSONObject sprite = TestUtil.getScriptable(projectSrc, "Sprite1");
 		Scriptable s = Parser.loadScriptable(sprite);
+		assertEquals(s.getScript(0).getBlocks().size(),2);
 		
 		
 	}
