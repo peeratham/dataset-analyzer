@@ -154,14 +154,13 @@ public class ParserTest {
 		System.out.println(project);
 	}
 	
-//	@Test
-//	public void testLoadScriptable() throws IOException, ParseException {
-//		Parser parser = new Parser();
-//		String projectSrc = Util.retrieveProjectOnline(96725247);
-//		JSONArray sprite = TestUtil.getScriptable(projectSrc, "Sprite1");
-//		Scriptable s = parser.loadScriptable(sprite);
-//		
-//		
-//	}
+	@Test
+	public void testLoadScriptable() throws IOException, ParseException, ParsingException {
+		String projectSrc = Util.retrieveProjectOnline(96725247);
+		JSONObject sprite = TestUtil.getScriptable(projectSrc, "Sprite1");
+		Scriptable s = Parser.loadScriptable(sprite);
+		
+		
+	}
 		
 }
