@@ -1,34 +1,23 @@
 package cs.vt.analysis.analyzer.visitor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 
-public class AllForward implements Visitor{
+public class FragmentCollector implements Visitor{
 	Visitor v;
-	public AllForward(Visitor v){
+	private static final int LIMIT = 3;
+	private static int length = 0;
+	private static List<ArrayList<Block>> fragmentList = new ArrayList<ArrayList<Block>>();
+	
+	
+	public FragmentCollector(Visitor v){
 		this.v = v;
 	}
-//	@Override
-//	public void visit(Object node) throws VisitFailure {
-		
-//		if(node instanceof Block){
-//			Block b= (Block) node;
-//			this.visit(b.getArgs());
-//			
-//		}else if(node instanceof List<?>){
-//			List<Object> args = (List<Object>) node;
-//			for (Object o : args) {
-//				this.visit(o);
-//			}
-//		}else{
-//			String value = node.toString();
-//			System.out.println(value);
-//		}
-//	}
 
 
 	public void visitProject(ScratchProject scratchProject) throws VisitFailure {
@@ -58,9 +47,21 @@ public class AllForward implements Visitor{
 				}
 			}	
 		}
-		
-		if(block.getNextBlock()!=null){
-			block.getNextBlock().accept(v);
+		Block current = block;
+		ArrayList<Block> fragment = new ArrayList<Block>();
+		while(current!=null && length < LIMIT){
+			fragment.add(current);
+			current = current.getNextBlock();
+			length++;
 		}
+		length = 0;
+		if(fragment.size()<LIMIT){
+			return;
+		}
+		fragmentList.add(fragment);
+	}
+	
+	public static List<ArrayList<Block>> getFragmentList(){
+		return fragmentList;
 	}
 }

@@ -84,7 +84,7 @@ public class BlockTest {
 	@Test
 	public void testToStringOnEmptyBlockInput() throws Exception {
 		String stringInput = Util.retrieveProjectOnline(TestConstant.PARSER_TEST_PROJECT);
-		JSONArray scriptableInput = TestUtil.getScriptable(stringInput,TestConstant.TEST_EMPTYBLOCKINPUT);
+		JSONArray scriptableInput = TestUtil.getScripts(stringInput,TestConstant.TEST_EMPTYBLOCKINPUT);
 		Script script = parser.loadScript(scriptableInput.get(0));
 		System.out.println(script);
 	}

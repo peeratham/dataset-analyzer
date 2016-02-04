@@ -18,6 +18,7 @@ import org.junit.Test;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
+import cs.vt.analysis.analyzer.nodes.Scriptable;
 import cs.vt.analysis.analyzer.parser.Parser;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
@@ -97,7 +98,7 @@ public class ParserTest {
 		boolean test = true; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
 		
 		String stringInput = Util.retrieveProjectOnline(projectID); //real:43026762, test:93160273
-		JSONArray scriptableInput = TestUtil.getScriptable(stringInput,"testNestedToString");
+		JSONArray scriptableInput = TestUtil.getScripts(stringInput,"testNestedToString");
 		Script script = parser.loadScript(scriptableInput.get(0));
 		int endCount = 	TestUtil.count("end", script.toString());
 		assertEquals(2,endCount);
@@ -109,7 +110,7 @@ public class ParserTest {
 	public void testForever() throws Exception {
 		boolean test = true; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
 		String stringInput = Util.retrieveProjectOnline(projectID); //real:43026762, test:93160273
-		JSONArray scriptableInput = TestUtil.getScriptable(stringInput,"testForever");
+		JSONArray scriptableInput = TestUtil.getScripts(stringInput,"testForever");
 		Script script = parser.loadScript(scriptableInput.get(0));
 	}
 	
@@ -152,5 +153,15 @@ public class ParserTest {
 		
 		System.out.println(project);
 	}
+	
+//	@Test
+//	public void testLoadScriptable() throws IOException, ParseException {
+//		Parser parser = new Parser();
+//		String projectSrc = Util.retrieveProjectOnline(96725247);
+//		JSONArray sprite = TestUtil.getScriptable(projectSrc, "Sprite1");
+//		Scriptable s = parser.loadScriptable(sprite);
+//		
+//		
+//	}
 		
 }
