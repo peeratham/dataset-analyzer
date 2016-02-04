@@ -21,6 +21,7 @@ import cs.vt.analysis.analyzer.nodes.BlockSpec;
 public class CommandLoader {
 	public static Map<String, String> SHAPE_FLAGS = new HashMap<String, String>();
 	public static Map<Integer, String> CATEGORY_IDS = new HashMap<Integer, String>();
+	public static Map<String, String> INSERT_SHAPES = new HashMap<String, String>();
 	public static Map<String, BlockSpec> COMMAND_TO_BLOCKSPEC = new HashMap<String,BlockSpec>();
 	public static Map<String, BlockSpec> COMMAND_TO_CUSTOM_BLOCKSPEC = new HashMap<String,BlockSpec>();
 	
@@ -60,11 +61,25 @@ public class CommandLoader {
 		CATEGORY_IDS.put(107, "sensing");
 	}
 	
+	public static void initInsertShapes(){
+		INSERT_SHAPES.put("%b", "boolean");
+		INSERT_SHAPES.put("%c", "color");
+		INSERT_SHAPES.put("%d", "number-menu");
+		INSERT_SHAPES.put("%m", "readonly-menu");
+		INSERT_SHAPES.put("%n", "number");
+		INSERT_SHAPES.put("%s", "string");
+		
+		//special
+		INSERT_SHAPES.put("%x", "inline");
+		INSERT_SHAPES.put("%Z", "block");
+	}
+	
 
 	
 	public static void loadCommand(){
 		initShapFlags();
 		initCategoryID();
+		initInsertShapes();
 		JSONParser jsonParser = new JSONParser();
         Object obj = null;
 		try {

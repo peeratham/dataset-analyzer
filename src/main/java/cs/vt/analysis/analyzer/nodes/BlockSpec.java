@@ -95,8 +95,14 @@ public class BlockSpec {
 
 	@Override
 	public String toString() {
-		return "BlockSpec [category=" + category + ", shape=" + shape
-				+ ", spec=" + spec + "]";
+		return "BlockSpec ["
+				+ (category != null ? "category=" + category + ", " : "")
+				+ (shape != null ? "shape=" + shape + ", " : "")
+				+ (command != null ? "command=" + command + ", " : "")
+				+ (spec != null ? "spec=" + spec + ", " : "")
+				+ (defaults != null ? "defaults=" + defaults + ", " : "")
+				+ (flag != null ? "flag=" + flag + ", " : "")
+				+ (parts != null ? "parts=" + parts : "") + "]";
 	}
 
 	public List<Object> getDefaults() {
@@ -113,7 +119,9 @@ public class BlockSpec {
 		while(m.find()){
 			result.add(spec.substring(end, m.start()));
 			end = m.end();
-			result.add(new Insert(m.group()));
+			String typeSymbol = m.group();
+			String inputType = CommandLoader.INSERT_SHAPES.get(typeSymbol);
+			result.add(new Insert(typeSymbol, inputType));
 		}
 		if(end!=spec.length()){
 			result.add(spec.substring(end,spec.length()));
