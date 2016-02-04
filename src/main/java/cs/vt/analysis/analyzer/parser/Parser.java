@@ -7,10 +7,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.BlockSpec;
+import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
+import cs.vt.analysis.analyzer.nodes.Scriptable;
 
 /**Example json file
  *http://projects.scratch.mit.edu/internalapi/project/25857120/get/ 
@@ -27,8 +30,120 @@ public class Parser {
         
 		CommandLoader.loadCommand();
 	}
+	
+	public static ScratchProject loadProject(JSONObject jsonObject) throws ParsingException {
+		ScratchProject project = new ScratchProject();
+		CommandLoader.loadCommand();
+		JSONObject stageObj = jsonObject;
+		
+		if(stageObj.containsKey("info")){
+			JSONObject infoObj = (JSONObject)stageObj.get("info");
+			if((String)((JSONObject)infoObj).get("projectID")!=null){
+				int projectID = Integer.parseInt((String)((JSONObject)infoObj).get("projectID"));
+				project.setProjectID(projectID);
+				logger.info("Load projectID:"+projectID);
+			}else{
+				throw new ParsingException("Project ID Not Found");
+			}
+		}
+		
+		if(stageObj.containsKey("scripts")){
+			JSONArray stageScripts = (JSONArray)stageObj.get("scripts");
+			Scriptable stage = new Scriptable();
+			
+			//first parse any custom blocks
+			for (int j = 0; j < stageScripts.size(); j++) {
+				JSONArray scriptJSON = (JSONArray) ((JSONArray)stageScripts.get(j)).get(2);
+				JSONArray firstBlockJSON = (JSONArray) scriptJSON.get(0);
+				String command = (String) firstBlockJSON.get(0);
+				
+				if(command.equals("procDef")){
+					try{						
+						loadCustomBlock(firstBlockJSON);
+					} catch(ParsingException e){
+						logger.error("Error parsing a custom block in Stage:"+firstBlockJSON);
+						throw new ParsingException(e);
+					}
+				}
+				
+			}
+			//scripts
+			for (int j = 0; j < stageScripts.size(); j++) {
+				Script scrpt=null;
+				try{
+					scrpt = loadScript(stageScripts.get(j));
+					stage.setName("Stage");
+					stage.addScript(scrpt);
+					scrpt.setParent(stage);
+				} catch(Exception e){
+					logger.error("Error parsing a script in Stage:"+stageScripts.get(j));
+					throw new ParsingException(e);
+				}
+			}
+			project.addScriptable("Stage", stage);
+		}
+		
+		JSONArray children = (JSONArray)jsonObject.get("children");
+		
+		for (int i = 0; i < children.size(); i++) {
+			JSONObject spriteJSON = (JSONObject) children.get(i);
+			if(!spriteJSON.containsKey("objName")){ //not a sprite
+				continue;
+			}
 
-	public Script loadScript(Object s) throws ParsingException {
+			Scriptable sprite = loadScriptable(spriteJSON);
+			project.addScriptable(sprite.getName(), sprite);
+		}
+		return project;
+	}
+
+public static Scriptable loadScriptable(JSONObject spriteJSON) throws ParsingException{
+		Scriptable sprite = new Scriptable();
+		String spriteName = (String)spriteJSON.get("objName");
+		JSONArray scripts = (JSONArray)spriteJSON.get("scripts");
+		sprite.setName(spriteName);
+		if(scripts==null){	//empty script
+			return sprite;
+		}
+		
+		//parse custom block for each sprite first
+		for (int j = 0; j < scripts.size(); j++) {
+			
+			JSONArray scriptJSON = (JSONArray) ((JSONArray)scripts.get(j)).get(2);
+			JSONArray firstBlockJSON = (JSONArray) scriptJSON.get(0);
+			String command = (String) firstBlockJSON.get(0);
+			
+			if(command.equals("procDef")){
+				try{
+					loadCustomBlock(firstBlockJSON);
+					
+				}catch(ParsingException e){
+					logger.error("Error Parsing Custom Block in Scriptable:"+spriteName);
+					logger.error("=>"+firstBlockJSON);
+					throw new ParsingException(e);
+				}
+			}
+		}
+		
+		//parse script
+		for (int j = 0; j < scripts.size(); j++) {
+			Script scrpt=null;
+			String scriptStr = scripts.get(j).toString();
+			try{
+				scrpt = loadScript(scripts.get(j));
+				sprite.addScript(scrpt);
+				scrpt.setParent(sprite);
+			}catch(ParsingException e){
+				logger.error("Error Parsing a script in Scriptable:"+spriteName);
+				logger.error("=>"+scriptStr);
+				logger.error("==>"+e.getMessage());
+				throw new ParsingException(e);
+			}
+		}
+		return sprite;
+	}
+
+	public static Script loadScript(Object s) throws ParsingException {
 		Script script = new Script();
 		JSONArray scriptArray = (JSONArray)s;
 		int x = ((Number)scriptArray.remove(0)).intValue();
@@ -63,7 +178,7 @@ public class Parser {
         return script;
 	}
 	
-	public Block loadBlock(Object b) throws ParsingException{
+	public static Block loadBlock(Object b) throws ParsingException{
 		JSONArray blockArray = (JSONArray)b;
 		Block resultBlock = new Block();
 		
@@ -141,7 +256,7 @@ public class Parser {
 
 	}
 
-	public void loadCustomBlock(JSONArray firstBlockArray) throws ParsingException {	
+	public static void loadCustomBlock(JSONArray firstBlockArray) throws ParsingException {	
 		
 			try{
 				Block customBlockArg = new Block();
@@ -154,5 +269,9 @@ public class Parser {
 		
 
 	}
+
+	
+
+
 }
 
