@@ -24,7 +24,7 @@ public class Match implements Visitor {
 		this.pattern = new VisitablePattern(visitable);
 	}
 	
-	public Match(VisitableScriptPattern visitable){
+	public Match(VisitablePattern visitable){
 		this.pattern = visitable;
 	}
 	
@@ -59,7 +59,7 @@ public class Match implements Visitor {
 	public void visitBlock(Block blockTerm) throws VisitFailure {
 		Map bindings = new HashMap();
 		if(blockTerm instanceof Block){
-			if (((VisitableScriptPattern)pattern).match(blockTerm, bindings)) {
+			if (((VisitablePattern)pattern).match(blockTerm, bindings)) {
 				maps.add(bindings);	//need to match all variable bindings to be added
 			} else {
 				throw new VisitFailure("No match");

@@ -1,8 +1,6 @@
 package cs.vt.analysis.analyzer;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
+import static org.junit.Assert.*;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -14,6 +12,7 @@ import org.junit.Test;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.parser.Parser;
+import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 
 public class BlockTest {
@@ -31,7 +30,7 @@ public class BlockTest {
 	public void testStringifyNoBlockKind() throws Exception {
 		String input = "[\"say:duration:elapsed:from:\", \"Hello!\", 2]";
 		JSONArray jsonInput = (JSONArray) jsonParser.parse(input);
-		Block b = parser.loadBlock(jsonInput);
+		Block b = Parser.loadBlock(jsonInput);
 		assertEquals(b.toString(), "say \"Hello!\" for 2 secs");
 		
 	}
@@ -40,7 +39,7 @@ public class BlockTest {
 	public void testStringifyWithBlockKind() throws Exception {
 		String input = "[\"changeGraphicEffect:by:\", \"color\", 25]";
 		JSONArray jsonInput = (JSONArray) jsonParser.parse(input);
-		Block b = parser.loadBlock(jsonInput);
+		Block b = Parser.loadBlock(jsonInput);
 		assertEquals(b.toString(), "change \"color\" effect by 25");
 	}
 	
@@ -48,9 +47,10 @@ public class BlockTest {
 	public void testStringifyOnNestedBlock() throws Exception {
 		String input = "[\"doIf\", [\"<\", \"1\", \"2\"], [[\"broadcast:\", \"message1\"], [\"changeGraphicEffect:by:\", \"color\", 25]]]";
 		JSONArray jsonInput = (JSONArray) jsonParser.parse(input);
-		Block b = parser.loadBlock(jsonInput);
+		Block b = Parser.loadBlock(jsonInput);
 		String expectResult = "if (\"1\" < \"2\") then\n    broadcast \"message1\"\n    change \"color\" effect by 25\nend";
 		assertEquals(b.toString(), expectResult);
+
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class BlockTest {
 				+ "[\"changeGraphicEffect:by:\", \"color\", 25]]],"
 				+ "\n\t  [\"changeGraphicEffect:by:\", \"color\", 25]]]";
 		JSONArray jsonInput = (JSONArray) jsonParser.parse(input);
-		Block b = parser.loadBlock(jsonInput);
+		Block b = Parser.loadBlock(jsonInput);
 		
 		String expectResult = "if (\"1\" < \"2\") then\n    broadcast \"message1\"\n    if (\"1\" < \"2\") then\n        broadcast \"message1\"\n        change \"color\" effect by 25\n    end\n    change \"color\" effect by 25\nend";
 		assertEquals(b.toString(), expectResult);
@@ -72,11 +72,11 @@ public class BlockTest {
 	public void testBlockEquals() throws Exception {
 		String inputRHS = "[\"say:duration:elapsed:from:\", \"Hello!\", 2]";
 		JSONArray jsonInputRHS = (JSONArray) jsonParser.parse(inputRHS);
-		Block rhs = parser.loadBlock(jsonInputRHS);
+		Block rhs = Parser.loadBlock(jsonInputRHS);
 		
 		String inputLHS = "[\"say:duration:elapsed:from:\", \"Hello!\", 2]";
 		JSONArray jsonInputLHS = (JSONArray) jsonParser.parse(inputLHS);
-		Block lhs = parser.loadBlock(jsonInputLHS);
+		Block lhs = Parser.loadBlock(jsonInputLHS);
 		
 		assertEquals(lhs, rhs);
 	}
@@ -85,10 +85,69 @@ public class BlockTest {
 	public void testToStringOnEmptyBlockInput() throws Exception {
 		String stringInput = Util.retrieveProjectOnline(TestConstant.PARSER_TEST_PROJECT);
 		JSONArray scriptableInput = TestUtil.getScripts(stringInput,TestConstant.TEST_EMPTYBLOCKINPUT);
-		Script script = parser.loadScript(scriptableInput.get(0));
-		System.out.println(script);
+		Script script = Parser.loadScript(scriptableInput.get(0));
 	}
 	
+	@Test
+	public void testBlockEqualsMethod() throws ParseException, ParsingException {
+		String input = "[\"say:duration:elapsed:from:\", \"Hello!\", 2]";
+		JSONArray jsonInput1 = (JSONArray) jsonParser.parse(input);
+		JSONArray jsonInput2 = (JSONArray) jsonInput1.clone();
+		Block b1 = Parser.loadBlock(jsonInput1);
+		Block b2 = Parser.loadBlock(jsonInput2);
+		assert(b1.equals(b2));
+	}
 	
+
+	@Test
+	public void testEqualsForIFBlock() throws ParseException, ParsingException {
+		String input = "[\"doIf\", [\"<\", \"1\", \"2\"], [[\"broadcast:\", \"message1\"], [\"changeGraphicEffect:by:\", \"color\", 25]]]";
+		String input2 = "[\"doIf\", [\"<\", \"1\", \"2\"], [[\"broadcast:\", \"message2\"], [\"changeGraphicEffect:by:\", \"color\", 25]]]";
+		JSONArray jsonInput1 = (JSONArray) jsonParser.parse(input);
+		JSONArray jsonInput2 = (JSONArray) jsonParser.parse(input);
+		Block b1 = Parser.loadBlock(jsonInput1);
+		Block b2 = Parser.loadBlock(jsonInput2);
+		
+		boolean eq = b1.equals(b2);
+		assertEquals(b1,b2);
+		JSONArray jsonInput3 = (JSONArray) jsonParser.parse(input2);
+		Block b3 = Parser.loadBlock(jsonInput3);
+		assertNotEquals(b1, b3);
+	}
+	
+	@Test
+	public void testEqualsForIfElseBlock() throws ParseException, ParsingException {
+		String input1 = "[\"doIfElse\",[\"=\",\"1\",\"1\"],[[\"forward:\",10]],[[\"doIf\",[\"=\",\"1\",\"1\"],[[\"forward:\",10]]],[\"turnLeft:\",15]]]";
+		String input2 = "[\"doIfElse\",[\"=\",\"1\",\"1\"],[[\"forward:\",10]],[[\"doIf\",[\"=\",\"1\",\"1\"],[[\"forward:\",20]]],[\"turnLeft:\",15]]]";
+		JSONArray jsonInput1 = (JSONArray) jsonParser.parse(input1);
+		JSONArray jsonInput2= (JSONArray) jsonParser.parse(input1); 
+		Block b1 = Parser.loadBlock(jsonInput1);
+		Block b2 = Parser.loadBlock(jsonInput2);
+		assertEquals(b1,b2);
+		
+		JSONArray jsonInput3 = (JSONArray) jsonParser.parse(input2);
+		Block b3 = Parser.loadBlock(jsonInput3);
+		assertNotEquals(b1,b3);
+	}
+	
+	@Test
+	public void testBlockClone() throws ParsingException, ParseException{
+		String input = "[\"say:duration:elapsed:from:\", \"Hello!\", 2]";
+		JSONArray jsonInput1 = (JSONArray) jsonParser.parse(input);
+		Block b1 = Parser.loadBlock(jsonInput1);
+		Block b2 = b1.copy();
+		assertEquals(b1,b2);
+		assertTrue(b1!=b2);
+	}
+	
+	@Test
+	public void testBlockCloneForBlockWithNestedBlockArg() throws ParseException, ParsingException{
+		String input1 = "[\"doIfElse\",[\"=\",\"1\",\"1\"],[[\"forward:\",10]],[[\"doIf\",[\"=\",\"1\",\"1\"],[[\"forward:\",10]]],[\"turnLeft:\",15]]]";
+		JSONArray jsonInput1 = (JSONArray) jsonParser.parse(input1);
+		Block b1 = Parser.loadBlock(jsonInput1);
+		Block b2 = b1.copy();
+		assertEquals(b1,b2);
+		assertTrue(b1!=b2);
+	}
 	
 }

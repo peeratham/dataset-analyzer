@@ -48,7 +48,7 @@ public class MatchTest {
 		JSONArray termJsonInput = (JSONArray) jsonParser.parse(termInput);
 		Script term = parser.loadScript(termJsonInput);
 		Block firstTermBlock = term.getBlocks().get(0);
-		v.visitBlock(firstTermBlock);
+		v.visitBlock(firstTermBlock); 
 		Map binding = (Map) m.getMaps().get(0);
 		assertEquals(binding.get("message"), "Hello!");
 	}

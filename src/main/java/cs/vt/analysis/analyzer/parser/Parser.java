@@ -220,7 +220,7 @@ public static Scriptable loadScriptable(JSONObject spriteJSON) throws ParsingExc
 		for (int argi = 0; argi < blockArray.size(); argi++) {
 			if(blockArray.get(argi) instanceof JSONArray){
 				if(((JSONArray)blockArray.get(argi)).get(0) instanceof JSONArray){	//nested blocks
-					resultBlock.hasNestedBlocks(true);
+					resultBlock.setHasNestedBlocks(true);
 					arg = new ArrayList<Block>();//stack shape insert (nested blocks) will be list of blocks
 					JSONArray blocks = (JSONArray)blockArray.get(argi);	//it's a list of blocks
 					

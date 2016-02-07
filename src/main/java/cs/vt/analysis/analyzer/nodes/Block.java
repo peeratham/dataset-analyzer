@@ -9,7 +9,7 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 
 
 
-public class Block implements Visitable {
+public class Block implements Visitable, Cloneable {
 	
 	private String command;
 	private ArrayList<Object> args;
@@ -18,8 +18,7 @@ public class Block implements Visitable {
 	private Block previousBlock;
 	private boolean hasNestedBlocks = false;
 	private Block firstChild;
-	private List<Block> nestedBlocks;
-	private List<ArrayList<Block>> nestedGroup = new ArrayList<ArrayList<Block>>();
+	private ArrayList<ArrayList<Block>> nestedGroup = new ArrayList<ArrayList<Block>>();
 	private Object parent;
 
 	public Object getParent() {
@@ -190,7 +189,7 @@ public class Block implements Visitable {
 		if(obj==this){return true;}
 		if (obj.getClass() != getClass()) {
 		     return false;
-		   }
+		}
 		
 		Block rhs = (Block) obj;
 		Block lhs = this;
@@ -203,9 +202,13 @@ public class Block implements Visitable {
 			List<Object> rhsArgs = (List<Object>) rhs.getArgs();
 			if(lhsArgs.size()==rhsArgs.size()){
 				for (int i = 0; i < lhsArgs.size(); i++) {
-					success = lhs.args.get(i)==rhs.args.get(i);
+					success = lhs.args.get(i).equals(rhs.args.get(i));
+					if(!success){
+						return false;
+					}
 				}
 			}
+			
 			return success;
 		}
 		
@@ -229,7 +232,7 @@ public class Block implements Visitable {
 		
 	}
 
-	public void hasNestedBlocks(boolean b) {
+	public void setHasNestedBlocks(boolean b) {
 		this.hasNestedBlocks = b;
 		
 	}
@@ -284,5 +287,25 @@ public class Block implements Visitable {
 			
 		return String.join("/", path);
 	}
+
+	public Block(Block b){
+		this.args =  (ArrayList<Object>) b.args.clone();
+		this.blockSpec = b.blockSpec;
+		this.command = b.command;
+		this.firstChild = b.firstChild;
+		this.hasNestedBlocks = b.hasNestedBlocks;
+		this.nestedGroup =  (ArrayList<ArrayList<Block>>) b.nestedGroup.clone();
+		this.nextBlock = b.nextBlock;
+		this.previousBlock = b.previousBlock;
+		this.parent =  b.parent;
+	}
+	
+	public Block copy(){
+		return new Block(this);
+	}
+	
+	public Block clone() {
+            return copy();
+    }
 
 }
