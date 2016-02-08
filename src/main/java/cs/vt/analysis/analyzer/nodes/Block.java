@@ -196,25 +196,39 @@ public class Block implements Visitable, Cloneable {
 		
 		if (!rhs.getCommand().equals(lhs.getCommand())){
 			return false;
-		}else {
-			boolean success = true;
-			List<Object> lhsArgs = (List<Object>) lhs.getArgs();
-			List<Object> rhsArgs = (List<Object>) rhs.getArgs();
-			if(lhsArgs.size()==rhsArgs.size()){
-				for (int i = 0; i < lhsArgs.size(); i++) {
-					success = lhs.args.get(i).equals(rhs.args.get(i));
+		}
+		
+		
+		boolean success = true;
+		List<Object> lhsArgs = (List<Object>) lhs.getArgs();
+		List<Object> rhsArgs = (List<Object>) rhs.getArgs();
+			
+		if(lhsArgs.size()!=rhsArgs.size()){
+			return false;
+		}
+		
+		for (int i = 0; i < lhsArgs.size(); i++) {
+			if(lhsArgs.get(i).getClass()!=rhsArgs.get(i).getClass()){
+				return false;
+			}
+			
+			if(lhsArgs.get(i) instanceof ArrayList){ //nested block
+				ArrayList nestedLHS = (ArrayList)lhsArgs.get(i);
+				ArrayList nestedRHS = (ArrayList)rhsArgs.get(i);
+				for(int j =0; j < nestedLHS.size(); j++){
+					success = nestedLHS.get(j).equals(nestedRHS.get(j));
 					if(!success){
 						return false;
 					}
 				}
+			}else{
+				success = lhs.args.get(i).equals(rhs.args.get(i));
+				if(!success){
+					return false;
+				}				
 			}
-			
-			return success;
 		}
-		
-		
-		
-		
+		return success;	
 	}
 
 	public void setCommand(String command) {
@@ -307,5 +321,57 @@ public class Block implements Visitable, Cloneable {
 	public Block clone() {
             return copy();
     }
+
+	public boolean commandMatches(Object obj) {
+		if(obj==null) {return false;}		
+		if(obj==this){return true;}
+		if (obj.getClass() != getClass()) {
+		     return false;
+		}
+		
+		Block rhs = (Block) obj;
+		Block lhs = this;
+		
+		if (!rhs.getCommand().equals(lhs.getCommand())){
+			return false;
+		}
+		
+		boolean success = true;
+		List<Object> lhsArgs = (List<Object>) lhs.getArgs();
+		List<Object> rhsArgs = (List<Object>) rhs.getArgs();
+		
+		
+		if(lhsArgs.size()!=rhsArgs.size()){
+			return false;
+		}
+		
+		
+		for (int i = 0; i < lhsArgs.size(); i++) {
+			if(lhsArgs.get(i).getClass()!=rhsArgs.get(i).getClass()){
+				return false;
+			}
+			
+			if(lhsArgs.get(i) instanceof ArrayList){	//nested block
+				ArrayList nestedLHS = (ArrayList) lhsArgs.get(i);
+				ArrayList nestedRHS = (ArrayList) rhsArgs.get(i);
+				
+				for(int j = 0; j < nestedLHS.size(); j++){
+					success = ((Block) nestedLHS.get(j)).commandMatches(nestedRHS.get(j));
+					if(!success){
+						return false;
+					}
+				}
+			} 
+			if(lhsArgs.get(i) instanceof Block){
+				
+				success = ((Block) lhsArgs.get(i)).commandMatches(rhsArgs.get(i));
+				if(!success){
+					return false;
+				}
+			}
+			//don't consider other other kind of objects
+		}
+		return success;
+	}
 
 }

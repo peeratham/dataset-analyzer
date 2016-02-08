@@ -77,7 +77,6 @@ public class BlockTest {
 		String inputLHS = "[\"say:duration:elapsed:from:\", \"Hello!\", 2]";
 		JSONArray jsonInputLHS = (JSONArray) jsonParser.parse(inputLHS);
 		Block lhs = Parser.loadBlock(jsonInputLHS);
-		
 		assertEquals(lhs, rhs);
 	}
 	
@@ -95,7 +94,7 @@ public class BlockTest {
 		JSONArray jsonInput2 = (JSONArray) jsonInput1.clone();
 		Block b1 = Parser.loadBlock(jsonInput1);
 		Block b2 = Parser.loadBlock(jsonInput2);
-		assert(b1.equals(b2));
+		assertEquals(b1,b2);
 	}
 	
 
@@ -108,7 +107,6 @@ public class BlockTest {
 		Block b1 = Parser.loadBlock(jsonInput1);
 		Block b2 = Parser.loadBlock(jsonInput2);
 		
-		boolean eq = b1.equals(b2);
 		assertEquals(b1,b2);
 		JSONArray jsonInput3 = (JSONArray) jsonParser.parse(input2);
 		Block b3 = Parser.loadBlock(jsonInput3);
@@ -148,6 +146,42 @@ public class BlockTest {
 		Block b2 = b1.copy();
 		assertEquals(b1,b2);
 		assertTrue(b1!=b2);
+	}
+	
+	@Test
+	public void testCommandMatchForSimpleBlock() throws ParseException, ParsingException{
+		String input1 = "[\"say:duration:elapsed:from:\", \"Hello!\", 2]";
+		String input2 = "[\"say:duration:elapsed:from:\", \"Howdy!\", 3]";
+		String input3 = "[\"changeGraphicEffect:by:\", \"color\", 25]";
+		JSONArray jsonInput1 = (JSONArray) jsonParser.parse(input1);
+		JSONArray jsonInput2 = (JSONArray) jsonParser.parse(input2);
+		JSONArray jsonInput3 = (JSONArray) jsonParser.parse(input3);
+		Block b1 = Parser.loadBlock(jsonInput1);
+		Block b2 = Parser.loadBlock(jsonInput2);
+		Block b3 = Parser.loadBlock(jsonInput3);
+		assertNotEquals(b1,b2);
+		b1.commandMatches(b2);
+		assertTrue(b1.commandMatches(b2));
+		b1.commandMatches(b3);
+		assertFalse(b1.commandMatches(b3));
+	}
+	
+	@Test
+	public void testCommandMatchForNestedBlock() throws ParseException, ParsingException {
+		String input1 = "[\"doIfElse\",[\"=\",\"1\",\"1\"],[[\"forward:\",10]],[[\"doIf\",[\"=\",\"1\",\"1\"],[[\"forward:\",10]]],[\"turnLeft:\",15]]]";
+		String input2 = "[\"doIfElse\",[\"=\",\"1\",\"1\"],[[\"forward:\",13]],[[\"doIf\",[\"=\",\"1\",\"2\"],[[\"forward:\",20]]],[\"turnLeft:\",30]]]";
+		String input3 = "[\"doIfElse\",[\"=\",\"1\",\"1\"],[[\"turnLeft:\",30]],[[\"doIf\",[\"=\",\"1\",\"2\"],[[\"forward:\",20]]],[\"forward:\",13]]]";
+		JSONArray jsonInput1 = (JSONArray) jsonParser.parse(input1);
+		JSONArray jsonInput2= (JSONArray) jsonParser.parse(input2);
+		JSONArray jsonInput3= (JSONArray) jsonParser.parse(input3); 
+		Block b1 = Parser.loadBlock(jsonInput1);
+		Block b2 = Parser.loadBlock(jsonInput2);
+		Block b3 = Parser.loadBlock(jsonInput3);
+		
+		assertNotEquals(b1,b2);
+		assertTrue(b1.commandMatches(b2));
+		assertNotEquals(b1,b3);
+		assertFalse(b1.commandMatches(b3));
 	}
 	
 }
