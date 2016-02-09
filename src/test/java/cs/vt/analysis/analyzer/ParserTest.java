@@ -2,6 +2,7 @@ package cs.vt.analysis.analyzer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -157,8 +158,26 @@ public class ParserTest {
 		String projectSrc = Util.retrieveProjectOnline(96725247);
 		JSONObject sprite = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable s = Parser.loadScriptable(sprite);
-		assertEquals(s.getScript(0).getBlocks().size(),2);
+		assertEquals(s.getScript(0).getBlocks().size(),2);	
+	}
+	
+	@Test
+	public void testParseStageShouldCollectGlobalVariables() throws IOException, ParseException, ParsingException {
+		String projectSrc = Util.retrieveProjectOnline(93160273);
 		
+		JSONObject stageJSON = TestUtil.getJSONScriptable(projectSrc, "Stage");
+		ScratchProject proj = Parser.loadProject((JSONObject) jsonParser.parse(projectSrc));
+		Scriptable stage = Parser.loadScriptable(stageJSON);
+		assertTrue(stage.getAllVariables().keySet().contains("global1"));
+	}
+	
+	@Test
+	public void testParseSpritesShouldCollectLocalVariables() throws IOException, ParseException, ParsingException {
+		String projectSrc = Util.retrieveProjectOnline(93160273);
+		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "testLocalGlobalVar");
+		Scriptable sprite= Parser.loadScriptable(spriteJSON);
+		assertEquals(sprite.getAllVariables().size(),1);
+		assertTrue(sprite.getAllVariables().keySet().contains("local1"));
 		
 	}
 		

@@ -38,8 +38,13 @@ public class TestUtil {
 	
 	public static JSONObject getJSONScriptable(String inputString, String name) throws ParseException {
 		JSONObject jsonObject = (JSONObject) jsonParser.parse(inputString);
+		if(name.equals("Stage")){
+			return jsonObject;
+		}
+		
 		JSONArray children = (JSONArray)jsonObject.get("children");
 		JSONObject sprite = null;
+
 		for (int i = 0; i < children.size(); i++) {
 			sprite = (JSONObject) children.get(i);
 			if(!sprite.containsKey("objName")){ //not a sprite
