@@ -1,0 +1,44 @@
+package cs.vt.analysis.analyzer.analysis;
+
+import static org.junit.Assert.*;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import cs.vt.analysis.analyzer.nodes.ScratchProject;
+import cs.vt.analysis.analyzer.parser.Util;
+
+public class TooBroadVariableScopeTest {
+
+	private ScratchProject project;
+
+	@Before
+	public void setUp() throws Exception {
+		String projectSrc = Util.retrieveProjectOnline(97231677);
+		project = ScratchProject.loadProject(projectSrc);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void testVariableScopeVisitor() {
+		BroadVarScopeVisitor broadScope = new BroadVarScopeVisitor();  
+		assertNotNull(broadScope);
+	}
+	
+	@Test
+	public void testDetectIfGlobalIsUsedOnlyInOneScriptable() throws AnalysisException {
+		VisitorBasedAnalyzer analyzer = new VisitorBasedAnalyzer();
+		BroadVarScopeVisitor broadScopeVisitor = new BroadVarScopeVisitor();
+		analyzer.addAnalysisVisitor(broadScopeVisitor);
+		analyzer.setProject(project);
+		analyzer.analyze();
+		System.out.println(analyzer.getReport().getJSONReport());
+		assertEquals(analyzer.getReport().getSummary().get("count"), 1);
+		
+	}
+
+}

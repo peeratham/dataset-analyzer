@@ -16,7 +16,7 @@ public class Block implements Visitable, Cloneable {
 	private BlockSpec blockSpec;
 	private Block nextBlock;
 	private Block previousBlock;
-	private boolean hasNestedBlocks = false;
+	boolean hasNestedBlocks = false;
 	private Block firstChild;
 	private ArrayList<ArrayList<Block>> nestedGroup = new ArrayList<ArrayList<Block>>();
 	private Object parent;
@@ -174,7 +174,7 @@ public class Block implements Visitable, Cloneable {
 		return command;
 	}
 
-	public Object getArgs() {
+	public List<Object> getArgs() {
 		return this.args;
 	}
 
@@ -271,6 +271,10 @@ public class Block implements Visitable, Cloneable {
 	
 	public List<ArrayList<Block>> getNestedGroup(){
 		return nestedGroup;
+	}
+	
+	public BlockPath getBlockPath(){
+		return new BlockPath(this);
 	}
 
 	public String getPath() {

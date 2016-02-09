@@ -34,8 +34,8 @@ public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisi
 			
 			public void visitBlock(Block block) throws VisitFailure {
 				if(block.getCommand().contains("roadcast")){
-					List<String> args = (List<String>) block.getArgs();
-					messages.add(args.get(0));
+					List<Object> args =  block.getArgs();
+					messages.add(args.get(0).toString());
 				}
 			}
 		}
@@ -52,7 +52,7 @@ public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisi
 
 			public void visitBlock(Block block) throws VisitFailure {
 				if(block.getCommand().contains("whenIReceive")){
-					List<String> args = (List<String>) block.getArgs();
+					List<Object> args =  block.getArgs();
 					if (!messages.contains(args.get(0))){
 						report.addRecord(block.getPath());
 					}

@@ -2,6 +2,14 @@ package cs.vt.analysis.analyzer.parser;
 
 public class Insert {
 	private String text;
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	private String type;
 
 	public Insert(String str){

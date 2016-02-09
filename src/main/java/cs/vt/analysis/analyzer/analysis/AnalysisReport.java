@@ -21,6 +21,14 @@ public class AnalysisReport {
 	}
 
 	Map<String,Object> summary;
+	public Map<String, Object> getSummary() {
+		return summary;
+	}
+
+	public void setSummary(Map<String, Object> summary) {
+		this.summary = summary;
+	}
+
 	List<String> result;
 	
 	public AnalysisReport(){

@@ -29,7 +29,7 @@ public class UnreachableCodeAnalyzerTest {
 	
 	@Test
 	public void testAnalysisVisitorPlugin() throws IOException, ParseException, ParsingException, AnalysisException{
-		String projectSrc = Util.retrieveProjectOnline(92574146);//TestConstant.UNREACHABLECODE_PROJECT_0);
+		String projectSrc = Util.retrieveProjectOnline(TestConstant.UNREACHABLECODE_PROJECT_0);//TestConstant.UNREACHABLECODE_PROJECT_0);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
 		VisitorBasedAnalyzer analyzer = new VisitorBasedAnalyzer();
 		analyzer.addAnalysisVisitor(new UnreachableAnalysisVisitor());
