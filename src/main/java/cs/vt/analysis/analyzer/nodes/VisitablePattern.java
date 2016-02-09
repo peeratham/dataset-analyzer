@@ -1,5 +1,7 @@
 package cs.vt.analysis.analyzer.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
@@ -17,6 +19,11 @@ public class VisitablePattern extends AbstractPattern implements Visitable {
 	public boolean match(Object term, Map bindings) {
 		return false;
 	}
+	
+
+
+
+
 
 
 }

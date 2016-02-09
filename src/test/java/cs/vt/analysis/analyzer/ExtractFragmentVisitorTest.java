@@ -17,7 +17,7 @@ import cs.vt.analysis.analyzer.nodes.Scriptable;
 import cs.vt.analysis.analyzer.parser.Parser;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
-import cs.vt.analysis.analyzer.visitor.ParametrizedFragmentVisitor;
+
 import cs.vt.analysis.analyzer.visitor.Identity;
 import cs.vt.analysis.analyzer.visitor.TopDownCollector;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
@@ -40,12 +40,12 @@ public class ExtractFragmentVisitorTest {
 	
 	@Test
 	public void testExtractFragmentVisitor() throws VisitFailure, ParseException, ParsingException {
-		JSONObject sprite = TestUtil.getScriptable(projectSrc, "code1");
+		JSONObject sprite = TestUtil.getJSONScriptable(projectSrc, "code1");
 		Scriptable s = Parser.loadScriptable(sprite);
 		Visitor collector = new TopDownCollector(new Identity());
 		s.accept(collector);
 		List<ArrayList<Block>> fragmentList = ((TopDownCollector)collector).getFragmentList();
-		assertEquals(fragmentList.size(),5);
+		assertEquals(fragmentList.size(),4);
 	}
 	
 	@Ignore

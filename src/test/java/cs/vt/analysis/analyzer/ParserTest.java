@@ -155,7 +155,7 @@ public class ParserTest {
 	@Test
 	public void testLoadScriptable() throws IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(96725247);
-		JSONObject sprite = TestUtil.getScriptable(projectSrc, "Sprite1");
+		JSONObject sprite = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable s = Parser.loadScriptable(sprite);
 		assertEquals(s.getScript(0).getBlocks().size(),2);
 		

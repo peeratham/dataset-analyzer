@@ -36,7 +36,7 @@ public class TestUtil {
 		
 	}
 	
-	public static JSONObject getScriptable(String inputString, String name) throws ParseException {
+	public static JSONObject getJSONScriptable(String inputString, String name) throws ParseException {
 		JSONObject jsonObject = (JSONObject) jsonParser.parse(inputString);
 		JSONArray children = (JSONArray)jsonObject.get("children");
 		JSONObject sprite = null;
