@@ -45,7 +45,9 @@ public class AnalysisReport {
 		summary.put("projectID", projectID);
 	}
 
-
+	public int getRecordCounts(){
+		return result.size();
+	}
 
 
 	private void generateSummary() {
@@ -69,6 +71,9 @@ public class AnalysisReport {
 
 	
 	public void addRecord(String record) {
-		result.add(record);
+		if(!result.contains(record)){
+			result.add(record);
+		}
+		
 	}
 }
