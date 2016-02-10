@@ -8,7 +8,6 @@ public class VisitableScriptPattern extends VisitablePattern{
 	private Visitable pattern;
 	
 	public VisitableScriptPattern(Visitable block) {
-		super(block);
 		this.pattern = block;
 	}
 	

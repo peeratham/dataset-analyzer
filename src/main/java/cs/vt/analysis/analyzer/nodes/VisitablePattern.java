@@ -9,10 +9,6 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 
 public class VisitablePattern extends AbstractPattern implements Visitable {
 
-	public VisitablePattern(Visitable visitable) {
-		
-	}
-
 	public void accept(Visitor v) throws VisitFailure {
 	}
 

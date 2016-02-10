@@ -58,9 +58,5 @@ public class AllGreedy implements Visitor{
 				}
 			}	
 		}
-		
-		if(block.getNextBlock()!=null){
-			block.getNextBlock().accept(v);
-		}
 	}
 }

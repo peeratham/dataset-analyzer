@@ -20,10 +20,6 @@ public class Match implements Visitor {
 		return maps;
 	}
 	
-	public Match(Visitable visitable){
-		this.pattern = new VisitablePattern(visitable);
-	}
-	
 	public Match(VisitablePattern visitable){
 		this.pattern = visitable;
 	}

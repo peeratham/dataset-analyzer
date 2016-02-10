@@ -47,8 +47,7 @@ public class MatchTest {
 		String termInput = "[57,161,[[\"broadcast:\",\"message1\"],[\"whenGreenFlag\"],[\"say:duration:elapsed:from:\", \"Hello!\", 2]]]";
 		JSONArray termJsonInput = (JSONArray) jsonParser.parse(termInput);
 		Script term = parser.loadScript(termJsonInput);
-		Block firstTermBlock = term.getBlocks().get(0);
-		v.visitBlock(firstTermBlock); 
+		v.visitScript(term); 
 		Map binding = (Map) m.getMaps().get(0);
 		assertEquals(binding.get("message"), "Hello!");
 	}
@@ -68,9 +67,7 @@ public class MatchTest {
 		String termInput = "[57,161,[[\"whenGreenFlag\"],[\"say:duration:elapsed:from:\",\"Hello!\",2],[\"doIf\",[\"<\",\"1\",\"2\"],[[\"broadcast:\",\"message1\"],[\"doIf\",[\"<\",\"1\",\"2\"],[[\"broadcast:\",\"message2\"],[\"changeGraphicEffect:by:\",\"color\",25]]],[\"changeGraphicEffect:by:\",\"color\",25]]]]]";
 		JSONArray termJsonInput = (JSONArray) jsonParser.parse(termInput);
 		Script term = parser.loadScript(termJsonInput);
-		System.out.println(term);
-		Block firstTermBlock = term.getBlocks().get(0);
-		v.visitBlock(firstTermBlock);
+		v.visitScript(term);
 		Map binding = (Map) m.getMaps().get(0);
 		assertEquals(binding.get("MESSAGE"), "message2");
 		assertEquals(binding.get("EFFECT"), "color");

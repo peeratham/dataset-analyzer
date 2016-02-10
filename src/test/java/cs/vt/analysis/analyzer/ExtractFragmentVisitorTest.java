@@ -45,7 +45,7 @@ public class ExtractFragmentVisitorTest {
 		Visitor collector = new TopDownCollector(new Identity());
 		s.accept(collector);
 		List<ArrayList<Block>> fragmentList = ((TopDownCollector)collector).getFragmentList();
-		assertEquals(fragmentList.size(),4);
+		assertEquals(fragmentList.size(),1);
 	}
 	
 	@Ignore
