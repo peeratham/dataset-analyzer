@@ -15,7 +15,7 @@ public class TopDownCollector extends Sequence{
 	}
 	
 	public List<ArrayList<Block>> getFragmentList(){
-		return FragmentCollector.getFragmentList();
+		return ((FragmentCollector) then).getFragmentList();
 	}
 
 }

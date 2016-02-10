@@ -12,7 +12,7 @@ public class FragmentCollector implements Visitor{
 	Visitor v;
 	private static final int LIMIT = 3;
 	private static int length = 0;
-	private static List<ArrayList<Block>> fragmentList = new ArrayList<ArrayList<Block>>();
+	private  List<ArrayList<Block>> fragmentList = new ArrayList<ArrayList<Block>>();
 	
 	
 	public FragmentCollector(Visitor v){
@@ -61,7 +61,7 @@ public class FragmentCollector implements Visitor{
 		fragmentList.add(fragment);
 	}
 	
-	public static List<ArrayList<Block>> getFragmentList(){
+	public  List<ArrayList<Block>> getFragmentList(){
 		return fragmentList;
 	}
 }

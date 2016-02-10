@@ -1,6 +1,6 @@
 package cs.vt.analysis.analyzer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,15 +14,14 @@ import org.junit.Test;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
-import cs.vt.analysis.analyzer.nodes.VisitablePattern;
 import cs.vt.analysis.analyzer.nodes.VisitablePatternCollection;
 import cs.vt.analysis.analyzer.parser.Parser;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 import cs.vt.analysis.analyzer.visitor.Identity;
 import cs.vt.analysis.analyzer.visitor.SequencePatternCollectionMatch;
+import cs.vt.analysis.analyzer.visitor.TopDown;
 import cs.vt.analysis.analyzer.visitor.TopDownCollector;
-import cs.vt.analysis.analyzer.visitor.TopDownGreedy;
 import cs.vt.analysis.analyzer.visitor.Try;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
@@ -32,6 +31,7 @@ public class VisitableSquencePatternCollectionTest {
 	Parser parser = new Parser();
 	List<ArrayList<Block>> fragmentList;
 	private String projectSrc;
+	private VisitablePatternCollection pattern;
 	
 	
 
@@ -42,6 +42,7 @@ public class VisitableSquencePatternCollectionTest {
 		Visitor collector = new TopDownCollector(new Identity());
 		scriptable1.accept(collector);
 		fragmentList = ((TopDownCollector)collector).getFragmentList();
+		pattern = new VisitablePatternCollection(fragmentList);
 	}
 
 	@After
@@ -52,31 +53,33 @@ public class VisitableSquencePatternCollectionTest {
 	public void testBlockSequenceMatcherMatchScript() throws ParseException, ParsingException, VisitFailure {
 		VisitablePatternCollection pattern = new VisitablePatternCollection(fragmentList);
 		SequencePatternCollectionMatch m = new SequencePatternCollectionMatch(pattern);
-		Visitor topDownMatcher = new TopDownGreedy(new Try(m));
+		Visitor topDownMatcher = new TopDown(new Try(m));
 		
 		Scriptable scriptable2 = Parser.loadScriptable(TestUtil.getJSONScriptable(projectSrc, "code2"));
 		Script term = scriptable2.getScript(0);
 		topDownMatcher.visitScript(term);
-		for (Object o : m.getMatchedResults()) {
-			System.out.println(o);
-			
-		}
 	}
 
 	@Test
 	public void testBlockSequenceMatcherMatchScriptable() throws ParseException, ParsingException, VisitFailure {
-		VisitablePatternCollection pattern = new VisitablePatternCollection(fragmentList);
 		SequencePatternCollectionMatch m = new SequencePatternCollectionMatch(pattern);
-		Visitor topDownMatcher = new TopDownGreedy(new Try(m));
+		Visitor topDownMatcher = new TopDown(new Try(m));
 		Scriptable scriptable2 = Parser.loadScriptable(TestUtil.getJSONScriptable(projectSrc, "code2"));
 		topDownMatcher.visitScriptable(scriptable2);
+		assertEquals(2,m.getMatchedResults().size());
+	}
+	
+	@Test
+	public void matchingSequenceWithinNestedBlock() throws ParsingException, ParseException, VisitFailure {
+		SequencePatternCollectionMatch m = new SequencePatternCollectionMatch(pattern);
+		Visitor topDownMatcher = new TopDown(new Try(m));
+		Scriptable scriptable2 = Parser.loadScriptable(TestUtil.getJSONScriptable(projectSrc, "code3"));
+		topDownMatcher.visitScriptable(scriptable2);
+		assertEquals(2, m.getMatchedResults().size());
 		for (Object o : m.getMatchedResults()) {
 			System.out.println(o);
 		}
-		assertEquals(m.getMatchedResults().size(),2);
 	}
-	
-	
 	
 	
 	

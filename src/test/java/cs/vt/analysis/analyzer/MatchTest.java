@@ -8,16 +8,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.VisitableScriptPattern;
 import cs.vt.analysis.analyzer.parser.Parser;
 import cs.vt.analysis.analyzer.visitor.Match;
 import cs.vt.analysis.analyzer.visitor.TopDown;
-import cs.vt.analysis.analyzer.visitor.TopDownGreedy;
 import cs.vt.analysis.analyzer.visitor.Try;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
@@ -43,7 +40,7 @@ public class MatchTest {
 		Match m = new Match(scriptPattern);
 		m.addVariable("message");
 		m.addVariable("sec");
-		Visitor v = new TopDownGreedy(new Try(m));
+		Visitor v = new TopDown(new Try(m));
 		String termInput = "[57,161,[[\"broadcast:\",\"message1\"],[\"whenGreenFlag\"],[\"say:duration:elapsed:from:\", \"Hello!\", 2]]]";
 		JSONArray termJsonInput = (JSONArray) jsonParser.parse(termInput);
 		Script term = parser.loadScript(termJsonInput);
@@ -63,7 +60,7 @@ public class MatchTest {
 		Match m = new Match(scriptPattern);
 		m.addVariable("MESSAGE");
 		m.addVariable("EFFECT");
-		Visitor v = new TopDownGreedy(new Try(m));
+		Visitor v = new TopDown(new Try(m));
 		String termInput = "[57,161,[[\"whenGreenFlag\"],[\"say:duration:elapsed:from:\",\"Hello!\",2],[\"doIf\",[\"<\",\"1\",\"2\"],[[\"broadcast:\",\"message1\"],[\"doIf\",[\"<\",\"1\",\"2\"],[[\"broadcast:\",\"message2\"],[\"changeGraphicEffect:by:\",\"color\",25]]],[\"changeGraphicEffect:by:\",\"color\",25]]]]]";
 		JSONArray termJsonInput = (JSONArray) jsonParser.parse(termInput);
 		Script term = parser.loadScript(termJsonInput);
