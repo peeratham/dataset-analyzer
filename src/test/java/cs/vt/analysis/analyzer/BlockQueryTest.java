@@ -37,7 +37,7 @@ public class BlockQueryTest {
 		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable sprite= Parser.loadScriptable(spriteJSON);
 		ArrayList<Block> results = sprite.getScript(0).containsBlock("doWaitUntil");
-		assertEquals(results.size(),2);
+		assertEquals(2,results.size());
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class BlockQueryTest {
 		ArrayList<Block> results = sprite.getScript(0).containsBlock("doRepeat");
 		Block repeatBlock = results.get(0);
 		ArrayList<Block> result = repeatBlock.containsBlock("doWaitUntil");
-		assertEquals(result.size(),1);
+		assertEquals(1,result.size());
 		
 	}
 	

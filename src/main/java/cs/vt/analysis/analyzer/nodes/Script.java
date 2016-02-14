@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import cs.vt.analysis.analyzer.visitor.FindBlock;
+import cs.vt.analysis.analyzer.visitor.AnalysisUtil;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
@@ -75,8 +75,8 @@ public class Script implements Visitable {
 	}
 
 	public ArrayList<Block> containsBlock(String blockCommand) {
-		FindBlock finder = new FindBlock(this);
-		return finder.find(blockCommand);
+//		AnalysisUtil finder = new AnalysisUtil(this);
+		return AnalysisUtil.findBlock(this, blockCommand);
 		
 		
 	}
