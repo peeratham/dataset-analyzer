@@ -1,6 +1,7 @@
 package cs.vt.analysis.analyzer.analysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 	Map<String, HashSet<Object>> varMap = new HashMap<String, HashSet<Object>>();
 	HashSet<String> mayNotBeFlag = new HashSet<String>();
 	HashSet<String> pollingVars = new HashSet<String>();
+	private AnalysisReport report = new AnalysisReport();
 	
 	private class FlagVarCollectorVisitor extends Identity {
 		@Override
@@ -37,32 +39,7 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 		}
 	}
 	
-	private class DetectPollingVisitor extends Identity {
-		@Override
-		public void visitBlock(Block block) throws VisitFailure {
-			super.visitBlock(block);
-			if(block.getCommand().equals("doForever")){
-				ArrayList<Block> nestedBlocks = block.getNestedGroup().get(0);
-				for (Block b : nestedBlocks) {
-					if(!b.getCommand().equals("doWaitUntil")){
-						continue;
-					}
-					Block waitUntilBlock = b;
-					Block compareEqualBlock = (Block) waitUntilBlock.getArgs().get(0);
-					for(Object arg: compareEqualBlock.getArgs()){
-						if(arg instanceof Block && ((Block) arg).getCommand().equals("readVariable")){
-							String varName = (String) ((Block) arg).getArgs().get(0);
-							if(!varMap.containsKey(varName)){
-								break;
-							}
-							
-						}
-					}
-					
-				}
-			}
-		}
-	}
+
 	
 	
 	@Override
@@ -74,17 +51,32 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 		} catch (VisitFailure e) {
 			throw new AnalysisException(e);
 		}
-		DetectPollingVisitor pollingDetector = new DetectPollingVisitor();
-		Visitor v2 = new TopDown(pollingDetector);
-		try {
-			v2.visitProject(project);
-		} catch (VisitFailure e) {
-			throw new AnalysisException(e);
+		
+		ArrayList<Block> foreverBlocks = AnalysisUtil.findBlock(project, "doForever");
+		System.out.println(foreverBlocks);
+		
+		
+		ArrayList<String> result = new ArrayList<String>();
+		for(Block b: foreverBlocks){
+			HashSet<String> setVarNames = new HashSet<String>();
+
+			for(Block setVar :AnalysisUtil.getBlockInSequence(b, "setVar:to:")){
+				setVarNames.add((String) setVar.getArgs().get(0));
+			}
+			
+			
+			HashSet<String> waitUntilVarNames = new HashSet<String>();
+			ArrayList<Block> waitUntilBlocksInForever =  AnalysisUtil.getBlockInSequence(b, "doWaitUntil");
+			for(Block wait: waitUntilBlocksInForever){
+				Block readVar = AnalysisUtil.findBlock(wait, "readVariable").get(0);
+				waitUntilVarNames.add((String) readVar.getArgs().get(0));
+			}
+			
+			waitUntilVarNames.retainAll(setVarNames);
+			report.addRecord(Arrays.toString(waitUntilVarNames.toArray())+"@"+b.getPath());
+			
+			
 		}
-		
-		
-		
-		
 	}
 
 	@Override
@@ -97,8 +89,8 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 
 	@Override
 	public AnalysisReport getReport() {
-		// TODO Auto-generated method stub
-		return null;
+		report.setTitle("BroadCastWorkaround");
+		return report;
 	}
 
 }

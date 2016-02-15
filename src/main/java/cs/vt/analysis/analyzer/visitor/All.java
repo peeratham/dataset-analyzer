@@ -57,6 +57,14 @@ public class All implements Visitor{
 					b.accept(v);
 				}
 			}	
+		}else{
+			for(Object arg: block.getArgs()){
+				if(arg instanceof Block){
+					((Block) arg).accept(v);
+				}
+				
+			}
 		}
+		
 	}
 }

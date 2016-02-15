@@ -55,6 +55,11 @@ public class AnalysisUtil  {
 				if(block.getCommand().equals(command)){
 					result.add(block);
 				}
+				for(Object arg: block.getArgs()){
+					if(arg instanceof Block){
+						findBlockInSequenceHelper((Block) arg, command, result);
+					}
+				}
 			}
 			
 			block = block.getNextBlock();
@@ -64,9 +69,10 @@ public class AnalysisUtil  {
 		
 		ArrayList<Block> result = new ArrayList<Block>();
 		findBlockInSequenceHelper(block, command, result);
-		
 		return result;
 	}
+	
+
 
 
 }
