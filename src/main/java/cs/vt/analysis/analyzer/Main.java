@@ -28,11 +28,11 @@ public class Main {
         
         File datasetDirectory = config.getDatasetDirectory();
         try {
-//			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
-//			config.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
+			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
+			config.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
 			config.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAround");
-//			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
-//			config.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeVisitor");
+			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
+			config.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeVisitor");
 			
 		} catch (InstantiationException e1) {
 			// TODO Auto-generated catch block

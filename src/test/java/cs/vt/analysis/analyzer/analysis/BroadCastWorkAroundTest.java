@@ -28,6 +28,7 @@ public class BroadCastWorkAroundTest {
 		Analyzer analyzer = new BroadCastWorkAround();
 		analyzer.setProject(project);
 		analyzer.analyze();	
+		System.out.println(analyzer);
 		System.out.println(analyzer.getReport().getJSONReport());
 		
 	}

@@ -44,38 +44,44 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 	
 	@Override
 	public void analyze() throws AnalysisException {
+		collectFlagVars();
+		ArrayList<Block> foreverBlocks = AnalysisUtil.findBlock(project, "doForever");	
+		for(Block loopBlock: foreverBlocks){
+			HashSet<String> setVarNames = new HashSet<String>();
+
+			for(Block setVar :AnalysisUtil.getBlockInSequence(loopBlock, "setVar:to:")){
+				setVarNames.add((String) setVar.getArgs().get(0));
+			}
+			
+			
+			HashSet<String> waitUntilVarNames = new HashSet<String>();
+			ArrayList<Block> waitUntilBlocksInForever =  AnalysisUtil.getBlockInSequence(loopBlock, "doWaitUntil");
+			for(Block wait: waitUntilBlocksInForever){
+				ArrayList<Block> varBlocks = AnalysisUtil.findBlock(wait, "readVariable");
+				if(!varBlocks.isEmpty()){
+					Block readVar = varBlocks.get(0);
+					waitUntilVarNames.add((String) readVar.getArgs().get(0));
+				}
+				
+			}
+			
+			waitUntilVarNames.retainAll(setVarNames);
+			if(!waitUntilVarNames.isEmpty()){
+				report.addRecord(Arrays.toString(waitUntilVarNames.toArray())+"@"+loopBlock.getBlockPath().toString());
+			}
+			
+			
+			
+		}
+	}
+
+	private void collectFlagVars() throws AnalysisException {
 		FlagVarCollectorVisitor flagCollector = new FlagVarCollectorVisitor();
 		Visitor v = new TopDown(flagCollector);
 		try {
 			v.visitProject(project);
 		} catch (VisitFailure e) {
 			throw new AnalysisException(e);
-		}
-		
-		ArrayList<Block> foreverBlocks = AnalysisUtil.findBlock(project, "doForever");
-		System.out.println(foreverBlocks);
-		
-		
-		ArrayList<String> result = new ArrayList<String>();
-		for(Block b: foreverBlocks){
-			HashSet<String> setVarNames = new HashSet<String>();
-
-			for(Block setVar :AnalysisUtil.getBlockInSequence(b, "setVar:to:")){
-				setVarNames.add((String) setVar.getArgs().get(0));
-			}
-			
-			
-			HashSet<String> waitUntilVarNames = new HashSet<String>();
-			ArrayList<Block> waitUntilBlocksInForever =  AnalysisUtil.getBlockInSequence(b, "doWaitUntil");
-			for(Block wait: waitUntilBlocksInForever){
-				Block readVar = AnalysisUtil.findBlock(wait, "readVariable").get(0);
-				waitUntilVarNames.add((String) readVar.getArgs().get(0));
-			}
-			
-			waitUntilVarNames.retainAll(setVarNames);
-			report.addRecord(Arrays.toString(waitUntilVarNames.toArray())+"@"+b.getBlockPath().toString());
-			
-			
 		}
 	}
 
@@ -89,6 +95,7 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 
 	@Override
 	public AnalysisReport getReport() {
+		report.setProjectID(project.getProjectID());
 		report.setTitle("BroadCastWorkaround");
 		return report;
 	}
