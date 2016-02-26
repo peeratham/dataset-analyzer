@@ -23,6 +23,7 @@ public class BlockAnalyzer {
 	Visitor visitor;
 	String input;
 	private AnalysisConfigurator config = null;
+	private int projectID;
 	
 	public BlockAnalyzer(){
 		jsonParser = new JSONParser();
@@ -36,6 +37,7 @@ public class BlockAnalyzer {
 		}
 		try {
 			ScratchProject project = ScratchProject.loadProject(src);
+			projectID = project.getProjectID();
 			for (Class k : config.listAnalyzers()) {
 				Analyzer analyzer = null;
 				if(Arrays.asList(k.getInterfaces()).contains(AnalysisVisitor.class)){
@@ -68,6 +70,10 @@ public class BlockAnalyzer {
 		
 		return reports;
       
+	}
+	
+	public int getProjectID(){
+		return projectID;
 	}
 	
 	private AnalysisConfigurator getDefaultConfig() {
