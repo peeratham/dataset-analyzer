@@ -87,8 +87,7 @@ public class ParserTest {
 	
 	@Test
 	public void testCustomBlock() throws IOException, ParseException, ParsingException{
-		boolean test = true; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
-		String stringInput = Util.retrieveProjectOnline(projectID);
+		String stringInput = Util.retrieveProjectOnline(93160273);
 		project = ScratchProject.loadProject(stringInput);
 		System.out.println(project.getScriptable("TestCustomBlock"));
 		
@@ -179,6 +178,13 @@ public class ParserTest {
 		assertEquals(sprite.getAllVariables().size(),1);
 		assertTrue(sprite.getAllVariables().keySet().contains("local1"));
 		
+	}
+	
+	@Test
+	public void bug() throws ParseException, IOException, ParsingException{
+		String projectSrc = Util.retrieveProjectOnline(96033699);
+		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		Scriptable sprite= Parser.loadScriptable(spriteJSON);
 	}
 		
 }

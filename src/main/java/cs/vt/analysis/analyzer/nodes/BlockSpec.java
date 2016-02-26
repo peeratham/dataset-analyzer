@@ -53,7 +53,7 @@ public class BlockSpec {
 		this.parts = parts;
 	}
 
-	public BlockSpec(String category,String flag, String shape, String name, String spec, List<Object> defaults, List<Object> parts) {
+	public BlockSpec(String category,String flag, String shape, String name, String spec, ArrayList<Object> defaults, List<Object> parts) {
 		this.category = category;
 		this.flag = flag;
 		this.shape = shape;
@@ -85,7 +85,7 @@ public class BlockSpec {
     	blockSpec.shape = CommandLoader.SHAPE_FLAGS.get("h");
     	blockSpec.spec = (String)jsonCustomBlock.get(1);
     	blockSpec.category = CommandLoader.CATEGORY_IDS.get(10);
-    	blockSpec.defaults = (List<Object>) jsonCustomBlock.get(3);
+    	blockSpec.defaults = (ArrayList<Object>) jsonCustomBlock.get(3);
     	blockSpec.parts = parseToParts(blockSpec.spec);
 		return blockSpec;
 		

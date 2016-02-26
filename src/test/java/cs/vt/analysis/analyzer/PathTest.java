@@ -1,6 +1,6 @@
 package cs.vt.analysis.analyzer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,10 +71,10 @@ public class PathTest {
 		Block repeatBlock = blockSequence.get(1);
 		ArrayList<Object> args2 = (ArrayList<Object>) repeatBlock.getArgs();
 		ArrayList<Block> blockSequence2  = (ArrayList<Block>) args2.get(1); 
-		Block moveBlock = blockSequence2.get(0);
+		Block moveBlock = blockSequence2.get(0); 
 		assertEquals(repeatBlock,moveBlock.getParent());
 		assertEquals(ifelseBlock,repeatBlock.getParent());
-		assertEquals("Sprite1/Script@x101 y450[doIfElse(\"0\" > \"2\")]/doIfElse/doRepeat/move 10 steps", moveBlock.getPath());
+		assertEquals("Sprite1/Script@x101 y450[doIfElse(\"0\" > \"2\")]/doIfElse/doRepeat/move 10 steps", moveBlock.getBlockPath().toString());
 		
 	}
 	
@@ -84,7 +84,7 @@ public class PathTest {
 		Block moveBlock = script.getBlocks().get(1);
 		assertEquals(script.getBlocks().get(0),moveBlock.getPreviousBlock());
 		assertEquals(script.getBlocks().get(2), moveBlock.getNextBlock());
-		assertEquals("Sprite1/Script@x93 y669[procDef[move-and-turn]]/move 10 steps",moveBlock.getPath());
+		assertEquals("Sprite1/Script@x93 y669[procDef[move-and-turn]]/move 10 steps",moveBlock.getBlockPath().toString());
 	}
 	
 	@Test
@@ -93,5 +93,12 @@ public class PathTest {
 		assertEquals("Sprite1/Script@x93 y669[procDef[move-and-turn]]", script.getPath());
 	}
 	
-
+	@Test
+	public void testReadVarBlock(){
+		Script script = scriptable.getScript(5);
+		Block wait = script.getBlocks().get(0);
+		Block readVar = (Block) wait.getArgs().get(0);
+		assertEquals("Sprite1/Script@x95 y817[wait:elapsed:from:]/wait \"a\" secs/\"a\"",readVar.getBlockPath().toString());
+	}
+	
 }

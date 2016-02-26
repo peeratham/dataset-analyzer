@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -113,7 +114,7 @@ public class CommandLoader {
             	String flag = (String)blockSpec.get(1);
             	Integer categoryID = ((Long)blockSpec.get(2)).intValue();
             	String name = (String)blockSpec.get(3);
-            	List<Object> defaults = blockSpec.subList(4, blockSpec.size());
+            	List<Object> defaults = new ArrayList<Object>(blockSpec.subList(4, blockSpec.size()));
             	String shape = SHAPE_FLAGS.get(flag);
             	String category = CATEGORY_IDS.get(categoryID);
             	

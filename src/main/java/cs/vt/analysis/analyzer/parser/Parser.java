@@ -199,6 +199,8 @@ public class Parser {
 					.get((String) blockArray.get(1));
 			customBlockArg.setCommand(command);
 			customBlockArg.setBlockSpec(customBlockSpec);
+			customBlockArg.setParent(resultBlock);
+			customBlockArg.setArgs(new ArrayList<Object>());
 			args.add(customBlockArg);
 			resultBlock.setCommand(command);
 			resultBlock.setBlockSpec(blockSpec);
@@ -212,7 +214,6 @@ public class Parser {
 			if (blockArray.get(argi) instanceof JSONArray) {
 				if (((JSONArray) blockArray.get(argi)).get(0) instanceof JSONArray) { // nested
 																						// blocks
-					resultBlock.setHasNestedBlocks(true);
 					arg = new ArrayList<Block>();// stack shape insert (nested
 													// blocks) will be list of
 													// blocks
@@ -238,6 +239,7 @@ public class Parser {
 
 				} else {
 					arg = loadBlock(blockArray.get(argi)); // block
+					((Block) arg).setParent(resultBlock);
 				}
 			} else {
 				arg = blockArray.get(argi); // primitive

@@ -58,11 +58,15 @@ public class All implements Visitor{
 				}
 			}	
 		}else{
+			try{
 			for(Object arg: block.getArgs()){
 				if(arg instanceof Block){
 					((Block) arg).accept(v);
 				}
 				
+			}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 		}
 		

@@ -54,7 +54,7 @@ public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisi
 				if(block.getCommand().contains("whenIReceive")){
 					List<Object> args =  block.getArgs();
 					if (!messages.contains(args.get(0))){
-						report.addRecord(block.getPath());
+						report.addRecord(block.getBlockPath().toString());
 					}
 				}
 			}

@@ -52,7 +52,7 @@ public class VisitablePatternCollection extends VisitablePattern{
 				currentTermBlock = currentTermBlock.getNextBlock();
 			}else{
 				matchCount = 0;
-				matchedRecords.put(pattern.toString(), ((Block) startTerm).getPath());
+				matchedRecords.put(pattern.toString(), ((Block) startTerm).getBlockPath().toString());
 				break;
 			}
 		}

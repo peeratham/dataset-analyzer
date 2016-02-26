@@ -73,7 +73,7 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 			}
 			
 			waitUntilVarNames.retainAll(setVarNames);
-			report.addRecord(Arrays.toString(waitUntilVarNames.toArray())+"@"+b.getPath());
+			report.addRecord(Arrays.toString(waitUntilVarNames.toArray())+"@"+b.getBlockPath().toString());
 			
 			
 		}

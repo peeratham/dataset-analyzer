@@ -48,7 +48,7 @@ public class UncommunicativeNamingVisitor extends One implements AnalysisVisitor
 	}
 
 	public AnalysisReport getReport() {
-		report.setTitle("Too Long Script");
+		report.setTitle("Uncommunicative Naming");
 		return report;
 	}
 

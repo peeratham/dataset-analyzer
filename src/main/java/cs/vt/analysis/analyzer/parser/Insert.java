@@ -1,29 +1,29 @@
 package cs.vt.analysis.analyzer.parser;
 
 public class Insert {
-	private String text;
-	public String getText() {
-		return text;
+	private String name;
+	public String getName() {
+		return name;
 	}
 
 	public void setText(String text) {
-		this.text = text;
+		this.name = text;
 	}
 
 	private String type;
 
 	public Insert(String str){
-		this.text = str;
+		this.name = str;
 	}
 	
 	public Insert(String typeSymbol, String inputType) {
-		this.text = typeSymbol;
+		this.name = typeSymbol;
 		this.type = inputType;
 	}
 
 	@Override
 	public String toString() {
-		return "Insert [" + (text != null ? "text=" + text + ", " : "")
+		return "Insert [" + (name != null ? "name=" + name + ", " : "")
 				+ (type != null ? "type=" + type : "") + "]";
 	}
 

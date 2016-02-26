@@ -20,13 +20,14 @@ public class AnalysisConfigurator {
 	}
 
 	public void addAnalysis(String classURL) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-		VisitorBasedAnalyzer analyzer = new VisitorBasedAnalyzer();
 		Class klass = Class.forName(classURL);
 		analyzerClasess.add(klass);
 //		AnalysisVisitor analysisVisitor = (AnalysisVisitor) Class.forName(classURL).newInstance();
 //		analyzer.addAnalysisVisitor(analysisVisitor);
 //		analyzers.add(analyzer);
 	}
+
+
 	
 	public List<Class> listAnalyzers(){
 		return analyzerClasess;

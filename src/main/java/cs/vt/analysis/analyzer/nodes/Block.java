@@ -13,15 +13,18 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 public class Block implements Visitable, Cloneable {
 	
 	private String command;
-	private ArrayList<Object> args;
 	private BlockSpec blockSpec;
-	private Block nextBlock;
-	private Block previousBlock;
-	boolean hasNestedBlocks = false;
-	private Block firstChild;
-	private ArrayList<ArrayList<Block>> nestedGroup = new ArrayList<ArrayList<Block>>();
+	private ArrayList<Object> args;
 	private Object parent;
+	private Block previousBlock;
+	private Block nextBlock;
+	private ArrayList<ArrayList<Block>> nestedGroup = new ArrayList<ArrayList<Block>>();
+	boolean hasNestedBlocks = false;
 
+	public String shape;
+	public ArrayList<Object> parts;
+	
+	
 	public Object getParent() {
 		return parent;
 	}
@@ -30,7 +33,12 @@ public class Block implements Visitable, Cloneable {
 		this.parent = parent;
 	}
 
-	public Block() {
+	public Block() {}
+	
+	public Block(String command, BlockSpec blockSpec, ArrayList<Object> args) {
+		this.command = command;
+		this.args = args;
+		this.blockSpec = blockSpec;
 	}
 
 	public Block getNextBlock() {
@@ -48,14 +56,6 @@ public class Block implements Visitable, Cloneable {
 	public void setPreviousBlock(Block previousBlock) {
 		this.previousBlock = previousBlock;
 	}
-
-	public Block(String command, BlockSpec blockSpec, ArrayList<Object> args) {
-		this.command = command;
-		this.args = args;
-		this.blockSpec = blockSpec;
-	}
-
-	
 
 	public BlockSpec getBlockSpec() {
 		return blockSpec;
@@ -80,7 +80,7 @@ public class Block implements Visitable, Cloneable {
 		}
 		
 		
-		if(args == null){
+		if(args == null || args.isEmpty()){
 			args = (ArrayList<Object>) blockSpec.getDefaults();
 		}
 		ArrayList<String> argString = new ArrayList<String>();
@@ -141,7 +141,7 @@ public class Block implements Visitable, Cloneable {
 
 		}catch(Exception e){
 			System.err.println(obj);
-			throw new Exception();
+			throw new Exception(e);
 		}
 		
 		if(blockSpec.getFlag()!=null){
@@ -177,6 +177,11 @@ public class Block implements Visitable, Cloneable {
 
 	public List<Object> getArgs() {
 		return this.args;
+	}
+	
+	public void setArgs(ArrayList<Object> args) {
+		this.args = args;
+		
 	}
 
 	public void accept(Visitor v) throws VisitFailure {
@@ -242,31 +247,12 @@ public class Block implements Visitable, Cloneable {
 		
 	}
 
-	public void setArgs(ArrayList<Object> args) {
-		this.args = args;
-		
-	}
-
-	public void setHasNestedBlocks(boolean b) {
-		this.hasNestedBlocks = b;
-		
-	}
-	
 	public boolean hasNestedBlocks() {
-		return this.hasNestedBlocks;
+		return !nestedGroup.isEmpty();
 		
 	}
 
-	public void setFirstChild(Block previous) {
-		this.firstChild = previous;
-	}
-	
-	public Block getFirstChild() {
-		return this.firstChild;
-	}
-	
-	public void addNestedBlocks(Object arg) {
-		
+	public void addNestedBlocks(Object arg) {		
 		nestedGroup.add((ArrayList<Block>) arg);
 	}
 	
@@ -278,40 +264,10 @@ public class Block implements Visitable, Cloneable {
 		return new BlockPath(this);
 	}
 
-	public String getPath() {
-		ArrayList<String> path = new ArrayList<String>();
-		Block current = this;
-		
-		do {
-			
-			if (current.hasNestedBlocks) {
-				path.add(0, current.getCommand());
-			} else {
-				path.add(0, current.toString());
-			}
-			
-			if (!(current.getParent() instanceof Block)) {
-				break;
-			}else{
-				current = (Block) current.getParent();
-			}
-		} while (true);
-		
-		Script scrpt = (Script) current.getParent();
-		String firstBlock = scrpt.getBlocks().get(0).getCompactString();
-		String scriptString = "Script@x"+scrpt.getPosition()[0]+" y"+scrpt.getPosition()[1]+"["+firstBlock+"]";
-		path.add(0,scriptString);
-		Scriptable scrptable = scrpt.getParent();
-		path.add(0, scrptable.getName());
-			
-		return String.join("/", path);
-	}
-
 	public Block(Block b){
 		this.args =  (ArrayList<Object>) b.args.clone();
 		this.blockSpec = b.blockSpec;
 		this.command = b.command;
-		this.firstChild = b.firstChild;
 		this.hasNestedBlocks = b.hasNestedBlocks;
 		this.nestedGroup =  (ArrayList<ArrayList<Block>>) b.nestedGroup.clone();
 		this.nextBlock = b.nextBlock;
@@ -382,8 +338,6 @@ public class Block implements Visitable, Cloneable {
 	public ArrayList<Block> containsBlock(String blockCommand) {
 		AnalysisUtil finder = new AnalysisUtil();
 		return finder.findBlock(this,blockCommand);
-		
-		
 	}
 
 }

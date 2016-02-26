@@ -55,21 +55,24 @@ public class BroadVarScopeVisitor extends One implements AnalysisVisitor {
 			}
 
 			public void visitBlock(Block block) throws VisitFailure {
-
 				if (varRelatedCommands.contains(block.getCommand())) {
 					List<Object> parts = block.getBlockSpec().getParts();
 					Iterator<Object> args = block.getArgs().iterator();
 					for (int i = 0; i < parts.size(); i++) {
+						
 						if (parts.get(i) instanceof Insert) {
 							Object arg = args.next();
-							if (((Insert) parts.get(i)).getText().contains("var") && globalVarRef.containsKey(arg)) {
+							if (((Insert) parts.get(i)).getName().contains("var") && globalVarRef.containsKey(arg)) {
 								globalVarRef.get(arg).add(block.getBlockPath().getPathList().get(0));
 							}
+							
 						}
+						
 
 					}
 
 				}
+		
 
 			}
 		}

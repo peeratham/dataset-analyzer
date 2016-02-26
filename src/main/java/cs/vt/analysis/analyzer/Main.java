@@ -2,6 +2,7 @@ package cs.vt.analysis.analyzer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -28,7 +29,11 @@ public class Main {
         File datasetDirectory = config.getDatasetDirectory();
         try {
 //			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
-			config.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
+//			config.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
+			config.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAround");
+//			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
+//			config.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeVisitor");
+			
 		} catch (InstantiationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -45,9 +50,15 @@ public class Main {
 			try {
 				ScratchProject project = ScratchProject.loadProject(FileUtils.readFileToString(files[i]));
 				for (Class k : config.listAnalyzers()) {
-					AnalysisVisitor v = (AnalysisVisitor) k.newInstance();
-					VisitorBasedAnalyzer analyzer = new VisitorBasedAnalyzer();
-					analyzer.addAnalysisVisitor(v);
+					Analyzer analyzer = null;
+					if(Arrays.asList(k.getInterfaces()).contains(AnalysisVisitor.class)){
+						AnalysisVisitor v = (AnalysisVisitor) k.newInstance();
+						 analyzer = new VisitorBasedAnalyzer();
+						((VisitorBasedAnalyzer) analyzer).addAnalysisVisitor(v);	
+					}else{
+						analyzer = (Analyzer) k.newInstance();
+					}
+					
 					analyzer.setProject(project);
 					try {
 						analyzer.analyze();

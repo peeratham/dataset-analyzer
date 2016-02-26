@@ -24,6 +24,7 @@ public class VisitorBasedAnalyzer extends BaseAnalyzer {
 		  try {
 				project.accept(analysisVisitor);
 			} catch (Exception e) {
+				e.printStackTrace();
 				throw new AnalysisException(e);
 			}
 
