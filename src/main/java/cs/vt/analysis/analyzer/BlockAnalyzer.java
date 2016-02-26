@@ -1,78 +1,111 @@
 package cs.vt.analysis.analyzer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import cs.vt.analysis.analyzer.analysis.AnalysisConfigurator;
+import cs.vt.analysis.analyzer.analysis.AnalysisException;
+import cs.vt.analysis.analyzer.analysis.AnalysisVisitor;
+import cs.vt.analysis.analyzer.analysis.Analyzer;
+import cs.vt.analysis.analyzer.analysis.VisitorBasedAnalyzer;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
+import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
-import cs.vt.analysis.analyzer.visitor.BlockCounter;
-import cs.vt.analysis.analyzer.visitor.DownUp;
-import cs.vt.analysis.analyzer.visitor.Identity;
-import cs.vt.analysis.analyzer.visitor.Stop;
-import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
 public class BlockAnalyzer {
 	JSONParser jsonParser;
-	ScratchProject project;
 	Visitor visitor;
 	String input;
+	private AnalysisConfigurator config = null;
 	
 	public BlockAnalyzer(){
 		jsonParser = new JSONParser();
         
 	}
-
-	public void setVisitor(Visitor v) {
-		visitor = v;
-	}
 	
-	public void analyze() {	
-        try {
-			project.accept(visitor);
-		} catch (VisitFailure e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public ArrayList<JSONObject> analyze(String src) {
+		ArrayList<JSONObject> reports = new ArrayList<JSONObject>();
+		if(config==null){
+			config = getDefaultConfig();
 		}
-	}
-
-//	public void setInputPath(String path){
-//		try {
-//            Object obj = jsonParser.parse(new FileReader(
-//                    path));
-//            JSONObject jsonObject = (JSONObject) obj;
-//            project = ScratchProject.loadProject(jsonObject);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//	}
-	
-	public void setStringInput(String input){
-		this.input = input;
 		try {
-            project = ScratchProject.loadProject(input);
-		} catch (Exception e){
+			ScratchProject project = ScratchProject.loadProject(src);
+			for (Class k : config.listAnalyzers()) {
+				Analyzer analyzer = null;
+				if(Arrays.asList(k.getInterfaces()).contains(AnalysisVisitor.class)){
+					AnalysisVisitor v = (AnalysisVisitor) k.newInstance();
+					 analyzer = new VisitorBasedAnalyzer();
+					((VisitorBasedAnalyzer) analyzer).addAnalysisVisitor(v);	
+				}else{
+					analyzer = (Analyzer) k.newInstance();
+				}
+				
+				analyzer.setProject(project);
+				
+				try {
+					analyzer.analyze();
+					analyzer.getReport().getJSONReport();
+					reports.add(analyzer.getReport().getJSONReport());
+				} catch (AnalysisException e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (ParseException e) {
 			e.printStackTrace();
-		}
-	}
-	
-	public ScratchProject getProject(){
-		return project;
-	}
-	
-	public static void main(String[] args){
-		BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
-		Visitor v = new BlockCounter();
-		blockAnalyzer.setVisitor(new DownUp(v, new Stop(), new Identity()));
-		try {
-			blockAnalyzer.setStringInput(Util.readFile("src/main/resources/project03.json"));
-		} catch (IOException e) {
+		} catch (ParsingException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		
-		blockAnalyzer.analyze();
-		System.out.println(blockAnalyzer.getProject().getProjectID());
-		System.out.println(((BlockCounter)v).getCount());
+		return reports;
+      
 	}
+	
+	private AnalysisConfigurator getDefaultConfig() {
+		AnalysisConfigurator defaultConfig = new AnalysisConfigurator();
+		try {
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAround");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeVisitor");
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return defaultConfig;
+	}
+	
+	private void setConfig(AnalysisConfigurator config) {
+		this.config = config;
+		
+	}
+
+	
+	public static void main(String[] args){
+		BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
+		String src = null;
+		try {
+			src = Util.retrieveProjectOnline(97552510);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(blockAnalyzer.analyze(src));
+	}
+
+
 }
