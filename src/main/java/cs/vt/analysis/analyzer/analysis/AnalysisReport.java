@@ -42,7 +42,6 @@ public class AnalysisReport {
 
 	public void setProjectID(int projectID) {
 		this.projectID = projectID;
-		summary.put("projectID", projectID);
 	}
 
 	public int getRecordCounts(){
@@ -57,13 +56,12 @@ public class AnalysisReport {
 	public JSONObject getJSONReport(){
 		generateSummary();
 		JSONObject container = new JSONObject();
-		JSONObject report = new JSONObject();
-		container.put("Analysis",title);
-		report.put("Summary", summary);
-		report.put("Records", result);
-		
-		
-		container.put("Report",report);
+//		JSONObject report = new JSONObject();
+		container.put("name",title);
+//		container.put("ProjectID", projectID);
+//		report.put("Summary", summary);
+		container.put("records", result);
+//		container.put("Report",report);
 		
 		return container;
 	}
