@@ -121,9 +121,9 @@ public class BlockAnalyzer {
 			e.printStackTrace();
 		}
 		System.out.println(blockAnalyzer.analyze(src));
-		File path = new File("C:\\Users\\Peeratham\\workspace\\analysis-output", "output01.txt");
+		File path = new File("C:\\Users\\Peeratham\\workspace\\analysis-output", projectID+"-m-1");
 		try {
-			FileUtils.writeStringToFile(path, projectID+"\t"+blockAnalyzer.analyze(src).toString());
+			FileUtils.writeStringToFile(path, blockAnalyzer.analyze(src).toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

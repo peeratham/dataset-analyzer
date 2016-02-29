@@ -2,94 +2,53 @@ package cs.vt.analysis.analyzer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.json.simple.parser.ParseException;
+import org.json.simple.JSONObject;
 
 import cs.vt.analysis.analyzer.analysis.AnalysisConfigurator;
-import cs.vt.analysis.analyzer.analysis.AnalysisException;
-import cs.vt.analysis.analyzer.analysis.AnalysisVisitor;
-import cs.vt.analysis.analyzer.analysis.Analyzer;
-import cs.vt.analysis.analyzer.analysis.VisitorBasedAnalyzer;
-import cs.vt.analysis.analyzer.nodes.ScratchProject;
-import cs.vt.analysis.analyzer.parser.ParsingException;
 
 public class Main {
+	private static final String DATASET_DIR = "C:\\Users\\Peeratham\\workspace\\scratch-dataset";
+	private static final String ANALYSIS_OUTPUT_DIR = "C:\\Users\\Peeratham\\workspace\\analysis-output\\test";
 	static Logger logger = Logger.getLogger(Main.class);
 	
 	public static void main(String[] args) {
         // Configure Log4J
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
+		Date date = new Date();
+		String currentDateTime = dateFormat.format(date);
+		try {
+			FileUtils.cleanDirectory(new File(ANALYSIS_OUTPUT_DIR));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} 
+		
         PropertyConfigurator.configure(Main.class.getClassLoader().getResource("log4j.properties"));
         AnalysisConfigurator config = new AnalysisConfigurator();
-        config.addData("C:\\Users\\Peeratham\\workspace\\scratch-dataset");
+        config.addData(DATASET_DIR);
         
         File datasetDirectory = config.getDatasetDirectory();
-        try {
-			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
-			config.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
-			config.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAround");
-			config.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
-			config.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeVisitor");
-			
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-     
-		File[] files = datasetDirectory.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			try {
-				ScratchProject project = ScratchProject.loadProject(FileUtils.readFileToString(files[i]));
-				for (Class k : config.listAnalyzers()) {
-					Analyzer analyzer = null;
-					if(Arrays.asList(k.getInterfaces()).contains(AnalysisVisitor.class)){
-						AnalysisVisitor v = (AnalysisVisitor) k.newInstance();
-						 analyzer = new VisitorBasedAnalyzer();
-						((VisitorBasedAnalyzer) analyzer).addAnalysisVisitor(v);	
-					}else{
-						analyzer = (Analyzer) k.newInstance();
-					}
-					
-					analyzer.setProject(project);
-					try {
-						analyzer.analyze();
-						logger.info(analyzer.getReport().getJSONReport());
-					} catch (AnalysisException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-			} catch (IOException e) {
-				logger.error("Fail to read file:"+e.getMessage());
-			} catch (ParseException e) {
-				logger.error("Fail to parse JSON file:"+files[i]);
-				e.printStackTrace();
-			} catch (ParsingException e) {
-				logger.error("Fail to load project:"+files[i]);
-				logger.error(e.getMessage());
-				e.printStackTrace();
-			} catch (InstantiationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IllegalAccessException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		}
-		
-		
+       
+        BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
         
+        for(File f: datasetDirectory.listFiles()){
+        	try {
+				JSONObject result = blockAnalyzer.analyze(FileUtils.readFileToString(f));
+				int projectID = blockAnalyzer.getProjectID();
+				
+				File path = new File(ANALYSIS_OUTPUT_DIR, projectID+"-m-1");
+				FileUtils.writeStringToFile(path, result.toJSONString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
     }
 	
 	
