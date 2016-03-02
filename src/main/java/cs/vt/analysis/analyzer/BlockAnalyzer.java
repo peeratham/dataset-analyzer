@@ -32,7 +32,7 @@ public class BlockAnalyzer {
         
 	}
 	
-	public JSONObject analyze(String src) {
+	public JSONObject analyze(String src) throws  ParsingException, AnalysisException {
 		JSONObject report = new JSONObject();
 		ArrayList<JSONObject> analyses = new ArrayList<JSONObject>();
 		if(config==null){
@@ -55,18 +55,23 @@ public class BlockAnalyzer {
 				
 				analyzer.setProject(project);
 				
-				try {
-					analyzer.analyze();
+				
+					try {
+						analyzer.analyze();
+					} catch (AnalysisException e) {
+						System.err.println("==>Error analyzing projectID: "+ projectID);
+						throw new AnalysisException("Analysis Error["+analyzer.getClass()+"]:\n"+e.getMessage());
+					}
 					analyzer.getReport().getJSONReport();
 					analyses.add(analyzer.getReport().getJSONReport());
-				} catch (AnalysisException e) {
-					e.printStackTrace();
-				}
+				
 			}
 		} catch (ParseException e) {
-			e.printStackTrace();
+			System.err.println("==>Error parsing JSONObject of projectID: "+ projectID);
+			throw new ParsingException(e);
 		} catch (ParsingException e) {
-			e.printStackTrace();
+			System.err.println("==>Error parsing projectID: "+ projectID);
+			throw new ParsingException(e);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -120,11 +125,17 @@ public class BlockAnalyzer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(blockAnalyzer.analyze(src));
+		
 		File path = new File("C:\\Users\\Peeratham\\workspace\\analysis-output", projectID+"-m-1");
 		try {
 			FileUtils.writeStringToFile(path, blockAnalyzer.analyze(src).toString());
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AnalysisException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParsingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

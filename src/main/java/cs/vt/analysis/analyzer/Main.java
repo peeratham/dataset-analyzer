@@ -12,6 +12,8 @@ import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONObject;
 
 import cs.vt.analysis.analyzer.analysis.AnalysisConfigurator;
+import cs.vt.analysis.analyzer.analysis.AnalysisException;
+import cs.vt.analysis.analyzer.parser.ParsingException;
 
 public class Main {
 	private static final String DATASET_DIR = "C:\\Users\\Peeratham\\workspace\\scratch-dataset";
@@ -20,6 +22,9 @@ public class Main {
 	
 	public static void main(String[] args) {
         // Configure Log4J
+		PropertyConfigurator.configure(Main.class.getClassLoader().getResource("log4j.properties"));
+		
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
 		Date date = new Date();
 		String currentDateTime = dateFormat.format(date);
@@ -29,7 +34,7 @@ public class Main {
 			e1.printStackTrace();
 		} 
 		
-        PropertyConfigurator.configure(Main.class.getClassLoader().getResource("log4j.properties"));
+        
         AnalysisConfigurator config = new AnalysisConfigurator();
         config.addData(DATASET_DIR);
         
@@ -45,7 +50,10 @@ public class Main {
 				File path = new File(ANALYSIS_OUTPUT_DIR, projectID+"-m-1");
 				FileUtils.writeStringToFile(path, result.toJSONString());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (AnalysisException e) {
+				e.printStackTrace();
+			} catch (ParsingException e) {
 				e.printStackTrace();
 			}
         }
