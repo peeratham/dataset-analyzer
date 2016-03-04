@@ -79,7 +79,10 @@ public class BlockAnalyzer {
 		}
 		
 		report.put("_id", projectID);
-		report.put("analyses", analyses);
+		for(JSONObject a: analyses){
+			report.put(a.get("name"), a.get("records"));
+		}
+//		report.put("analyses", analyses);
 		
 		
 		return report;
