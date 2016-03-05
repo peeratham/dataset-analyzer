@@ -49,6 +49,9 @@ public class Parser {
 			} else {
 				throw new ParsingException("Project ID Not Found");
 			}
+			
+			project.setScriptCount((Long) ((JSONObject) infoObj).get("scriptCount"));
+			project.setSpriteCount((Long) ((JSONObject) infoObj).get("spriteCount"));
 		}
 		
 		Scriptable stage = loadScriptable(stageObj);

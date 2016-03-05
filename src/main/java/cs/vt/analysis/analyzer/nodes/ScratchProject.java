@@ -21,6 +21,10 @@ public class ScratchProject implements Visitable{
 	public static Parser parser;
 	int projectID;
 	private Map<String, Scriptable> scriptables;
+
+	private Long scriptCount;
+
+	private Long spriteCount;
 	
 	
 	public ScratchProject(){
@@ -71,6 +75,19 @@ public class ScratchProject implements Visitable{
 			sb.append("\n\n");
 		}
 		return "Project:"+projectID+"\n\n"+sb.toString();
+	}
+	public Long getScriptCount() {
+		return this.scriptCount;
+	}
+	public Long getSpriteCount() {
+		return this.spriteCount;
+	}
+	public void setScriptCount(Long long1) {
+		this.scriptCount = long1;
+	}
+	public void setSpriteCount(Long long1) {
+		this.spriteCount = long1;
+		
 	}
 
 }

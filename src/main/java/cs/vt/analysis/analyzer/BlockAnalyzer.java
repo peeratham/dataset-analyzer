@@ -38,8 +38,9 @@ public class BlockAnalyzer {
 		if(config==null){
 			config = getDefaultConfig();
 		}
+		ScratchProject project = null;
 		try {
-			ScratchProject project = ScratchProject.loadProject(src);
+			project = ScratchProject.loadProject(src);
 			projectID = project.getProjectID();
 			
 			
@@ -79,10 +80,11 @@ public class BlockAnalyzer {
 		}
 		
 		report.put("_id", projectID);
+		report.put("scriptCount", project.getScriptCount());
+		report.put("spriteCount", project.getSpriteCount());
 		for(JSONObject a: analyses){
 			report.put(a.get("name"), a.get("records"));
 		}
-//		report.put("analyses", analyses);
 		
 		
 		return report;
@@ -131,7 +133,9 @@ public class BlockAnalyzer {
 		
 		File path = new File("C:\\Users\\Peeratham\\workspace\\analysis-output", projectID+"-m-1");
 		try {
-			FileUtils.writeStringToFile(path, blockAnalyzer.analyze(src).toString());
+			String result = blockAnalyzer.analyze(src).toString();
+			System.out.println(result);
+			FileUtils.writeStringToFile(path, result);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,5 +1,7 @@
 package cs.vt.analysis.analyzer;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.InputStream;
 
@@ -8,6 +10,7 @@ import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 
 
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
@@ -38,7 +41,8 @@ public class MetadataVisitorTest {
 	@Test
 	public void test() throws ParseException, ParsingException {
 		project = ScratchProject.loadProject(inputString);
-
+		assertEquals(new Long(3),project.getScriptCount());
+		assertEquals(new Long(2),project.getSpriteCount());
 	}
 
 }
