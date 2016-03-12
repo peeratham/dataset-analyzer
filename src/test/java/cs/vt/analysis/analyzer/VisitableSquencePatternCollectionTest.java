@@ -21,7 +21,7 @@ import cs.vt.analysis.analyzer.parser.Util;
 import cs.vt.analysis.analyzer.visitor.Identity;
 import cs.vt.analysis.analyzer.visitor.SequencePatternCollectionMatch;
 import cs.vt.analysis.analyzer.visitor.TopDown;
-import cs.vt.analysis.analyzer.visitor.TopDownCollector;
+import cs.vt.analysis.analyzer.visitor.TopDownFragmentCollector;
 import cs.vt.analysis.analyzer.visitor.Try;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
@@ -39,9 +39,9 @@ public class VisitableSquencePatternCollectionTest {
 	public void setUp() throws Exception {
 		projectSrc = Util.retrieveProjectOnline(96692734);
 		Scriptable scriptable1 = Parser.loadScriptable(TestUtil.getJSONScriptable(projectSrc, "code1"));
-		Visitor collector = new TopDownCollector(new Identity());
+		Visitor collector = new TopDownFragmentCollector(new Identity());
 		scriptable1.accept(collector);
-		fragmentList = ((TopDownCollector)collector).getFragmentList();
+		fragmentList = ((TopDownFragmentCollector)collector).getFragmentList();
 		pattern = new VisitablePatternCollection(fragmentList);
 	}
 

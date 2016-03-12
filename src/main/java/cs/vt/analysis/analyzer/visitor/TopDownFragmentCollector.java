@@ -7,15 +7,19 @@ import cs.vt.analysis.analyzer.nodes.Block;
 
 
 
-public class TopDownCollector extends Sequence{
+public class TopDownFragmentCollector extends Sequence{
 
-	public TopDownCollector(Visitor v) {
+	public TopDownFragmentCollector(Visitor v) {
 		super(v, null);
 		then = new FragmentCollector(this);
 	}
 	
 	public List<ArrayList<Block>> getFragmentList(){
 		return ((FragmentCollector) then).getFragmentList();
+	}
+
+	public List<ArrayList<Block>> getSubTreeList() {
+		return ((FragmentCollector) then).getSubTreeList();
 	}
 
 }

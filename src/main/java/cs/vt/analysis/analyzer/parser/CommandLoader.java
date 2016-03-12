@@ -24,7 +24,9 @@ public class CommandLoader {
 	public static Map<Integer, String> CATEGORY_IDS = new HashMap<Integer, String>();
 	public static Map<String, String> INSERT_SHAPES = new HashMap<String, String>();
 	public static Map<String, BlockSpec> COMMAND_TO_BLOCKSPEC = new HashMap<String,BlockSpec>();
+	public static Map<String, Integer> COMMAND_TO_INDEX = new HashMap<String,Integer>();
 	public static Map<String, BlockSpec> COMMAND_TO_CUSTOM_BLOCKSPEC = new HashMap<String,BlockSpec>();
+	static int indexCount = 1;
 	
 	public static void initShapFlags(){
 		SHAPE_FLAGS.put(" ", "stack");
@@ -78,11 +80,13 @@ public class CommandLoader {
 
 	
 	public static void loadCommand(){
+		indexCount=1;
 		initShapFlags();
 		initCategoryID();
 		initInsertShapes();
 		JSONParser jsonParser = new JSONParser();
         Object obj = null;
+        
 		try {
 			InputStream in = Main.class.getClassLoader().getResource("commands_src.json").openStream(); 
 
@@ -138,6 +142,7 @@ public class CommandLoader {
 				List<Object> parts = BlockSpec.parseToParts(spec);
 				bSpec.setParts(parts);
             	COMMAND_TO_BLOCKSPEC.put(name, bSpec);
+            	COMMAND_TO_INDEX.put(name,indexCount++);
         	}
         }
         
@@ -146,6 +151,12 @@ public class CommandLoader {
 	public static void main(String[] args){
 		loadCommand();
 		System.out.println(COMMAND_TO_BLOCKSPEC);
+	}
+
+	public static void addCustomBlockIndex() {
+		for (String customCommand : COMMAND_TO_CUSTOM_BLOCKSPEC.keySet()) {
+			COMMAND_TO_INDEX.put(customCommand, indexCount++);
+		}
 	}
 	
 	

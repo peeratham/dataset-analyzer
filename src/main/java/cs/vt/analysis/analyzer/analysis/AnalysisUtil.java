@@ -1,7 +1,6 @@
 package cs.vt.analysis.analyzer.analysis;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Visitable;
@@ -71,6 +70,8 @@ public class AnalysisUtil  {
 		findBlockInSequenceHelper(block, command, result);
 		return result;
 	}
+	
+
 	
 
 

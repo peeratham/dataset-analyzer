@@ -1,6 +1,6 @@
 package cs.vt.analysis.analyzer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,26 +12,31 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import cs.vt.analysis.analyzer.analysis.CloneUtil;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
+import cs.vt.analysis.analyzer.parser.CommandLoader;
 import cs.vt.analysis.analyzer.parser.Parser;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
-
 import cs.vt.analysis.analyzer.visitor.Identity;
-import cs.vt.analysis.analyzer.visitor.TopDownFragmentCollector;
+import cs.vt.analysis.analyzer.visitor.TopDownSubTreeCollector;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
-public class ExtractFragmentVisitorTest {
+public class ExtractSubTreeVisitorTest {
 	private String projectSrc;
 	Parser parser = new Parser();
-//	private ScratchProject project;
-	
+	List<Block> subtreeList = null;
 	
 	@Before
 	public void setUp() throws Exception {
 		projectSrc = Util.retrieveProjectOnline(101357446);
+		JSONObject sprite = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		Scriptable s = Parser.loadScriptable(sprite);
+		Visitor collector = new TopDownSubTreeCollector(new Identity());
+		s.accept(collector);
+		subtreeList = ((TopDownSubTreeCollector)collector).getSubTreeList();
 	}
 
 	@After
@@ -40,18 +45,14 @@ public class ExtractFragmentVisitorTest {
 	
 	@Test
 	public void testExtractFragmentVisitor() throws VisitFailure, ParseException, ParsingException {
-		JSONObject sprite = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
-		Scriptable s = Parser.loadScriptable(sprite);
-		Visitor collector = new TopDownFragmentCollector(new Identity());
-		s.accept(collector);
-		List<ArrayList<Block>> fragmentList = ((TopDownFragmentCollector)collector).getSubTreeList();
-		
-		System.out.println(fragmentList);
+		assertEquals(7,subtreeList.size());
 	}
 	
-	@Ignore
 	@Test
-	public void testExtractFragmentFromNestedBlocks(){
-		//TODO
+	public void similarSubtreeAreInSameHashBucket(){
+		System.out.println(subtreeList.get(1));
+		System.out.println(CloneUtil.hashSubTree(subtreeList.get(1)));
+		System.out.println(CommandLoader.COMMAND_TO_INDEX);
+		assertEquals(CloneUtil.hashSubTree(subtreeList.get(1)), CloneUtil.hashSubTree(subtreeList.get(2)));
 	}
 }

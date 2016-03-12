@@ -68,6 +68,8 @@ public class Parser {
 			Scriptable sprite = loadScriptable(spriteJSON);
 			project.addScriptable(sprite.getName(), sprite);
 		}
+		CommandLoader.addCustomBlockIndex();
+		
 		return project;
 	}
 
@@ -263,12 +265,10 @@ public class Parser {
 			throws ParsingException {
 
 		try {
-			Block customBlockArg = new Block();
 			BlockSpec customBlockSpec = BlockSpec
 					.parseCustomBlockSpec(firstBlockArray);
 			CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC.put(
 					(String) firstBlockArray.get(1), customBlockSpec);
-
 		} catch (Exception e) {
 			throw new ParsingException(e);
 		}
