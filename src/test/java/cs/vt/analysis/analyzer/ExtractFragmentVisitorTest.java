@@ -12,12 +12,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import cs.vt.analysis.analyzer.analysis.TestUtil;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 import cs.vt.analysis.analyzer.parser.Parser;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
-
 import cs.vt.analysis.analyzer.visitor.Identity;
 import cs.vt.analysis.analyzer.visitor.TopDownFragmentCollector;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;

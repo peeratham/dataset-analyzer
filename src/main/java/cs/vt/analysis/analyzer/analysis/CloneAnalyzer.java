@@ -3,6 +3,9 @@ package cs.vt.analysis.analyzer.analysis;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.visitor.Identity;
 import cs.vt.analysis.analyzer.visitor.TopDownSubTreeCollector;
@@ -14,6 +17,7 @@ public class CloneAnalyzer extends BaseAnalyzer{
 	private ArrayList<Block> subtreeList;
 	private HashMap<Integer, ArrayList<Block>> cloneDictionary = new HashMap<Integer, ArrayList<Block>>();
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void analyze() throws AnalysisException {
 		Visitor collector = new TopDownSubTreeCollector(new Identity());
@@ -37,18 +41,26 @@ public class CloneAnalyzer extends BaseAnalyzer{
 		for (int key : cloneDictionary.keySet()) {
 			if(cloneDictionary.get(key).size()>1){
 				ArrayList<Block> clones = cloneDictionary.get(key);
-				String cloneInstance = clones.get(0).toString();
-				ArrayList<String> occurrences = new ArrayList<String>();
+				String fragment = clones.get(0).toString();
+				JSONObject cloneRecordJSON = new JSONObject();
+				JSONArray loc = new JSONArray();
 				for(Block cl: clones){
-					occurrences.add(cl.getBlockPath().toString());
+					JSONObject locItem = new JSONObject();
+					locItem.put("sprite", cl.getBlockPath().getPathList().get(0));
+					locItem.put("path", cl.getBlockPath().toString());
+					loc.add(locItem);
 				}
-				report.addRecord(clones.get(0).toString()+" @"+occurrences);
+				cloneRecordJSON.put("fragment", clones.get(0).toString());
+				cloneRecordJSON.put("size", CloneUtil.getSubTreeSize(clones.get(0)));
+				cloneRecordJSON.put("loc", loc);
+				report.addRecord(cloneRecordJSON.toJSONString());
 			}
 		}
 		
 	}
 
-	
+
+
 
 	@Override
 	public String toString() {

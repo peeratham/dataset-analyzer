@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import cs.vt.analysis.analyzer.analysis.TestUtil;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.parser.Parser;

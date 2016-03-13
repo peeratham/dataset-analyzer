@@ -1,4 +1,4 @@
-package cs.vt.analysis.analyzer;
+package cs.vt.analysis.analyzer.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -81,6 +81,15 @@ public class CloneUtilTest {
 		int hash2 = CloneUtil.hashSubTree(s2.getBlocks().get(0));
 		assertEquals(hash0,hash1);
 		assertNotEquals(hash0,hash2);
+	}
+	
+	@Test
+	public void subtreeSize() {
+		Scriptable sprite5 = project.getScriptable("Sprite5");
+		Script s0 = sprite5.getScript(0);
+		Script s1 = sprite5.getScript(1);
+		assertEquals(6, CloneUtil.getSubTreeSize(s0.getBlocks().get(0)));
+		assertEquals(4, CloneUtil.getSubTreeSize(s1.getBlocks().get(0)));
 	}
 
 }

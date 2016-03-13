@@ -33,4 +33,25 @@ public class CloneUtil {
 	public static int getBlockIndex(Block b){
 		return CommandLoader.COMMAND_TO_INDEX.get(b.getCommand());
 	}
+	
+	public static int getSubTreeSize(Block block) {
+		int count = 0;
+		return subtreeSize(block,count);
+	}
+
+
+
+	private static int subtreeSize(Block b, int count) {
+		if(b.hasNestedBlocks()){
+			count++;
+			for(ArrayList<Block> blocks : b.getNestedGroup()){
+				for(Block block : blocks){
+					count += subtreeSize(block, 0);
+				}
+			}
+		}else{
+			count += 1;
+		}
+		return count;
+	}
 }

@@ -1,4 +1,4 @@
-package cs.vt.analysis.analyzer;
+package cs.vt.analysis.analyzer.analysis;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
