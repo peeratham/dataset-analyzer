@@ -28,7 +28,6 @@ public class CloneAnalyzerTest {
 		CloneAnalyzer analyzer = new CloneAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-		System.out.println(analyzer);
 		System.out.println(analyzer.getReport().getJSONReport());
 	}
 

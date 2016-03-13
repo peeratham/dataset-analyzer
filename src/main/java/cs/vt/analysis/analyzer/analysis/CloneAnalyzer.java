@@ -34,6 +34,18 @@ public class CloneAnalyzer extends BaseAnalyzer{
 			
 		}
 		
+		for (int key : cloneDictionary.keySet()) {
+			if(cloneDictionary.get(key).size()>1){
+				ArrayList<Block> clones = cloneDictionary.get(key);
+				String cloneInstance = clones.get(0).toString();
+				ArrayList<String> occurrences = new ArrayList<String>();
+				for(Block cl: clones){
+					occurrences.add(cl.getBlockPath().toString());
+				}
+				report.addRecord(clones.get(0).toString()+" @"+occurrences);
+			}
+		}
+		
 	}
 
 	
@@ -49,7 +61,7 @@ public class CloneAnalyzer extends BaseAnalyzer{
 
 	@Override
 	public AnalysisReport getReport() {
-
+		report.setTitle("Duplicate Code");
 		return report;
 	}
 
