@@ -44,6 +44,10 @@ public class Scriptable implements Visitable {
 	public Script getScript(int index){
 		return scripts.get(index);
 	}
+	
+	public List<Script> getScripts(){
+		return scripts;
+	}
 
 	public void accept(Visitor v) throws VisitFailure {
 		v.visitScriptable(this);
