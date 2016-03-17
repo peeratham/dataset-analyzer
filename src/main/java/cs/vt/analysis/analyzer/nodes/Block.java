@@ -12,17 +12,17 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 
 public class Block implements Visitable, Cloneable {
 	
-	private String command;
-	private BlockSpec blockSpec;
-	private ArrayList<Object> args;
-	private Object parent;
-	private Block previousBlock;
-	private Block nextBlock;
-	private ArrayList<ArrayList<Block>> nestedGroup = new ArrayList<ArrayList<Block>>();
-	boolean hasNestedBlocks = false;
+	protected String command;
+	protected BlockSpec blockSpec;
+	protected ArrayList<Object> args;
+	protected Object parent;
+	protected Block previousBlock;
+	protected Block nextBlock;
+	protected ArrayList<ArrayList<Block>> nestedGroup = new ArrayList<ArrayList<Block>>();
+	protected boolean hasNestedBlocks = false;
 
-	public String shape;
-	public ArrayList<Object> parts;
+	protected String shape;
+	protected ArrayList<Object> parts;
 	
 	
 	public Object getParent() {

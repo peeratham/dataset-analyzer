@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.BlockSpec;
+import cs.vt.analysis.analyzer.nodes.CustomBlock;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
@@ -199,18 +200,7 @@ public class Parser {
 		}
 
 		if (command.equals("procDef")) { // CustomBlock
-			Block customBlockArg = new Block();
-			BlockSpec customBlockSpec = CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC
-					.get((String) blockArray.get(1));
-			customBlockArg.setCommand(command);
-			customBlockArg.setBlockSpec(customBlockSpec);
-			customBlockArg.setParent(resultBlock);
-			customBlockArg.setArgs(new ArrayList<Object>());
-			args.add(customBlockArg);
-			resultBlock.setCommand(command);
-			resultBlock.setBlockSpec(blockSpec);
-			resultBlock.setArgs(args);
-			return resultBlock;
+			return new CustomBlock(blockArray);
 		}
 		blockArray.remove(0);
 

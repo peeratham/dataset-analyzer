@@ -9,7 +9,7 @@ import org.junit.Test;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.Util;
 
-public class TooBroadVariableScopeTest {
+public class BroadVariableScopeTest {
 
 	private ScratchProject project;
 
