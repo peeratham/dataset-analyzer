@@ -24,16 +24,8 @@ public class TooBroadVariableScopeTest {
 	}
 
 	@Test
-	public void testVariableScopeVisitor() {
-		BroadVarScopeVisitor broadScope = new BroadVarScopeVisitor();  
-		assertNotNull(broadScope);
-	}
-	
-	@Test
-	public void testDetectIfGlobalIsUsedOnlyInOneScriptable() throws AnalysisException {
-		VisitorBasedAnalyzer analyzer = new VisitorBasedAnalyzer();
-		BroadVarScopeVisitor broadScopeVisitor = new BroadVarScopeVisitor();
-		analyzer.addAnalysisVisitor(broadScopeVisitor);
+	public void testDetectIfGlobalIsUsedOnlyInOneScriptable() throws AnalysisException{
+		BroadVarScopeAnalyzer analyzer = new BroadVarScopeAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
 		System.out.println(analyzer.getReport().getJSONReport());
