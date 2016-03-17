@@ -1,8 +1,10 @@
-package cs.vt.analysis.analyzer.analysis;
+package cs.vt.analysis.analyzer;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import cs.vt.analysis.analyzer.analysis.Analyzer;
 
 public class AnalysisConfigurator {
 
@@ -22,17 +24,9 @@ public class AnalysisConfigurator {
 	public void addAnalysis(String classURL) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		Class klass = Class.forName(classURL);
 		analyzerClasess.add(klass);
-//		AnalysisVisitor analysisVisitor = (AnalysisVisitor) Class.forName(classURL).newInstance();
-//		analyzer.addAnalysisVisitor(analysisVisitor);
-//		analyzers.add(analyzer);
 	}
-
-
 	
 	public List<Class> listAnalyzers(){
 		return analyzerClasess;
 	}
-	
-
-
 }

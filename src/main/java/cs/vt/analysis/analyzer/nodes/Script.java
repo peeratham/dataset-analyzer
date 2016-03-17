@@ -81,4 +81,22 @@ public class Script implements Visitable {
 		
 	}
 
+	public HashSet<String> getVariables() {
+		HashSet<String> vars = new HashSet<String>();
+		for (Block b : this.blocks) {
+			collectVars(b, vars);
+		}
+		
+		return vars;
+	}
+
+	private void collectVars(Block block, HashSet<String> vars) {
+	
+		
+	}
+	
+	
+	
+	
+
 }

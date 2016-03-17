@@ -25,7 +25,7 @@ public class HardCodedSequenceTest {
 
 	@Test
 	public void testDetectHardCodedSequence() throws AnalysisException {
-		Analyzer analyzer = new HardCodedSequence();
+		Analyzer analyzer = new HardCodedSequenceAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();	
 		System.out.println(analyzer);

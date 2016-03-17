@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import cs.vt.analysis.analyzer.analysis.visitors.AnalysisVisitor;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;

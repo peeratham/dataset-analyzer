@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONObject;
 
-import cs.vt.analysis.analyzer.analysis.AnalysisConfigurator;
 import cs.vt.analysis.analyzer.analysis.AnalysisException;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 
@@ -40,7 +39,7 @@ public class Main {
         
         File datasetDirectory = config.getDatasetDirectory();
        
-        BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
+        AnalysisManager blockAnalyzer = new AnalysisManager();
         
         for(File f: datasetDirectory.listFiles()){
         	try {

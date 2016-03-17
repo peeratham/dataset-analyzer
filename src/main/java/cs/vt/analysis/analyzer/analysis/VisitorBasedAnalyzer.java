@@ -1,12 +1,13 @@
 package cs.vt.analysis.analyzer.analysis;
 
 
+import cs.vt.analysis.analyzer.analysis.visitors.AnalysisVisitor;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
 
-public class VisitorBasedAnalyzer extends BaseAnalyzer {
+public class VisitorBasedAnalyzer extends Analyzer {
 	public ScratchProject project;
 	public AnalysisVisitor analysisVisitor;
 	

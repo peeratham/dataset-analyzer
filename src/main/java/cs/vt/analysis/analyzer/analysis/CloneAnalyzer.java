@@ -12,7 +12,7 @@ import cs.vt.analysis.analyzer.visitor.TopDownSubTreeCollector;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
-public class CloneAnalyzer extends BaseAnalyzer{
+public class CloneAnalyzer extends Analyzer{
 	private AnalysisReport report = new AnalysisReport();
 	private ArrayList<Block> subtreeList;
 	private HashMap<Integer, ArrayList<Block>> cloneDictionary = new HashMap<Integer, ArrayList<Block>>();

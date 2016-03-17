@@ -10,24 +10,23 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import cs.vt.analysis.analyzer.analysis.AnalysisConfigurator;
 import cs.vt.analysis.analyzer.analysis.AnalysisException;
-import cs.vt.analysis.analyzer.analysis.AnalysisVisitor;
 import cs.vt.analysis.analyzer.analysis.Analyzer;
 import cs.vt.analysis.analyzer.analysis.VisitorBasedAnalyzer;
+import cs.vt.analysis.analyzer.analysis.visitors.AnalysisVisitor;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
-public class BlockAnalyzer {
+public class AnalysisManager {
 	JSONParser jsonParser;
 	Visitor visitor;
 	String input;
 	private AnalysisConfigurator config = null;
 	private int projectID;
 	
-	public BlockAnalyzer(){
+	public AnalysisManager(){
 		jsonParser = new JSONParser();
         
 	}
@@ -122,7 +121,7 @@ public class BlockAnalyzer {
 
 	
 	public static void main(String[] args){
-		BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
+		AnalysisManager blockAnalyzer = new AnalysisManager();
 		String src = null;
 		int projectID = 97552510;
 		try {

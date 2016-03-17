@@ -1,6 +1,6 @@
 package cs.vt.analysis.analyzer.analysis;
 
-public class HardCodedSequence extends BaseAnalyzer{
+public class HardCodedSequenceAnalyzer extends Analyzer{
 
 	private AnalysisReport report = new AnalysisReport();
 	

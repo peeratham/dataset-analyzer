@@ -29,7 +29,7 @@ public class TestDistanceBasedAnalysis {
 	@Test
 	public void getAllScriptLocationsForASprite(){
 		Scriptable sprite1 = project.getScriptable("Sprite1");
-		ArrayList<Coordinate> coordList = DistanceBasedAnalysis.getLocationOfScriptsForScriptable(sprite1);
+		ArrayList<Coordinate> coordList = DistanceBasedAnalyzer.getLocationOfScriptsForScriptable(sprite1);
 		System.out.println(coordList);
 	}
 	
@@ -45,10 +45,10 @@ public class TestDistanceBasedAnalysis {
 
 	@Test
 	public void extractDictionaryOfScriptProperties() throws AnalysisException {
-		DistanceBasedAnalysis analyzer = new DistanceBasedAnalysis();
+		DistanceBasedAnalyzer analyzer = new DistanceBasedAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-		try{Thread.sleep(10000);}catch(InterruptedException e){}
+//		try{Thread.sleep(10000);}catch(InterruptedException e){}
 	}
 	
 	

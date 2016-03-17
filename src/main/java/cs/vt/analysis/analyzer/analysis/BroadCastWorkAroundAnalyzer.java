@@ -1,5 +1,4 @@
 package cs.vt.analysis.analyzer.analysis;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,9 +11,7 @@ import cs.vt.analysis.analyzer.visitor.TopDown;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
-
-
-public class BroadCastWorkAround extends BaseAnalyzer {
+public class BroadCastWorkAroundAnalyzer extends Analyzer {
 	Map<String, HashSet<Object>> varMap = new HashMap<String, HashSet<Object>>();
 	HashSet<String> mayNotBeFlag = new HashSet<String>();
 	HashSet<String> pollingVars = new HashSet<String>();
@@ -31,16 +28,12 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 				}else{
 					valueSet.add(block.getArgs().get(1));
 				}
-				
 			}
 			if(block.getCommand().equals("changeVar:by:")){
 				mayNotBeFlag.add(block.getArgs().get(0).toString());
 			}
 		}
 	}
-	
-
-	
 	
 	@Override
 	public void analyze() throws AnalysisException {
@@ -52,8 +45,7 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 			for(Block setVar :AnalysisUtil.getBlockInSequence(loopBlock, "setVar:to:")){
 				setVarNames.add((String) setVar.getArgs().get(0));
 			}
-			
-			
+
 			HashSet<String> waitUntilVarNames = new HashSet<String>();
 			ArrayList<Block> waitUntilBlocksInForever =  AnalysisUtil.getBlockInSequence(loopBlock, "doWaitUntil");
 			for(Block wait: waitUntilBlocksInForever){
@@ -61,17 +53,13 @@ public class BroadCastWorkAround extends BaseAnalyzer {
 				if(!varBlocks.isEmpty()){
 					Block readVar = varBlocks.get(0);
 					waitUntilVarNames.add((String) readVar.getArgs().get(0));
-				}
-				
+				}				
 			}
 			
 			waitUntilVarNames.retainAll(setVarNames);
 			if(!waitUntilVarNames.isEmpty()){
 				report.addRecord(Arrays.toString(waitUntilVarNames.toArray())+"@"+loopBlock.getBlockPath().toString());
 			}
-			
-			
-			
 		}
 	}
 

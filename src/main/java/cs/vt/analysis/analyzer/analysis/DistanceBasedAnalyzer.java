@@ -8,7 +8,7 @@ import java.util.Map;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 
-public class DistanceBasedAnalysis extends BaseAnalyzer {
+public class DistanceBasedAnalyzer extends Analyzer {
 	ArrayList<DistanceMatrix> matrixList = new ArrayList<DistanceMatrix>();
 	
 	

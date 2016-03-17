@@ -25,7 +25,7 @@ public class BroadCastWorkAroundTest {
 
 	@Test
 	public void detectFlagVariables() throws AnalysisException {
-		Analyzer analyzer = new BroadCastWorkAround();
+		Analyzer analyzer = new BroadCastWorkAroundAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();	
 		System.out.println(analyzer);

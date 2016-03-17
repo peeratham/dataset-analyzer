@@ -9,9 +9,9 @@ import org.json.simple.JSONObject;
 
 public class AnalysisReport {
 
-
 	private int projectID;
 	String title;
+	
 	public String getTitle() {
 		return title;
 	}
@@ -53,20 +53,14 @@ public class AnalysisReport {
 		summary.put("count", result.size());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject getJSONReport(){
 		generateSummary();
 		JSONObject container = new JSONObject();
-//		JSONObject report = new JSONObject();
 		container.put("name",title);
-//		container.put("ProjectID", projectID);
-//		report.put("Summary", summary);
 		container.put("records", result);
-//		container.put("Report",report);
-		
 		return container;
 	}
-	
-
 	
 	public void addRecord(String record) {
 		if(!result.contains(record)){

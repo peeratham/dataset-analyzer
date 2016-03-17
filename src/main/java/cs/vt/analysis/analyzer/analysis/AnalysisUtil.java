@@ -70,10 +70,5 @@ public class AnalysisUtil  {
 		findBlockInSequenceHelper(block, command, result);
 		return result;
 	}
-	
-
-	
-
-
 
 }

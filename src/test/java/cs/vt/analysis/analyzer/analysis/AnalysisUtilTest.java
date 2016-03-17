@@ -1,6 +1,6 @@
 package cs.vt.analysis.analyzer.analysis;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +41,16 @@ public class AnalysisUtilTest {
 		ArrayList<Block> allForever = AnalysisUtil.findBlock(project, "doForever");
 		ArrayList<Block> doUntil = AnalysisUtil.getBlockInSequence(allForever.get(0),"doWaitUntil");
 		assertEquals(2,doUntil.size());
+	}
+	
+	@Test
+	public void getAllVariables() {
+		
+	}
+	
+	@Test
+	public void getAllMessages() {
+		
 	}
 
 }
