@@ -37,7 +37,7 @@ public class BroadVarScopeAnalyzer extends Analyzer {
 		for(String varCommand : varRelatedCommands){
 			ArrayList<Block> varBlocks = Collector.collect(new Evaluator.BlockCommand(varCommand), project);
 			for (Block block : varBlocks) {
-				List<Object> parts = block.getBlockSpec().getParts();
+				List<Object> parts = block.getBlockType().getParts();
 				Iterator<Object> args = block.getArgs().iterator();
 				for (int i = 0; i < parts.size(); i++) {
 					

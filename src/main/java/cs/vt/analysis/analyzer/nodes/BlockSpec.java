@@ -15,9 +15,9 @@ public class BlockSpec {
 	private String shape;
 	private String command;
 	private String spec;
-	private List<Object> defaults;
+	private ArrayList<Object> defaults;
 	private String flag;
-	private List<Object> parts;
+	private ArrayList<Object> parts;
 
 
 
@@ -41,7 +41,7 @@ public class BlockSpec {
 		this.spec = spec;
 	}
 
-	public void setDefaults(List<Object> defaults) {
+	public void setDefaults(ArrayList<Object> defaults) {
 		this.defaults = defaults;
 	}
 
@@ -49,7 +49,7 @@ public class BlockSpec {
 		this.flag = flag;
 	}
 
-	public void setParts(List<Object> parts) {
+	public void setParts(ArrayList<Object> parts) {
 		this.parts = parts;
 	}
 
@@ -75,7 +75,7 @@ public class BlockSpec {
 		return spec;
 	}
 	
-	public List<Object> getParts() {
+	public ArrayList<Object> getParts() {
 		return parts;
 	}
 	
@@ -109,7 +109,7 @@ public class BlockSpec {
 		return defaults;
 	}
 
-	public static List<Object> parseToParts(String spec) {
+	public static ArrayList<Object> parseToParts(String spec) {
 		String pattern = "(%.(?:\\.[A-z]+)?)";
 		Pattern r = Pattern.compile(pattern);
 		Matcher m = r.matcher(spec);
@@ -127,5 +127,9 @@ public class BlockSpec {
 			result.add(spec.substring(end,spec.length()));
 		}
 		return result;
+	}
+
+	public String getCategory() {
+		return category;
 	}
 }

@@ -118,7 +118,7 @@ public class CommandLoader {
             	String flag = (String)blockSpec.get(1);
             	Integer categoryID = ((Long)blockSpec.get(2)).intValue();
             	String name = (String)blockSpec.get(3);
-            	List<Object> defaults = new ArrayList<Object>(blockSpec.subList(4, blockSpec.size()));
+            	ArrayList<Object> defaults = new ArrayList<Object>(blockSpec.subList(4, blockSpec.size()));
             	String shape = SHAPE_FLAGS.get(flag);
             	String category = CATEGORY_IDS.get(categoryID);
             	
@@ -139,7 +139,7 @@ public class CommandLoader {
 				bSpec.setCommand(name);
 				bSpec.setSpec(spec);
 				bSpec.setDefaults(defaults);
-				List<Object> parts = BlockSpec.parseToParts(spec);
+				ArrayList<Object> parts = BlockSpec.parseToParts(spec);
 				bSpec.setParts(parts);
             	COMMAND_TO_BLOCKSPEC.put(name, bSpec);
             	COMMAND_TO_INDEX.put(name,indexCount++);

@@ -173,6 +173,7 @@ public class Parser {
 		return script;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Block loadBlock(Object b) throws ParsingException {
 		JSONArray blockArray = (JSONArray) b;
 		Block resultBlock = new Block();
@@ -181,37 +182,37 @@ public class Parser {
 
 		String command = (String) blockArray.get(0);
 		BlockSpec blockSpec;
+		
+		if (command.equals("procDef")) { // CustomBlock
+			return Block.makeCustomBlock(blockArray);
+//			return new CustomBlock(blockArray);
+		}
 
 		if (command.equals("call")) { // CustomBlockType call
-			String signature = (String) blockArray.remove(1);
+			String customSpecStr = (String) blockArray.remove(1);
 			blockSpec = CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC
-					.get(signature);
+					.get(customSpecStr);
 			if (blockSpec == null) {
-				throw new ParsingException("Custom Block: " + signature
+				throw new ParsingException("Custom Block: " + customSpecStr
 						+ " is not defined");
 			}
-		} else {
+		} else { // Normal Block
 			blockSpec = CommandLoader.COMMAND_TO_BLOCKSPEC.get(command);
-
 			if (!command.equals("Position") && blockSpec == null) {
 				throw new ParsingException("Block: " + command
 						+ " is not defined");
 			}
 		}
 
-		if (command.equals("procDef")) { // CustomBlock
-			return new CustomBlock(blockArray);
-		}
+		resultBlock.setCommand(command);
+		resultBlock.setBlockType(blockSpec);
 		blockArray.remove(0);
 
 		Object arg = null;
 		for (int argi = 0; argi < blockArray.size(); argi++) {
 			if (blockArray.get(argi) instanceof JSONArray) {
-				if (((JSONArray) blockArray.get(argi)).get(0) instanceof JSONArray) { // nested
-																						// blocks
-					arg = new ArrayList<Block>();// stack shape insert (nested
-													// blocks) will be list of
-													// blocks
+				if (((JSONArray) blockArray.get(argi)).get(0) instanceof JSONArray) { // nested blocks
+					arg = new ArrayList<Block>();// stack shape insert (nested blocks) will be list of blocks
 					JSONArray blocks = (JSONArray) blockArray.get(argi); // it's
 																			// a
 																			// list
@@ -219,10 +220,10 @@ public class Parser {
 																			// blocks
 
 					Block previous = null;
-					Iterator blockSequenceIter = blocks.iterator();
+					Iterator<Block> blockSequenceIter = blocks.iterator();
 					while (blockSequenceIter.hasNext()) {
 						Block current = loadBlock(blockSequenceIter.next());
-						((List) arg).add(current);
+						((List<Block>) arg).add(current);
 						if (previous != null) {
 							previous.setNextBlock(current);
 						}
@@ -243,8 +244,7 @@ public class Parser {
 			args.add(arg);
 		}
 
-		resultBlock.setCommand(command);
-		resultBlock.setBlockSpec(blockSpec);
+
 		resultBlock.setArgs(args);
 
 		return resultBlock;
