@@ -1,4 +1,4 @@
-package cs.vt.analysis.analyzer.analysis;
+package cs.vt.analysis.visual;
 
 import javax.swing.JFrame;
 

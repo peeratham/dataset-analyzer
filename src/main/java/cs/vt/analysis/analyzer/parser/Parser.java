@@ -12,7 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import cs.vt.analysis.analyzer.nodes.Block;
-import cs.vt.analysis.analyzer.nodes.BlockSpec;
+import cs.vt.analysis.analyzer.nodes.BlockType;
 import cs.vt.analysis.analyzer.nodes.CustomBlock;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
@@ -181,7 +181,7 @@ public class Parser {
 		ArrayList<Object> args = new ArrayList<Object>();
 
 		String command = (String) blockArray.get(0);
-		BlockSpec blockSpec;
+		BlockType blockSpec;
 		
 		if (command.equals("procDef")) { // CustomBlock
 			return Block.makeCustomBlock(blockArray);
@@ -255,7 +255,7 @@ public class Parser {
 			throws ParsingException {
 
 		try {
-			BlockSpec customBlockSpec = BlockSpec
+			BlockType customBlockSpec = BlockType
 					.parseCustomBlockSpec(firstBlockArray);
 			CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC.put(
 					(String) firstBlockArray.get(1), customBlockSpec);

@@ -22,15 +22,17 @@ public class BroadCastWorkAroundAnalyzer extends Analyzer {
 		public void visitBlock(Block block) throws VisitFailure {
 			super.visitBlock(block);
 			if(block.getCommand().equals("setVar:to:")){
-				HashSet<Object> valueSet = varMap.putIfAbsent(block.getArgs().get(0).toString(), new HashSet<Object>());
+				Block varBlock = block;
+				HashSet<Object> valueSet = varMap.putIfAbsent(varBlock.arg("varName"), new HashSet<Object>());
 				if(valueSet==null){
-					varMap.get(block.getArgs().get(0).toString()).add(block.getArgs().get(1));
+					varMap.get(varBlock.arg("varName")).add(varBlock.arg("value"));
 				}else{
-					valueSet.add(block.getArgs().get(1));
+					valueSet.add(varBlock.arg("value"));
 				}
 			}
 			if(block.getCommand().equals("changeVar:by:")){
-				mayNotBeFlag.add(block.getArgs().get(0).toString());
+				Block varBlock = block;
+				mayNotBeFlag.add(block.arg("varName"));
 			}
 		}
 	}
@@ -41,27 +43,27 @@ public class BroadCastWorkAroundAnalyzer extends Analyzer {
 		ArrayList<Block> foreverBlocks = AnalysisUtil.findBlock(project, "doForever");	
 		for(Block loopBlock: foreverBlocks){
 			HashSet<String> setVarNames = new HashSet<String>();
-
-			for(Block setVar :AnalysisUtil.getBlockInSequence(loopBlock, "setVar:to:")){
-				setVarNames.add((String) setVar.getArgs().get(0));
+			for(Block setVar :AnalysisUtil.getVarDefBlocks(loopBlock)){
+				setVarNames.add((String) setVar.arg("varName"));
 			}
 
 			HashSet<String> waitUntilVarNames = new HashSet<String>();
-			ArrayList<Block> waitUntilBlocksInForever =  AnalysisUtil.getBlockInSequence(loopBlock, "doWaitUntil");
+			ArrayList<Block> waitUntilBlocksInForever = AnalysisUtil.findBlock(loopBlock, "doWaitUntil");
 			for(Block wait: waitUntilBlocksInForever){
-				ArrayList<Block> varBlocks = AnalysisUtil.findBlock(wait, "readVariable");
+				ArrayList<Block> varBlocks = AnalysisUtil.getVarRefBlocks(wait);
 				if(!varBlocks.isEmpty()){
 					Block readVar = varBlocks.get(0);
-					waitUntilVarNames.add((String) readVar.getArgs().get(0));
+					waitUntilVarNames.add((String) readVar.arg("varName"));
 				}				
 			}
-			
+
 			waitUntilVarNames.retainAll(setVarNames);
 			if(!waitUntilVarNames.isEmpty()){
 				report.addRecord(Arrays.toString(waitUntilVarNames.toArray())+"@"+loopBlock.getBlockPath().toString());
 			}
 		}
 	}
+	
 
 	private void collectFlagVars() throws AnalysisException {
 		FlagVarCollectorVisitor flagCollector = new FlagVarCollectorVisitor();

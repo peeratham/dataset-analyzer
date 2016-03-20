@@ -7,6 +7,7 @@ import java.util.Map;
 
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
+import cs.vt.analysis.visual.DistanceMatrix;
 
 public class DistanceBasedAnalyzer extends Analyzer {
 	ArrayList<DistanceMatrix> matrixList = new ArrayList<DistanceMatrix>();

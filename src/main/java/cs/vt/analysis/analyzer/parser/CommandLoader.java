@@ -17,15 +17,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import cs.vt.analysis.analyzer.Main;
-import cs.vt.analysis.analyzer.nodes.BlockSpec;
+import cs.vt.analysis.analyzer.nodes.BlockType;
 
 public class CommandLoader {
 	public static Map<String, String> SHAPE_FLAGS = new HashMap<String, String>();
 	public static Map<Integer, String> CATEGORY_IDS = new HashMap<Integer, String>();
 	public static Map<String, String> INSERT_SHAPES = new HashMap<String, String>();
-	public static Map<String, BlockSpec> COMMAND_TO_BLOCKSPEC = new HashMap<String,BlockSpec>();
+	public static Map<String, BlockType> COMMAND_TO_BLOCKSPEC = new HashMap<String,BlockType>();
 	public static Map<String, Integer> COMMAND_TO_INDEX = new HashMap<String,Integer>();
-	public static Map<String, BlockSpec> COMMAND_TO_CUSTOM_BLOCKSPEC = new HashMap<String,BlockSpec>();
+	public static Map<String, BlockType> COMMAND_TO_CUSTOM_BLOCKSPEC = new HashMap<String,BlockType>();
 	static int indexCount = 1;
 	
 	public static void initShapFlags(){
@@ -132,14 +132,14 @@ public class CommandLoader {
 					spec += "%s\nelse%s";
 				}
 				
-				BlockSpec bSpec = new BlockSpec();
+				BlockType bSpec = new BlockType();
 				bSpec.setCategory(category);
 				bSpec.setFlag(flag);
 				bSpec.setShape(shape);
 				bSpec.setCommand(name);
 				bSpec.setSpec(spec);
 				bSpec.setDefaults(defaults);
-				ArrayList<Object> parts = BlockSpec.parseToParts(spec);
+				ArrayList<Object> parts = BlockType.parseToParts(spec);
 				bSpec.setParts(parts);
             	COMMAND_TO_BLOCKSPEC.put(name, bSpec);
             	COMMAND_TO_INDEX.put(name,indexCount++);

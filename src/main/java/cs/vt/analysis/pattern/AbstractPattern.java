@@ -1,4 +1,4 @@
-package cs.vt.analysis.analyzer.nodes;
+package cs.vt.analysis.pattern;
 
 import java.util.ArrayList;
 import java.util.List;

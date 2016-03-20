@@ -15,7 +15,6 @@ import cs.vt.analysis.analyzer.analysis.TestUtil;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
-import cs.vt.analysis.analyzer.nodes.VisitablePatternCollection;
 import cs.vt.analysis.analyzer.parser.Parser;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
@@ -26,6 +25,7 @@ import cs.vt.analysis.analyzer.visitor.TopDownFragmentCollector;
 import cs.vt.analysis.analyzer.visitor.Try;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
+import cs.vt.analysis.pattern.VisitablePatternCollection;
 
 public class VisitableSquencePatternCollectionTest {
 	JSONParser jsonParser = new JSONParser();

@@ -3,6 +3,7 @@ package cs.vt.analysis.analyzer.analysis;
 import java.util.ArrayList;
 
 import cs.vt.analysis.analyzer.nodes.Block;
+import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Visitable;
 import cs.vt.analysis.analyzer.visitor.Identity;
 import cs.vt.analysis.analyzer.visitor.TopDown;
@@ -26,7 +27,6 @@ public class AnalysisUtil  {
 		try {
 			node.accept(v);
 		} catch (VisitFailure e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return blocks;
@@ -69,6 +69,17 @@ public class AnalysisUtil  {
 		ArrayList<Block> result = new ArrayList<Block>();
 		findBlockInSequenceHelper(block, command, result);
 		return result;
+	}
+
+
+	public static ArrayList<Block> getVarDefBlocks(Visitable root) {
+		ArrayList<Block> varBlocks = findBlock(root, "setVar:to:");
+		return varBlocks;
+	}
+
+	public static ArrayList<Block> getVarRefBlocks(Visitable root) {
+		ArrayList<Block> varBlocks = findBlock(root, "readVariable");
+		return varBlocks;
 	}
 
 }

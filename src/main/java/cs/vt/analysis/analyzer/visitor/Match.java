@@ -10,8 +10,8 @@ import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 import cs.vt.analysis.analyzer.nodes.Visitable;
-import cs.vt.analysis.analyzer.nodes.VisitablePattern;
-import cs.vt.analysis.analyzer.nodes.VisitableScriptPattern;
+import cs.vt.analysis.pattern.VisitablePattern;
+import cs.vt.analysis.pattern.VisitableScriptPattern;
 
 public class Match implements Visitor {
 	private VisitablePattern pattern;

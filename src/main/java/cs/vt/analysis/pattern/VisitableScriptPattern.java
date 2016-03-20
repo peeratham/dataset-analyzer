@@ -1,7 +1,11 @@
-package cs.vt.analysis.analyzer.nodes;
+package cs.vt.analysis.pattern;
 
 import java.util.List;
 import java.util.Map;
+
+import cs.vt.analysis.analyzer.nodes.Block;
+import cs.vt.analysis.analyzer.nodes.Script;
+import cs.vt.analysis.analyzer.nodes.Visitable;
 
 public class VisitableScriptPattern extends VisitablePattern{
 	

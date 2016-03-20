@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import cs.vt.analysis.visual.DistanceMatrix;
+
 public class TestDistanceMatrix {
 
 	@Before

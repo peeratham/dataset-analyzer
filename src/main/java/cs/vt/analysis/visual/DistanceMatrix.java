@@ -1,4 +1,4 @@
-package cs.vt.analysis.analyzer.analysis;
+package cs.vt.analysis.visual;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,8 @@ import com.apporiented.algorithm.clustering.Cluster;
 import com.apporiented.algorithm.clustering.ClusteringAlgorithm;
 import com.apporiented.algorithm.clustering.DefaultClusteringAlgorithm;
 import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
+
+import cs.vt.analysis.analyzer.analysis.Coordinate;
 
 public class DistanceMatrix {
 	public HashMap<String, Coordinate> coords;

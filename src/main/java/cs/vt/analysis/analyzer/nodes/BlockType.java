@@ -10,7 +10,7 @@ import org.json.simple.JSONArray;
 import cs.vt.analysis.analyzer.parser.CommandLoader;
 import cs.vt.analysis.analyzer.parser.Insert;
 
-public class BlockSpec {
+public class BlockType {
 	private String category;
 	private String shape;
 	private String command;
@@ -21,7 +21,7 @@ public class BlockSpec {
 
 
 
-	public BlockSpec() {
+	public BlockType() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -53,7 +53,7 @@ public class BlockSpec {
 		this.parts = parts;
 	}
 
-	public BlockSpec(String category,String flag, String shape, String name, String spec, ArrayList<Object> defaults, List<Object> parts) {
+	public BlockType(String category,String flag, String shape, String name, String spec, ArrayList<Object> defaults, List<Object> parts) {
 		this.category = category;
 		this.flag = flag;
 		this.shape = shape;
@@ -79,8 +79,8 @@ public class BlockSpec {
 		return parts;
 	}
 	
-	public static BlockSpec parseCustomBlockSpec(JSONArray jsonCustomBlock){
-		BlockSpec blockSpec = new BlockSpec();
+	public static BlockType parseCustomBlockSpec(JSONArray jsonCustomBlock){
+		BlockType blockSpec = new BlockType();
 		blockSpec.command = (String)jsonCustomBlock.get(0);
     	blockSpec.shape = CommandLoader.SHAPE_FLAGS.get("h");
     	blockSpec.spec = (String)jsonCustomBlock.get(1);
@@ -132,4 +132,7 @@ public class BlockSpec {
 	public String getCategory() {
 		return category;
 	}
+	
 }
+
+

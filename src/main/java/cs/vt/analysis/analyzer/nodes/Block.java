@@ -14,7 +14,7 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 public class Block implements Visitable, Cloneable {
 
 	protected String command;
-	protected BlockSpec blockType;
+	protected BlockType blockType;
 	protected ArrayList<Object> args;
 	protected Object parent;
 
@@ -49,7 +49,7 @@ public class Block implements Visitable, Cloneable {
 	public Block() {
 	}
 
-	public Block(String command, BlockSpec blockSpec, ArrayList<Object> args) {
+	public Block(String command, BlockType blockSpec, ArrayList<Object> args) {
 		this.command = command;
 		this.args = args;
 		this.blockType = blockSpec;
@@ -71,7 +71,7 @@ public class Block implements Visitable, Cloneable {
 		this.previousBlock = previousBlock;
 	}
 
-	public BlockSpec getBlockType() {
+	public BlockType getBlockType() {
 		return blockType;
 	}
 
@@ -260,7 +260,7 @@ public class Block implements Visitable, Cloneable {
 
 	}
 
-	public void setBlockType(BlockSpec blockSpec) {
+	public void setBlockType(BlockType blockSpec) {
 		this.blockType = blockSpec;
 
 	}
@@ -403,7 +403,7 @@ public class Block implements Visitable, Cloneable {
 		defineBlock.parts = defineBlock.blockType.getParts();
 		
 		CustomBlock customBlockArg = new CustomBlock();
-		BlockSpec customBlockSpec = CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC
+		BlockType customBlockSpec = CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC
 				.get((String) blockArray.get(1));
 		customBlockArg.setCommand(""); //to delete
 		customBlockArg.setBlockType(customBlockSpec);
@@ -412,6 +412,25 @@ public class Block implements Visitable, Cloneable {
 		defineBlock.args.add(customBlockArg);
 		return defineBlock;
 		
+	}
+
+	public String arg(String name) {
+		String result = "";
+		
+		switch (name) {
+        case "varName":
+        	if(command.equals("setVar:to:")||command.equals("readVariable")){
+        		result = args.get(0).toString();
+        	}
+        	break;
+        case "value":
+        	if(command.equals("setVar:to:")){
+        		return args.get(1).toString();
+        	}
+        	break;
+		}
+		
+		return result;
 	}
 
 }
