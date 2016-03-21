@@ -51,22 +51,14 @@ public class All implements Visitor{
 	}
 
 	public void visitBlock(Block block) throws VisitFailure{
-		if(block.hasNestedBlocks()){
-			for(ArrayList<Block> group: block.getNestedGroup()){
-				for(Block b : group){
+		for(Object arg: block.getArgs()){
+			if(arg instanceof ArrayList){
+				for(Block b: (ArrayList<Block>)arg){
 					b.accept(v);
 				}
-			}	
-		}else{
-			try{
-			for(Object arg: block.getArgs()){
-				if(arg instanceof Block){
-					((Block) arg).accept(v);
-				}
-				
 			}
-			}catch(Exception e){
-				e.printStackTrace();
+			if(arg instanceof Block){
+				((Block) arg).accept(v);
 			}
 		}
 		
