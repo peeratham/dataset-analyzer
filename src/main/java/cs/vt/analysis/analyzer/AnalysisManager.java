@@ -13,10 +13,10 @@ import org.json.simple.parser.ParseException;
 import cs.vt.analysis.analyzer.analysis.AnalysisException;
 import cs.vt.analysis.analyzer.analysis.Analyzer;
 import cs.vt.analysis.analyzer.analysis.VisitorBasedAnalyzer;
-import cs.vt.analysis.analyzer.analysis.visitors.AnalysisVisitor;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
+import cs.vt.analysis.analyzer.visitor.AnalysisVisitor;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
 public class AnalysisManager {

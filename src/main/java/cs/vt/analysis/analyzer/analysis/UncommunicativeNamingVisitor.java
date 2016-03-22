@@ -1,10 +1,10 @@
 package cs.vt.analysis.analyzer.analysis;
 
-import cs.vt.analysis.analyzer.analysis.visitors.AnalysisVisitor;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
+import cs.vt.analysis.analyzer.visitor.AnalysisVisitor;
 import cs.vt.analysis.analyzer.visitor.One;
 import cs.vt.analysis.analyzer.visitor.TopDown;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;

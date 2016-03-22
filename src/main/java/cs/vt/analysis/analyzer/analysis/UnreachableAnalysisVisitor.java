@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-import cs.vt.analysis.analyzer.analysis.visitors.AnalysisVisitor;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
+import cs.vt.analysis.analyzer.visitor.AnalysisVisitor;
 import cs.vt.analysis.analyzer.visitor.Sequence;
 import cs.vt.analysis.analyzer.visitor.TopDown;
 import cs.vt.analysis.analyzer.visitor.VisitFailure;

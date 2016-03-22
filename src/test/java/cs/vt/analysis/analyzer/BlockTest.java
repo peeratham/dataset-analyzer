@@ -185,4 +185,11 @@ public class BlockTest {
 		assertFalse(b1.commandMatches(b3));
 	}
 	
+	@Test
+	public void testParsingDoIf() throws ParseException, ParsingException {
+		String input = "[\"doIf\", [\"=\", [\"readVariable\", \"b\"], [\"readVariable\", \"a\"]], [[\"forward:\", 10]]]";
+		JSONArray jsonInput= (JSONArray) jsonParser.parse(input);
+		Block b = Parser.loadBlock(jsonInput);
+	}
+	
 }
