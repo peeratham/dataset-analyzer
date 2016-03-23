@@ -286,7 +286,7 @@ public class MasteryAnalyzer extends Analyzer {
 	public AnalysisReport getReport() {
 		report.setTitle("Mastery Level");
 		JSONObject masteryRecord = new JSONObject();
-		masteryRecord.put("simple-mastery", JSONObject.toJSONString(concepts));
+		masteryRecord.put("CT-Mastery", JSONObject.toJSONString(concepts));
 		report.addRecord(masteryRecord.toJSONString());
 		return report;
 	}
