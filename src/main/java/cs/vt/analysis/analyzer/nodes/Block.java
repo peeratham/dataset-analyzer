@@ -428,9 +428,23 @@ public class Block implements Visitable, Cloneable {
         		return args.get(1).toString();
         	}
         	break;
+        case "message":
+        	if(command.equals("whenIReceive")){
+        		return args.get(0).toString();
+        	}
+        	break;
+        case "backdrop":
+        	if(command.equals("backdrop")){
+        		return args.get(0).toString();
+        	}
+        	break;
 		}
 		
 		return result;
+	}
+
+	public Object getArgs(int i) {
+		return args.get(i);
 	}
 
 }
