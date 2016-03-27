@@ -62,6 +62,30 @@ public class TestDistanceMeasure {
 		assertEquals(0.5, dist2, 0.1);
 	}
 	
+	@Test
+	public void testDistanceBasedOnBlockHatType(){
+//		Scriptable sprite = project.getScriptable("sharedBlock");
+//		Script a = sprite.getScript(0);
+//		Script b = sprite.getScript(1);
+//		Script c = sprite.getScript(2);
+//		ScriptProperty pA = new ScriptProperty(a);
+//		ScriptProperty pB = new ScriptProperty(b);
+//		ScriptProperty pC = new ScriptProperty(c);
+//		double dist0 = new DistanceMeasure.SharedBlockBased().getDist(pA, pA);
+	}
+	
+	@Test
+	public void testDistanceBasedOnSharedCustomBlock(){
+		Scriptable sprite = project.getScriptable("sharedBlock");
+		Script a = sprite.getScript(0);
+		Script b = sprite.getScript(1);
+		Script c = sprite.getScript(2);
+		ScriptProperty pA = new ScriptProperty(a);
+		ScriptProperty pB = new ScriptProperty(b);
+		ScriptProperty pC = new ScriptProperty(c);
+		double dist0 = new DistanceMeasure.SharedBlockBased().getDist(pB, pC);
+		assertEquals(0.5, dist0, 0.1);
+	}
 
 	
 

@@ -10,7 +10,7 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 
 public class Scriptable implements Visitable {
 	String name;
-	List<Script> scripts;
+	ArrayList<Script> scripts;
 	private Map<String,Object> variables;
 
 	public Scriptable(){
@@ -45,7 +45,7 @@ public class Scriptable implements Visitable {
 		return scripts.get(index);
 	}
 	
-	public List<Script> getScripts(){
+	public ArrayList<Script> getScripts(){
 		return scripts;
 	}
 
