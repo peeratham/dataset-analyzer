@@ -16,7 +16,7 @@ import cs.vt.analysis.analyzer.parser.ParsingException;
 
 public class Main {
 	private static final String DATASET_DIR = "C:\\Users\\Peeratham\\workspace\\scratch-dataset";
-	private static final String ANALYSIS_OUTPUT_DIR = "C:\\Users\\Peeratham\\workspace\\analysis-output\\test";
+	private static final String ANALYSIS_OUTPUT_DIR = "C:\\Users\\Peeratham\\workspace\\analysis-output\\test-output";
 	static Logger logger = Logger.getLogger(Main.class);
 	
 	public static void main(String[] args) {

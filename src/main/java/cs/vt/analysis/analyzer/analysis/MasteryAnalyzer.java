@@ -58,9 +58,6 @@ public class MasteryAnalyzer extends Analyzer {
 		userInteractivity(blocks);
 		logic(blocks);
 		parallelization();
-		
-		System.out.println(concepts);
-		
 	}
 	
 	public void countSynchronization(HashMap<String,Integer> blocks){
