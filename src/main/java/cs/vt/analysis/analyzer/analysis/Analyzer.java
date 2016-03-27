@@ -8,5 +8,5 @@ public abstract class Analyzer {
 		this.project = project;
 	}
 	public abstract void analyze() throws AnalysisException;
-	public abstract AnalysisReport getReport();
+	public abstract Report getReport();
 }

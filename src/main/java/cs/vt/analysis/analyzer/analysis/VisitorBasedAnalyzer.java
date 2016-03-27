@@ -9,7 +9,7 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 
 public class VisitorBasedAnalyzer extends Analyzer {
 	public ScratchProject project;
-	public AnalysisVisitor analysisVisitor;
+	public AnalysisVisitor<ListAnalysisReport> analysisVisitor;
 	
 	
 	public void setProject(ScratchProject project){
@@ -32,8 +32,8 @@ public class VisitorBasedAnalyzer extends Analyzer {
 	}
 
 	@Override
-	public AnalysisReport getReport() {
-		AnalysisReport report =analysisVisitor.getReport();
+	public Report getReport() {
+		Report report =analysisVisitor.getReport();
 		report.setProjectID(project.getProjectID());
 		return report;
 	}

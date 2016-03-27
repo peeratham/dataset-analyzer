@@ -21,7 +21,7 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
  */
 
 public class MasteryAnalyzer extends Analyzer {
-	AnalysisReport report = new AnalysisReport();
+	DictAnalysisReport report = new DictAnalysisReport();
 	HashMap<String, Integer> blocks = new HashMap<String, Integer>();
 	HashMap<String, Integer> concepts= new HashMap<String, Integer>();
 	ArrayList<Script> allScripts = new ArrayList<Script>();
@@ -278,13 +278,13 @@ public class MasteryAnalyzer extends Analyzer {
 		return script.getBlocks().get(0);
 	}
 
-	@SuppressWarnings("unchecked")
+//	@SuppressWarnings("unchecked")
 	@Override
-	public AnalysisReport getReport() {
+	public Report getReport() {
 		report.setTitle("Mastery Level");
-		JSONObject masteryRecord = new JSONObject();
-		masteryRecord.put("CT-Mastery", concepts);
-		report.addRecord(masteryRecord.toJSONString());
+//		JSONObject masteryRecord = new JSONObject();
+//		masteryRecord.put("CT-Mastery", concepts);
+		report.addRecord(concepts);
 		return report;
 	}
 

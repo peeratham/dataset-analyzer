@@ -1,7 +1,7 @@
 package cs.vt.analysis.analyzer.visitor;
 
-import cs.vt.analysis.analyzer.analysis.AnalysisReport;
+import cs.vt.analysis.analyzer.analysis.Report;
 
-public interface AnalysisVisitor extends Visitor{
-	public AnalysisReport getReport();
+public interface AnalysisVisitor<Report> extends Visitor{
+	public Report getReport();
 }

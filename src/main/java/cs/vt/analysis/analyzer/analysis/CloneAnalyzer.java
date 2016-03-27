@@ -13,7 +13,7 @@ import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
 public class CloneAnalyzer extends Analyzer{
-	private AnalysisReport report = new AnalysisReport();
+	private ListAnalysisReport report = new ListAnalysisReport();
 	private ArrayList<Block> subtreeList;
 	private HashMap<Integer, ArrayList<Block>> cloneDictionary = new HashMap<Integer, ArrayList<Block>>();
 
@@ -72,7 +72,7 @@ public class CloneAnalyzer extends Analyzer{
 
 
 	@Override
-	public AnalysisReport getReport() {
+	public Report getReport() {
 		report.setTitle("Duplicate Code");
 		return report;
 	}

@@ -74,7 +74,7 @@ public class VisualOrganizationAnalyzer extends Analyzer {
 //	}
 
 	@Override
-	public AnalysisReport getReport() {
+	public Report getReport() {
 		// TODO Auto-generated method stub
 		return null;
 	}

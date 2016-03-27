@@ -13,7 +13,7 @@ import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.ParsingException;
 import cs.vt.analysis.analyzer.parser.Util;
 
-public class UncommunicativeNamingTest {
+public class TestDictAnalysisReport {
 
 	@Before
 	public void setUp() throws Exception {
@@ -24,15 +24,14 @@ public class UncommunicativeNamingTest {
 	}
 
 	@Test
-	public void detectDefaultSpriteDefaultNaming() throws IOException, ParseException, ParsingException, AnalysisException {
-		String projectSrc = Util.retrieveProjectOnline(97396677);
+	public void test() throws IOException, ParseException, ParsingException, AnalysisException {
+		String projectSrc = Util.retrieveProjectOnline(102707386);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
-		VisitorBasedAnalyzer analyzer = new VisitorBasedAnalyzer();
-		analyzer.addAnalysisVisitor(new UncommunicativeNamingVisitor());
+		Analyzer analyzer = new MasteryAnalyzer();
 		analyzer.setProject(project);
-		analyzer.analyze();
+		analyzer.analyze();	
 		System.out.println(analyzer.getReport().getJSONReport());
-//		assertEquals(analyzer.getReport().getRecordCounts(),4);
+		
 	}
 
 }

@@ -2,7 +2,7 @@ package cs.vt.analysis.analyzer.analysis;
 
 public class HardCodedSequenceAnalyzer extends Analyzer{
 
-	private AnalysisReport report = new AnalysisReport();
+	private Report report = new ListAnalysisReport();
 	
 	@Override
 	public void analyze() throws AnalysisException {
@@ -11,7 +11,7 @@ public class HardCodedSequenceAnalyzer extends Analyzer{
 	}
 
 	@Override
-	public AnalysisReport getReport() {
+	public Report getReport() {
 		report.setProjectID(project.getProjectID());
 		report.setTitle("HardCodedSequence");
 		return report;

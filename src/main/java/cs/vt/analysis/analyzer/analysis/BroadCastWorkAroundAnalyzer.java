@@ -15,7 +15,7 @@ public class BroadCastWorkAroundAnalyzer extends Analyzer {
 	Map<String, HashSet<Object>> varMap = new HashMap<String, HashSet<Object>>();
 	HashSet<String> mayNotBeFlag = new HashSet<String>();
 	HashSet<String> pollingVars = new HashSet<String>();
-	private AnalysisReport report = new AnalysisReport();
+	private ListAnalysisReport report = new ListAnalysisReport();
 	
 	private class FlagVarCollectorVisitor extends Identity {
 		@Override
@@ -84,7 +84,7 @@ public class BroadCastWorkAroundAnalyzer extends Analyzer {
 	}
 
 	@Override
-	public AnalysisReport getReport() {
+	public Report getReport() {
 		report.setProjectID(project.getProjectID());
 		report.setTitle("BroadCastWorkaround");
 		return report;

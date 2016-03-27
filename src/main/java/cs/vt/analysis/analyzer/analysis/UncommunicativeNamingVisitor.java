@@ -11,7 +11,7 @@ import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
 public class UncommunicativeNamingVisitor extends One implements AnalysisVisitor {
-	private AnalysisReport report = new AnalysisReport();
+	private ListAnalysisReport report = new ListAnalysisReport();
 	
 	public UncommunicativeNamingVisitor() {
 		super(null);
@@ -48,7 +48,7 @@ public class UncommunicativeNamingVisitor extends One implements AnalysisVisitor
 		visitor = new TopDown(new UncommunicativeNamingVisitorHelper());
 	}
 
-	public AnalysisReport getReport() {
+	public Report getReport() {
 		report.setTitle("Uncommunicative Naming");
 		return report;
 	}

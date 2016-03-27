@@ -18,7 +18,7 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisitor {
 	private Set<String> messages = new HashSet<String>();
 	private Stack<String> path = new Stack<String>();
-	private AnalysisReport report = new AnalysisReport();
+	private ListAnalysisReport report = new ListAnalysisReport();
 	
 	public UnreachableAnalysisVisitor(){
 		super(null,null);
@@ -64,7 +64,7 @@ public class UnreachableAnalysisVisitor extends Sequence implements AnalysisVisi
 		then = new TopDown(new UnreachableScriptDetector());
 	}
 	
-	public AnalysisReport getReport() {
+	public Report getReport() {
 		report.setTitle("Unreachable Code");
 		return report;
 	}

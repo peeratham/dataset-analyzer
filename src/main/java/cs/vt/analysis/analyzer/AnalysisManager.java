@@ -25,85 +25,95 @@ public class AnalysisManager {
 	String input;
 	private AnalysisConfigurator config = null;
 	private int projectID;
-	
-	public AnalysisManager(){
+
+	public AnalysisManager() {
 		jsonParser = new JSONParser();
-        
+
 	}
-	
-	public JSONObject analyze(String src) throws  ParsingException, AnalysisException {
+
+	public JSONObject analyze(String src) throws ParsingException,
+			AnalysisException {
 		JSONObject report = new JSONObject();
 		ArrayList<JSONObject> analyses = new ArrayList<JSONObject>();
-		if(config==null){
+		if (config == null) {
 			config = getDefaultConfig();
 		}
 		ScratchProject project = null;
 		try {
 			project = ScratchProject.loadProject(src);
 			projectID = project.getProjectID();
-			
-			
+
 			for (Class k : config.listAnalyzers()) {
 				Analyzer analyzer = null;
-				if(Arrays.asList(k.getInterfaces()).contains(AnalysisVisitor.class)){
+				if (Arrays.asList(k.getInterfaces()).contains(
+						AnalysisVisitor.class)) {
 					AnalysisVisitor v = (AnalysisVisitor) k.newInstance();
-					 analyzer = new VisitorBasedAnalyzer();
-					((VisitorBasedAnalyzer) analyzer).addAnalysisVisitor(v);	
-				}else{
+					analyzer = new VisitorBasedAnalyzer();
+					((VisitorBasedAnalyzer) analyzer).addAnalysisVisitor(v);
+				} else {
 					analyzer = (Analyzer) k.newInstance();
 				}
-				
+
 				analyzer.setProject(project);
-				
-				
-					try {
-						analyzer.analyze();
-					} catch (AnalysisException e) {
-						System.err.println("==>Error analyzing projectID: "+ projectID);
-						throw new AnalysisException("Analysis Error["+analyzer.getClass()+"]:\n"+e.getMessage());
-					}
-					analyzer.getReport().getJSONReport();
-					analyses.add(analyzer.getReport().getJSONReport());
-				
+
+				try {
+					analyzer.analyze();
+				} catch (AnalysisException e) {
+					System.err.println("==>Error analyzing projectID: "
+							+ projectID);
+					throw new AnalysisException("Analysis Error["
+							+ analyzer.getClass() + "]:\n" + e.getMessage());
+				}
+				analyzer.getReport().getJSONReport();
+				analyses.add(analyzer.getReport().getJSONReport());
+
 			}
+
 		} catch (ParseException e) {
-			System.err.println("==>Error parsing JSONObject of projectID: "+ projectID);
+			System.err.println("==>Error parsing JSONObject of projectID: "
+					+ projectID);
 			throw new ParsingException(e);
 		} catch (ParsingException e) {
-			System.err.println("==>Error parsing projectID: "+ projectID);
+			System.err.println("==>Error parsing projectID: " + projectID);
 			throw new ParsingException(e);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		
+
 		report.put("_id", projectID);
 		report.put("scriptCount", project.getScriptCount());
 		report.put("spriteCount", project.getSpriteCount());
-		for(JSONObject a: analyses){
+		for (JSONObject a : analyses) {
 			report.put(a.get("name"), a.get("records"));
 		}
-		
-		
+
 		return report;
-      
+
 	}
-	
-	public int getProjectID(){
+
+	public int getProjectID() {
 		return projectID;
 	}
-	
+
 	private AnalysisConfigurator getDefaultConfig() {
 		AnalysisConfigurator defaultConfig = new AnalysisConfigurator();
 		try {
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.MasteryAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAroundAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.CloneAnalyzer");
+			defaultConfig
+					.addAnalysis("cs.vt.analysis.analyzer.analysis.MasteryAnalyzer");
+			defaultConfig
+					.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
+			defaultConfig
+					.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
+			defaultConfig
+					.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAroundAnalyzer");
+			defaultConfig
+					.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
+			defaultConfig
+					.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeAnalyzer");
+			defaultConfig
+					.addAnalysis("cs.vt.analysis.analyzer.analysis.CloneAnalyzer");
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -111,17 +121,16 @@ public class AnalysisManager {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
 		return defaultConfig;
 	}
-	
+
 	private void setConfig(AnalysisConfigurator config) {
 		this.config = config;
-		
+
 	}
 
-	
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
 		String src = null;
 		int projectID = 97552510;
@@ -131,8 +140,10 @@ public class AnalysisManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		File path = new File("C:\\Users\\Peeratham\\workspace\\analysis-output", projectID+"-m-1");
+
+		File path = new File(
+				"C:\\Users\\Peeratham\\workspace\\analysis-output", projectID
+						+ "-m-1");
 		try {
 			String result = blockAnalyzer.analyze(src).toString();
 			System.out.println(result);
@@ -148,6 +159,5 @@ public class AnalysisManager {
 			e.printStackTrace();
 		}
 	}
-
 
 }

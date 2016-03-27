@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
-public class AnalysisReport {
+public class ListAnalysisReport extends Report {
 
 	private int projectID;
 	String title;
@@ -31,7 +31,7 @@ public class AnalysisReport {
 
 	List<String> result;
 	
-	public AnalysisReport(){
+	public ListAnalysisReport(){
 		result = new ArrayList<String>();
 		summary = new HashMap<String, Object>();
 	}
@@ -62,9 +62,9 @@ public class AnalysisReport {
 		return container;
 	}
 	
-	public void addRecord(String record) {
+	public void addRecord(Object record) {
 		if(!result.contains(record)){
-			result.add(record);
+			result.add(record.toString());
 		}
 		
 	}

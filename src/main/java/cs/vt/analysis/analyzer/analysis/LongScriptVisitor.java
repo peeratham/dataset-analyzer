@@ -12,7 +12,7 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 
 public class LongScriptVisitor extends One implements AnalysisVisitor {
 	private static final int LONG_SCRIPT_THRESHOLD = 5;
-	private AnalysisReport report = new AnalysisReport();
+	private ListAnalysisReport report = new ListAnalysisReport();
 	
 	public LongScriptVisitor() {
 		super(null);
@@ -37,7 +37,7 @@ public class LongScriptVisitor extends One implements AnalysisVisitor {
 	
 
 	
-	public AnalysisReport getReport() {
+	public Report getReport() {
 		report.setTitle("Too Long Script");
 		return report;
 	}

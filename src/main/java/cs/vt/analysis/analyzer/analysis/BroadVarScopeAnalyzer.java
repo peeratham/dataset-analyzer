@@ -16,7 +16,7 @@ import cs.vt.analysis.select.Evaluator;
 public class BroadVarScopeAnalyzer extends Analyzer {
 	public HashMap<String, HashSet<String>> globalVarRef = new HashMap<String, HashSet<String>>();
 	List<String> varRelatedCommands = new ArrayList<String>();
-	private AnalysisReport report = new AnalysisReport();
+	private ListAnalysisReport report = new ListAnalysisReport();
 	
 	public BroadVarScopeAnalyzer(){
 		varRelatedCommands.add("setVar:to:");
@@ -52,7 +52,7 @@ public class BroadVarScopeAnalyzer extends Analyzer {
 		}
 	}
 	@Override
-	public AnalysisReport getReport() {
+	public Report getReport() {
 		report.setTitle("Too Broad Variable Scope");
 		for (String varName: globalVarRef.keySet()) {
 			if(globalVarRef.get(varName).size()==1){
