@@ -114,6 +114,8 @@ public class AnalysisManager {
 					.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeAnalyzer");
 			defaultConfig
 					.addAnalysis("cs.vt.analysis.analyzer.analysis.CloneAnalyzer");
+			defaultConfig
+					.addAnalysis("cs.vt.analysis.analyzer.analysis.UnnecessaryBroadcastAnalyzer");
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
