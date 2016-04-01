@@ -42,7 +42,7 @@ public class BlockPath {
 	
 	@Override
 	public String toString(){
-		return String.join("/", path);
+		return String.join("|", path);
 	}
 
 }

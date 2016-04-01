@@ -29,7 +29,7 @@ public class TestUnnecessaryBroadcast {
 		analyzer.setProject(project);
 		analyzer.analyze();
 		ListAnalysisReport report = analyzer.getReport();
-		assertEquals(1,report.result.size());
+		assertEquals(1,report.resultJSON.size());
 		System.out.println(report.getJSONReport());
 	}
 

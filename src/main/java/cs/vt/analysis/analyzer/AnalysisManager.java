@@ -147,9 +147,9 @@ public class AnalysisManager {
 				"C:\\Users\\Peeratham\\workspace\\analysis-output", projectID
 						+ "-m-1");
 		try {
-			String result = blockAnalyzer.analyze(src).toString();
-			System.out.println(result);
-			FileUtils.writeStringToFile(path, result);
+			JSONObject result = blockAnalyzer.analyze(src);
+			System.out.println(result.toJSONString());
+			FileUtils.writeStringToFile(path, result.toJSONString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

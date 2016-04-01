@@ -100,7 +100,7 @@ public class Block implements Visitable, Cloneable {
 
 		for (Object o : args) {
 			if (o instanceof String) {
-				argString.add("\"" + o + "\"");
+				argString.add("'" + o + "'");
 			} else if (o instanceof Number) {
 				argString.add(o + "");
 			} else if (o instanceof Block) {

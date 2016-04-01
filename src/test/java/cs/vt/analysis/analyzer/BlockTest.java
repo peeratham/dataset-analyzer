@@ -32,7 +32,7 @@ public class BlockTest {
 		String input = "[\"say:duration:elapsed:from:\", \"Hello!\", 2]";
 		JSONArray jsonInput = (JSONArray) jsonParser.parse(input);
 		Block b = Parser.loadBlock(jsonInput);
-		assertEquals(b.toString(), "say \"Hello!\" for 2 secs");
+		assertEquals(b.toString(), "say 'Hello!' for 2 secs");
 		
 	}
 	
@@ -41,7 +41,7 @@ public class BlockTest {
 		String input = "[\"changeGraphicEffect:by:\", \"color\", 25]";
 		JSONArray jsonInput = (JSONArray) jsonParser.parse(input);
 		Block b = Parser.loadBlock(jsonInput);
-		assertEquals(b.toString(), "change \"color\" effect by 25");
+		assertEquals(b.toString(), "change 'color' effect by 25");
 	}
 	
 	@Test
@@ -49,24 +49,24 @@ public class BlockTest {
 		String input = "[\"doIf\", [\"<\", \"1\", \"2\"], [[\"broadcast:\", \"message1\"], [\"changeGraphicEffect:by:\", \"color\", 25]]]";
 		JSONArray jsonInput = (JSONArray) jsonParser.parse(input);
 		Block b = Parser.loadBlock(jsonInput);
-		String expectResult = "if (\"1\" < \"2\") then\n    broadcast \"message1\"\n    change \"color\" effect by 25\nend";
+		String expectResult = "if ('1' < '2') then\n    broadcast 'message1'\n    change 'color' effect by 25\nend";
 		assertEquals(b.toString(), expectResult);
 
 	}
 
 	@Test
 	public void testToStringOnDoubleNestedBlock() throws Exception {
-		String input = "[\"doIf\", [\"<\", \"1\", \"2\"], \n  "
+		String input = "[\"doIf\", [\"<\", 1, 2], \n  "
 				+ "[[\"broadcast:\", \"message1\"],\n  "
-				+ "[\"doIf\", [\"<\", \"1\", \"2\"], \n    "
+				+ "[\"doIf\", [\"<\", 1, 2], \n    "
 				+ "[[\"broadcast:\", \"message1\"],"
 				+ "[\"changeGraphicEffect:by:\", \"color\", 25]]],"
 				+ "\n\t  [\"changeGraphicEffect:by:\", \"color\", 25]]]";
 		JSONArray jsonInput = (JSONArray) jsonParser.parse(input);
 		Block b = Parser.loadBlock(jsonInput);
 		
-		String expectResult = "if (\"1\" < \"2\") then\n    broadcast \"message1\"\n    if (\"1\" < \"2\") then\n        broadcast \"message1\"\n        change \"color\" effect by 25\n    end\n    change \"color\" effect by 25\nend";
-		assertEquals(b.toString(), expectResult);
+		String expectResult = "if (1 < 2) then\n    broadcast 'message1'\n    if (1 < 2) then\n        broadcast 'message1'\n        change 'color' effect by 25\n    end\n    change 'color' effect by 25\nend";
+		assertEquals(expectResult, b.toString());
 	}
 	
 	@Test

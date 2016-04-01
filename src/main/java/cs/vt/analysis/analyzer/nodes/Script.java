@@ -71,7 +71,7 @@ public class Script implements Visitable {
 		path.add(0,scriptPath);
 		Scriptable scrptable = this.getParent();
 		path.add(0, scrptable.getName());
-		return String.join("/", path);
+		return String.join("|", path);
 	}
 
 	public ArrayList<Block> containsBlock(String blockCommand) {

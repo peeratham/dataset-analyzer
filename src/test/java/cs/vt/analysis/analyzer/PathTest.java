@@ -74,7 +74,7 @@ public class PathTest {
 		Block moveBlock = blockSequence2.get(0); 
 		assertEquals(repeatBlock,moveBlock.getParent());
 		assertEquals(ifelseBlock,repeatBlock.getParent());
-		assertEquals("Sprite1/Script@x101 y450[doIfElse(\"0\" > \"2\")]/doIfElse/doRepeat/move 10 steps", moveBlock.getBlockPath().toString());
+		assertEquals("Sprite1|Script@x101 y450[doIfElse('0' > '2')]|doIfElse|doRepeat|move 10 steps", moveBlock.getBlockPath().toString());
 		
 	}
 	
@@ -84,13 +84,13 @@ public class PathTest {
 		Block moveBlock = script.getBlocks().get(1);
 		assertEquals(script.getBlocks().get(0),moveBlock.getPreviousBlock());
 		assertEquals(script.getBlocks().get(2), moveBlock.getNextBlock());
-		assertEquals("Sprite1/Script@x93 y669[procDef[move-and-turn]]/move 10 steps",moveBlock.getBlockPath().toString());
+		assertEquals("Sprite1|Script@x93 y669[procDef[move-and-turn]]|move 10 steps",moveBlock.getBlockPath().toString());
 	}
 	
 	@Test
 	public void testScriptPath(){
 		Script script = scriptable.getScript(4);
-		assertEquals("Sprite1/Script@x93 y669[procDef[move-and-turn]]", script.getPath());
+		assertEquals("Sprite1|Script@x93 y669[procDef[move-and-turn]]", script.getPath());
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class PathTest {
 		Script script = scriptable.getScript(5);
 		Block wait = script.getBlocks().get(0);
 		Block readVar = (Block) wait.getArgs().get(0);
-		assertEquals("Sprite1/Script@x95 y817[wait:elapsed:from:]/wait \"a\" secs/\"a\"",readVar.getBlockPath().toString());
+		assertEquals("Sprite1|Script@x95 y817[wait:elapsed:from:]|wait 'a' secs|'a'",readVar.getBlockPath().toString());
 	}
 	
 }

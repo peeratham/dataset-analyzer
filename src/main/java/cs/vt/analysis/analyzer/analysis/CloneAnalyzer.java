@@ -46,14 +46,14 @@ public class CloneAnalyzer extends Analyzer{
 				JSONArray loc = new JSONArray();
 				for(Block cl: clones){
 					JSONObject locItem = new JSONObject();
-					locItem.put("sprite", cl.getBlockPath().getPathList().get(0));
+//					locItem.put("sprite", cl.getBlockPath().getPathList().get(0));
 					locItem.put("path", cl.getBlockPath().toString());
 					loc.add(locItem);
 				}
 				cloneRecordJSON.put("fragment", clones.get(0).toString());
 				cloneRecordJSON.put("size", CloneUtil.getSubTreeSize(clones.get(0)));
 				cloneRecordJSON.put("loc", loc);
-				report.addRecord(cloneRecordJSON.toJSONString());
+				report.addRecord(cloneRecordJSON);
 			}
 		}
 		

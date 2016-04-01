@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class ListAnalysisReport extends Report {
@@ -29,10 +30,10 @@ public class ListAnalysisReport extends Report {
 		this.summary = summary;
 	}
 
-	List<String> result;
+	JSONArray resultJSON;
 	
 	public ListAnalysisReport(){
-		result = new ArrayList<String>();
+		resultJSON = new JSONArray();
 		summary = new HashMap<String, Object>();
 	}
 	
@@ -44,13 +45,11 @@ public class ListAnalysisReport extends Report {
 		this.projectID = projectID;
 	}
 
-	public int getRecordCounts(){
-		return result.size();
-	}
+	
 
 
 	private void generateSummary() {
-		summary.put("count", result.size());
+		summary.put("count", resultJSON.size());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -58,13 +57,17 @@ public class ListAnalysisReport extends Report {
 		generateSummary();
 		JSONObject container = new JSONObject();
 		container.put("name",title);
-		container.put("records", result);
+		JSONObject report = new JSONObject();
+			report.put("instances", resultJSON);
+			report.put("count", resultJSON.size());
+		container.put("records", report);
 		return container;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void addRecord(Object record) {
-		if(!result.contains(record)){
-			result.add(record.toString());
+		if(!resultJSON.contains(record)){
+			resultJSON.add(record);
 		}
 		
 	}
