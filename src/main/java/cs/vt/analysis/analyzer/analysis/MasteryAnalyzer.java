@@ -16,7 +16,7 @@ import cs.vt.analysis.analyzer.visitor.VisitFailure;
 import cs.vt.analysis.analyzer.visitor.Visitor;
 
 /*
- * Credit: Jesús Moreno León
+ * Credit: Jesus Moreno Leon
  * Reimplementation of https://github.com/jemole/hairball/blob/master/hairball/plugins/mastery.py
  */
 

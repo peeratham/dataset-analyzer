@@ -49,7 +49,7 @@ public class UnnecessaryBroadcastAnalyzer extends Analyzer{
 		//dest = set(tuple(ScriptableName, Set(ScriptableRef)))
 		
 		
-		HashMap<String, BroadCastReceivePair> map = new HashMap<>();
+		HashMap<String, BroadCastReceivePair> map = new HashMap<String, BroadCastReceivePair>();
 		for(Scriptable scriptable: project.getAllScriptables().values()){
 			for(Script s : scriptable.getScripts()){
 				ArrayList<Block> broadcastWaitBlocks = AnalysisUtil.findBlock(s, "doBroadcastAndWait");
