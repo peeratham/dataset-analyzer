@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
@@ -23,7 +24,7 @@ public class TestFeatureExtractor {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	@Ignore
 	@Test
 	public void test() throws IOException, ParseException, ParsingException {
 		Extractor extractor = new DistanceFeatureExtractor();
