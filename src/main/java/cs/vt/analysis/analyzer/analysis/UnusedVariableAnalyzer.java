@@ -13,52 +13,51 @@ import cs.vt.analysis.analyzer.parser.Insert;
 import cs.vt.analysis.select.Collector;
 import cs.vt.analysis.select.Evaluator;
 
-public class BroadVarScopeAnalyzer extends Analyzer {
-	public HashMap<String, HashSet<String>> globalVarRef = new HashMap<String, HashSet<String>>();
+public class UnusedVariableAnalyzer extends Analyzer{
+
+	public HashSet<String> allVar = new HashSet<String>();
 	List<String> varRelatedCommands = new ArrayList<String>();
 	private ListAnalysisReport report = new ListAnalysisReport();
 	
-	public BroadVarScopeAnalyzer(){
+	public UnusedVariableAnalyzer(){
 		varRelatedCommands.add("setVar:to:");
 		varRelatedCommands.add("changeVar:by:");
 		varRelatedCommands.add("readVariable");
 		varRelatedCommands.add("showVariable:");
 		varRelatedCommands.add("hideVariable:");
 	}
-	
 	@Override
 	public void analyze() throws AnalysisException {
 		Scriptable stage = project.getScriptable("Stage");
 		Map<String, Object> globals = stage.getAllVariables();
 		for (String varName : globals.keySet()) {
-			globalVarRef.put(varName, new HashSet<String>());
+			allVar.add(varName);
 		}
-		
 		for(String varCommand : varRelatedCommands){
 			ArrayList<Block> varBlocks = Collector.collect(new Evaluator.BlockCommand(varCommand), project);
 			for (Block block : varBlocks) {
 				List<Object> parts = block.getBlockType().getParts();
 				Iterator<Object> args = block.getArgs().iterator();
-				for (int i = 0; i < parts.size(); i++) {
+				for (int i = 0; i < parts.size(); i++) {					
 					if (parts.get(i) instanceof Insert) {
 						Object arg = args.next();
-						if (((Insert) parts.get(i)).getName().contains("var") && globalVarRef.containsKey(arg)) {
-							globalVarRef.get(arg).add(block.getBlockPath().getPathList().get(0));
+						if (((Insert) parts.get(i)).getName().contains("var") && allVar.contains(arg)) {
+							allVar.remove(arg);
 						}
 					}
 				}
 			}
-		}
+		}		
 	}
+
 	@Override
 	public Report getReport() {
-		report.setTitle("Too Broad Variable Scope");
-		for (String varName: globalVarRef.keySet()) {
-			if(globalVarRef.get(varName).size()==1){
-				report.addRecord(varName + globalVarRef.get(varName));
-			}
-			
+		// TODO Auto-generated method stub
+		report.setTitle("Unused variable");
+		for (String s:allVar) {
+			report.addRecord(s);			
 		}
 		return report;
 	}
+
 }
