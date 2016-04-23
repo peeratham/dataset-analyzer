@@ -17,10 +17,10 @@ import cs.vt.analysis.analyzer.nodes.CustomBlock;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 
 public class UnusedBlockAnalyzer extends Analyzer{
-	public HashSet<Block> allBlock = new HashSet<Block>();
+	public HashSet<String> allBlock = new HashSet<String>();
 	List<String> blockRelatedCommands = new ArrayList<String>();
 	private ListAnalysisReport report = new ListAnalysisReport();
-	public  ArrayList<Block> foreverBlocks;
+	public  ArrayList<Block> allBlocks;
 	
 	public UnusedBlockAnalyzer(){
 		blockRelatedCommands.add("call");
@@ -31,20 +31,19 @@ public class UnusedBlockAnalyzer extends Analyzer{
 		Scriptable stage = project.getScriptable("Stage");		
 		for (String name : project.getAllScriptables().keySet()) {
 			if(name!="Stage"){
-				foreverBlocks = AnalysisUtil.findBlock(project.getScriptable(name), "procDef"); 
+				allBlocks = AnalysisUtil.findBlock(project.getScriptable(name), "procDef"); 
 			}
 		}
-		for(Block block :foreverBlocks){
-			allBlock.add(block);
-		}
+		for(Block block :allBlocks){
+			allBlock.add(block.getArgs(0).toString());
+		}		
 		
-		
-		for(String varCommand : blockRelatedCommands){
-			ArrayList<Block> varBlocks = Collector.collect(new Evaluator.BlockCommand(varCommand), project);
+		for(String blockCommand : blockRelatedCommands){
+			ArrayList<Block> varBlocks = Collector.collect(new Evaluator.BlockCommand(blockCommand), project);			
 			for (Block block : varBlocks) {				
-				List<Object> parts = block.getBlockType().getParts();			
-				for (int i = 0; i < parts.size(); i++) {
-					allBlock.remove(parts.get(i));
+				String temp = block.getBlockType().getSpec().toString();
+				if(allBlock.contains(temp)){
+					allBlock.remove(temp);
 				}
 			}
 		}		
@@ -54,8 +53,8 @@ public class UnusedBlockAnalyzer extends Analyzer{
 	public Report getReport() {
 		// TODO Auto-generated method stub
 		report.setTitle("Unused block");
-		for (Block b:allBlock) {
-			report.addRecord(b.getArgs().get(0));//define XXXX? hardcode for just get name
+		for (String s:allBlock) {
+			report.addRecord(s);
 		}
 		return report;
 	}
