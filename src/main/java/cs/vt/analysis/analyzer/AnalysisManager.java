@@ -31,8 +31,7 @@ public class AnalysisManager {
 
 	}
 
-	public JSONObject analyze(String src) throws ParsingException,
-			AnalysisException {
+	public JSONObject analyze(String src) throws ParsingException, AnalysisException {
 		JSONObject report = new JSONObject();
 		ArrayList<JSONObject> analyses = new ArrayList<JSONObject>();
 		if (config == null) {
@@ -45,8 +44,7 @@ public class AnalysisManager {
 
 			for (Class k : config.listAnalyzers()) {
 				Analyzer analyzer = null;
-				if (Arrays.asList(k.getInterfaces()).contains(
-						AnalysisVisitor.class)) {
+				if (Arrays.asList(k.getInterfaces()).contains(AnalysisVisitor.class)) {
 					AnalysisVisitor v = (AnalysisVisitor) k.newInstance();
 					analyzer = new VisitorBasedAnalyzer();
 					((VisitorBasedAnalyzer) analyzer).addAnalysisVisitor(v);
@@ -59,10 +57,8 @@ public class AnalysisManager {
 				try {
 					analyzer.analyze();
 				} catch (AnalysisException e) {
-					System.err.println("==>Error analyzing projectID: "
-							+ projectID);
-					throw new AnalysisException("Analysis Error["
-							+ analyzer.getClass() + "]:\n" + e.getMessage());
+					System.err.println("==>Error analyzing projectID: " + projectID);
+					throw new AnalysisException("Analysis Error[" + analyzer.getClass() + "]:\n" + e.getMessage());
 				}
 				analyzer.getReport().getJSONReport();
 				analyses.add(analyzer.getReport().getJSONReport());
@@ -70,8 +66,7 @@ public class AnalysisManager {
 			}
 
 		} catch (ParseException e) {
-			System.err.println("==>Error parsing JSONObject of projectID: "
-					+ projectID);
+			System.err.println("==>Error parsing JSONObject of projectID: " + projectID);
 			throw new ParsingException(e);
 		} catch (ParsingException e) {
 			System.err.println("==>Error parsing projectID: " + projectID);
@@ -100,22 +95,16 @@ public class AnalysisManager {
 	private AnalysisConfigurator getDefaultConfig() {
 		AnalysisConfigurator defaultConfig = new AnalysisConfigurator();
 		try {
-			defaultConfig
-					.addAnalysis("cs.vt.analysis.analyzer.analysis.MasteryAnalyzer");
-			defaultConfig
-					.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
-			defaultConfig
-					.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
-			defaultConfig
-					.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAroundAnalyzer");
-			defaultConfig
-					.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
-			defaultConfig
-					.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeAnalyzer");
-			defaultConfig
-					.addAnalysis("cs.vt.analysis.analyzer.analysis.CloneAnalyzer");
-			defaultConfig
-					.addAnalysis("cs.vt.analysis.analyzer.analysis.UnnecessaryBroadcastAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.MasteryAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAroundAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.CloneAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnnecessaryBroadcastAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedVariableAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedBlockAnalyzer");
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -143,21 +132,13 @@ public class AnalysisManager {
 			e.printStackTrace();
 		}
 
-		File path = new File(
-				"C:\\Users\\Peeratham\\workspace\\analysis-output", projectID
-						+ "-m-1");
+		
 		try {
 			JSONObject result = blockAnalyzer.analyze(src);
 			System.out.println(result.toJSONString());
-			FileUtils.writeStringToFile(path, result.toJSONString());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (AnalysisException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParsingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
