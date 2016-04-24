@@ -26,7 +26,7 @@ public class UnusedBlockAnalyzer extends Analyzer{
 		blockRelatedCommands.add("call");
 	}
 
-	public void analyze() {
+	public void analyze() throws AnalysisException{
 		// TODO Auto-generated method stub
 		Scriptable stage = project.getScriptable("Stage");		
 		for (String name : project.getAllScriptables().keySet()) {
@@ -34,20 +34,24 @@ public class UnusedBlockAnalyzer extends Analyzer{
 				allBlocks = AnalysisUtil.findBlock(project.getScriptable(name), "procDef"); 
 			}
 		}
-		for(Block block :allBlocks){
-			allBlock.add(block.getArgs(0).toString());
-		}		
-		
-		for(String blockCommand : blockRelatedCommands){
-			ArrayList<Block> varBlocks = Collector.collect(new Evaluator.BlockCommand(blockCommand), project);			
-			for (Block block : varBlocks) {				
-				String temp = block.getBlockType().getSpec().toString();
-				if(allBlock.contains(temp)){
-					allBlock.remove(temp);
+		try {
+			if(allBlocks!=null){
+				for(Block block :allBlocks){
+					allBlock.add(block.getArgs(0).toString());
 				}
 			}
+			for(String blockCommand : blockRelatedCommands){
+				ArrayList<Block> varBlocks = Collector.collect(new Evaluator.BlockCommand(blockCommand), project);			
+				for (Block block : varBlocks) {				
+					String temp = block.getBlockType().getSpec().toString();
+					if(allBlock.contains(temp)){
+						allBlock.remove(temp);
+					}
+				}
+			}		
+		} catch (Exception e) {
+			throw new AnalysisException(e);
 		}		
-		
 	}
 	
 	public Report getReport() {
