@@ -1,11 +1,10 @@
 package cs.vt.analysis.analyzer;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,10 +24,10 @@ public class AnalysisManager {
 	String input;
 	private AnalysisConfigurator config = null;
 	private int projectID;
+	static Logger logger = Logger.getLogger(AnalysisManager.class);
 
 	public AnalysisManager() {
 		jsonParser = new JSONParser();
-
 	}
 
 	public JSONObject analyze(String src) throws ParsingException, AnalysisException {
@@ -57,38 +56,36 @@ public class AnalysisManager {
 				try {
 					analyzer.analyze();
 				} catch (AnalysisException e) {
-					System.err.println("==>Error analyzing projectID: " + projectID);
+					logger.error(k+" fail to analyze project " + projectID);
 					throw new AnalysisException("Analysis Error[" + analyzer.getClass() + "]:\n" + e.getMessage());
 				}
 				analyzer.getReport().getJSONReport();
 				analyses.add(analyzer.getReport().getJSONReport());
 
 			}
+			
+			report.put("_id", projectID);
+			report.put("scriptCount", project.getScriptCount());
+			report.put("spriteCount", project.getSpriteCount());
+			for (JSONObject a : analyses) {
+				report.put(a.get("name"), a.get("records"));
+			}
+
+			return report;
 
 		} catch (ParseException e) {
-			System.err.println("==>Error parsing JSONObject of projectID: " + projectID);
+			logger.error("Fail to read JSONObject of projectID: " + projectID);
 			throw new ParsingException(e);
 		} catch (ParsingException e) {
-			System.err.println("==>Error parsing projectID: " + projectID);
+			logger.error("Fail to parse Scratch project: " + projectID);
 			throw new ParsingException(e);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+		} catch (InstantiationException|IllegalAccessException e) {
+			logger.error("Fail to instantiate analyzer: " + e);
+			throw new AnalysisException(e);
 		} catch (Exception e){
-			e.printStackTrace();
+			logger.error("Fail: " + projectID);
 			throw new AnalysisException(e);
 		}
-
-		report.put("_id", projectID);
-		report.put("scriptCount", project.getScriptCount());
-		report.put("spriteCount", project.getSpriteCount());
-		for (JSONObject a : analyses) {
-			report.put(a.get("name"), a.get("records"));
-		}
-
-		return report;
-
 	}
 
 	public int getProjectID() {
