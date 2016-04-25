@@ -77,6 +77,7 @@ public class AnalysisManager {
 			e.printStackTrace();
 		} catch (Exception e){
 			e.printStackTrace();
+			throw new AnalysisException(e);
 		}
 
 		report.put("_id", projectID);
