@@ -75,6 +75,8 @@ public class AnalysisManager {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
+		} catch (Exception e){
+			e.printStackTrace();
 		}
 
 		report.put("_id", projectID);
@@ -95,14 +97,14 @@ public class AnalysisManager {
 	private AnalysisConfigurator getDefaultConfig() {
 		AnalysisConfigurator defaultConfig = new AnalysisConfigurator();
 		try {
-//			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.MasteryAnalyzer");
-//			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
-//			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
-//			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAroundAnalyzer");
-//			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
-//			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeAnalyzer");
-//			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.CloneAnalyzer");
-//			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnnecessaryBroadcastAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.MasteryAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAroundAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.CloneAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnnecessaryBroadcastAnalyzer");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedVariableAnalyzer");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedBlockAnalyzer");
 		} catch (InstantiationException e) {
@@ -124,7 +126,7 @@ public class AnalysisManager {
 	public static void main(String[] args) {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
 		String src = null;
-		int projectID = 105745748;
+		int projectID = 104240489;
 		try {
 			src = Util.retrieveProjectOnline(projectID);
 		} catch (IOException e) {
