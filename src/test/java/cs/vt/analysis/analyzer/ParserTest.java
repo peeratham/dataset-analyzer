@@ -14,6 +14,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import cs.vt.analysis.analyzer.analysis.TestUtil;
@@ -186,6 +187,15 @@ public class ParserTest {
 		String projectSrc = Util.retrieveProjectOnline(96033699);
 		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable sprite= Parser.loadScriptable(spriteJSON);
+	}
+	
+	@Ignore
+	@Test
+	public void bugEmptyStringCustomBlock() throws ParseException, IOException, ParsingException{
+		String projectSrc = Util.retrieveProjectOnline(106930272);
+		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		Scriptable sprite= Parser.loadScriptable(spriteJSON);
+ 		sprite.toString();
 	}
 		
 }
