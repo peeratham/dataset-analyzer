@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 
-public class DictAnalysisReport extends Report {
+public class DictAnalysisReport extends Report<HashMap> {
 	HashMap<String, Object> result = null;
 	
 	@Override
@@ -18,7 +18,11 @@ public class DictAnalysisReport extends Report {
 	@Override
 	public void addRecord(Object record) {
 		result = (HashMap<String, Object>) record;
-		
+	}
+
+	@Override
+	public HashMap getResult() {
+		return result;
 	}
 
 }

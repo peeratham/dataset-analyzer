@@ -11,6 +11,7 @@ import org.json.simple.parser.ParseException;
 
 import cs.vt.analysis.analyzer.analysis.AnalysisException;
 import cs.vt.analysis.analyzer.analysis.Analyzer;
+import cs.vt.analysis.analyzer.analysis.Report;
 import cs.vt.analysis.analyzer.analysis.VisitorBasedAnalyzer;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.parser.ParsingException;
@@ -31,8 +32,9 @@ public class AnalysisManager {
 	}
 
 	public JSONObject analyze(String src) throws ParsingException, AnalysisException {
-		JSONObject report = new JSONObject();
-		ArrayList<JSONObject> analyses = new ArrayList<JSONObject>();
+
+		ArrayList<JSONObject> smellReports = new ArrayList<JSONObject>();
+		ArrayList<JSONObject> metricReports = new ArrayList<JSONObject>();
 		if (config == null) {
 			config = getDefaultConfig();
 		}
@@ -56,20 +58,39 @@ public class AnalysisManager {
 				try {
 					analyzer.analyze();
 				} catch (AnalysisException e) {
-					logger.error(k+" fail to analyze project " + projectID);
+					logger.error(k + " fail to analyze project " + projectID);
 					throw new AnalysisException("Analysis Error[" + analyzer.getClass() + "]:\n" + e.getMessage());
 				}
-				analyzer.getReport().getJSONReport();
-				analyses.add(analyzer.getReport().getJSONReport());
+				Report analysisReport = analyzer.getReport();
+				switch (analysisReport.getReportType()) {
+				case SMELL:
+					smellReports.add(analysisReport.getJSONReport());
+					break;
+				case METRIC:
+					metricReports.add(analysisReport.getJSONReport());
+					break;
+				default:
+					smellReports.add(analysisReport.getJSONReport());
+					break;
+				}
 
 			}
-			
+			JSONObject report = new JSONObject();
 			report.put("_id", projectID);
 			report.put("scriptCount", project.getScriptCount());
 			report.put("spriteCount", project.getSpriteCount());
-			for (JSONObject a : analyses) {
-				report.put(a.get("name"), a.get("records"));
+			JSONObject smells = new JSONObject();
+
+			for (JSONObject a : smellReports) {
+				smells.put(a.get("name"), a.get("records"));
 			}
+			report.put("smells", smells);
+
+			JSONObject metrics = new JSONObject();
+			for (JSONObject m : metricReports) {
+				metrics.put(m.get("name"), m.get("records"));
+			}
+			report.put("metrics", metrics);
 
 			return report;
 
@@ -79,10 +100,10 @@ public class AnalysisManager {
 		} catch (ParsingException e) {
 			logger.error("Fail to parse Scratch project: " + projectID);
 			throw new ParsingException(e);
-		} catch (InstantiationException|IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			logger.error("Fail to instantiate analyzer: " + e);
 			throw new AnalysisException(e);
-		} catch (Exception e){
+		} catch (Exception e) {
 			logger.error("Fail: " + projectID);
 			throw new AnalysisException(e);
 		}
@@ -105,6 +126,7 @@ public class AnalysisManager {
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnnecessaryBroadcastAnalyzer");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedVariableAnalyzer");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedBlockAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.ScriptLengthMetricAnalyzer");
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -132,7 +154,6 @@ public class AnalysisManager {
 			e.printStackTrace();
 		}
 
-		
 		try {
 			JSONObject result = blockAnalyzer.analyze(src);
 			System.out.println(result.toJSONString());

@@ -8,7 +8,7 @@ import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 
 public class All implements Visitor{
-	Visitor v;
+	protected Visitor v;
 	public All(Visitor v){
 		this.v = v;
 	}

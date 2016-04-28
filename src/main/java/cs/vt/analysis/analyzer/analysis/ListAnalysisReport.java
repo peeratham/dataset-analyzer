@@ -8,7 +8,7 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class ListAnalysisReport extends Report {
+public class ListAnalysisReport extends Report<JSONArray> {
 
 	private int projectID;
 	String title;
@@ -70,5 +70,10 @@ public class ListAnalysisReport extends Report {
 			resultJSON.add(record);
 		}
 		
+	}
+
+	@Override
+	public JSONArray getResult() {
+		return resultJSON;
 	}
 }
