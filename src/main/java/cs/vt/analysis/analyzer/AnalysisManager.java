@@ -77,9 +77,8 @@ public class AnalysisManager {
 			}
 			JSONObject report = new JSONObject();
 			report.put("_id", projectID);
-			report.put("scriptCount", project.getScriptCount());
-			report.put("spriteCount", project.getSpriteCount());
 			JSONObject smells = new JSONObject();
+
 
 			for (JSONObject a : smellReports) {
 				smells.put(a.get("name"), a.get("records"));
@@ -90,6 +89,11 @@ public class AnalysisManager {
 			for (JSONObject m : metricReports) {
 				metrics.put(m.get("name"), m.get("records"));
 			}
+			//additional
+			metrics.put("scriptCount", project.getScriptCount());
+			metrics.put("spriteCount", project.getSpriteCount());
+			
+			
 			report.put("metrics", metrics);
 
 			return report;
@@ -141,6 +145,22 @@ public class AnalysisManager {
 	private void setConfig(AnalysisConfigurator config) {
 		this.config = config;
 
+	}
+	
+	public static String analysisReportGenerator(int[] projectIDs) throws Exception{
+		AnalysisManager blockAnalyzer = new AnalysisManager();
+		StringBuilder sb = new StringBuilder();
+		for(int id: projectIDs){
+			String src = Util.retrieveProjectOnline(id); 
+			JSONObject report = blockAnalyzer.analyze(src);
+			String result = report.toJSONString();
+			sb.append(id);
+			sb.append("\t");
+			sb.append(result);
+			sb.append("\n");
+		}
+		System.out.println(sb.toString());
+		return sb.toString();
 	}
 
 	public static void main(String[] args) {

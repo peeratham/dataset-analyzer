@@ -13,7 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import cs.vt.analysis.analyzer.analysis.TestUtil;
+import cs.vt.analysis.analyzer.analysis.TestUtils;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 import cs.vt.analysis.analyzer.parser.Parser;
@@ -35,7 +35,7 @@ public class BlockQueryTest {
 	@Test
 	public void ifScriptContainsBlockReturnMatchedBlock() throws IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(97601625);
-		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		JSONObject spriteJSON = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable sprite= Parser.loadScriptable(spriteJSON);
 		ArrayList<Block> results = sprite.getScript(0).containsBlock("doWaitUntil");
 		assertEquals(2,results.size());
@@ -44,7 +44,7 @@ public class BlockQueryTest {
 	@Test
 	public void ifBlockContainsBlockReturnMatchedBlock() throws IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(97601625);
-		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		JSONObject spriteJSON = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable sprite= Parser.loadScriptable(spriteJSON);
 		ArrayList<Block> results = sprite.getScript(0).containsBlock("doRepeat");
 		Block repeatBlock = results.get(0);

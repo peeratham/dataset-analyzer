@@ -9,7 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import cs.vt.analysis.analyzer.analysis.TestUtil;
+import cs.vt.analysis.analyzer.analysis.TestUtils;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.parser.Parser;
@@ -84,7 +84,7 @@ public class BlockTest {
 	@Test
 	public void testToStringOnEmptyBlockInput() throws Exception {
 		String stringInput = Util.retrieveProjectOnline(TestConstant.PARSER_TEST_PROJECT);
-		JSONArray scriptableInput = TestUtil.getScripts(stringInput,TestConstant.TEST_EMPTYBLOCKINPUT);
+		JSONArray scriptableInput = TestUtils.getScripts(stringInput,TestConstant.TEST_EMPTYBLOCKINPUT);
 		Script script = Parser.loadScript(scriptableInput.get(0));
 	}
 	

@@ -13,7 +13,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import cs.vt.analysis.analyzer.analysis.CloneUtil;
-import cs.vt.analysis.analyzer.analysis.TestUtil;
+import cs.vt.analysis.analyzer.analysis.TestUtils;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 import cs.vt.analysis.analyzer.parser.CommandLoader;
@@ -33,7 +33,7 @@ public class ExtractSubTreeVisitorTest {
 	@Before
 	public void setUp() throws Exception {
 		projectSrc = Util.retrieveProjectOnline(101357446);
-		JSONObject sprite = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		JSONObject sprite = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable s = Parser.loadScriptable(sprite);
 		Visitor collector = new TopDownSubTreeCollector(new Identity());
 		s.accept(collector);

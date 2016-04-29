@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import cs.vt.analysis.analyzer.analysis.TestUtil;
+import cs.vt.analysis.analyzer.analysis.TestUtils;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 import cs.vt.analysis.analyzer.parser.Parser;
@@ -40,7 +40,7 @@ public class ExtractFragmentVisitorTest {
 	
 	@Test
 	public void testExtractFragmentVisitor() throws VisitFailure, ParseException, ParsingException {
-		JSONObject sprite = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		JSONObject sprite = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable s = Parser.loadScriptable(sprite);
 		Visitor collector = new TopDownFragmentCollector(new Identity());
 		s.accept(collector);

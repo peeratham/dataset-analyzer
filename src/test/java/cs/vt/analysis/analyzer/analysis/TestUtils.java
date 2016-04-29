@@ -8,15 +8,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import cs.vt.analysis.analyzer.nodes.ScratchProject;
-import cs.vt.analysis.analyzer.parser.Parser;
+import cs.vt.analysis.analyzer.AnalysisManager;
+import cs.vt.analysis.analyzer.parser.Util;
 
-public class TestUtil {
+
+public class TestUtils {
 	public static JSONParser jsonParser = new JSONParser();
 
-
-
-	
 	public static JSONArray getScripts(String inputString, String name) throws ParseException {
 		JSONObject jsonObject = (JSONObject) jsonParser.parse(inputString);
 		JSONArray children = (JSONArray)jsonObject.get("children");
@@ -69,5 +67,7 @@ public class TestUtil {
 	        counter++;
 	    return counter;
 	}
+	
+
 
 }

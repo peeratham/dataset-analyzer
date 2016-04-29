@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import cs.vt.analysis.analyzer.analysis.TestUtil;
+import cs.vt.analysis.analyzer.analysis.TestUtils;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.ScratchProject;
 import cs.vt.analysis.analyzer.nodes.Script;
@@ -100,11 +100,11 @@ public class ParserTest {
 		boolean test = true; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
 		
 		String stringInput = Util.retrieveProjectOnline(projectID); //real:43026762, test:93160273
-		JSONArray scriptableInput = TestUtil.getScripts(stringInput,"testNestedToString");
+		JSONArray scriptableInput = TestUtils.getScripts(stringInput,"testNestedToString");
 		Script script = parser.loadScript(scriptableInput.get(0));
-		int endCount = 	TestUtil.count("end", script.toString());
+		int endCount = 	TestUtils.count("end", script.toString());
 		assertEquals(2,endCount);
-		int elseCount = 	TestUtil.count("else", script.toString());
+		int elseCount = 	TestUtils.count("else", script.toString());
 		assertEquals(1,elseCount);
 	}
 	
@@ -112,7 +112,7 @@ public class ParserTest {
 	public void testForever() throws Exception {
 		boolean test = true; int projectID; if(test){projectID=93160273;}else{projectID=43026762;}
 		String stringInput = Util.retrieveProjectOnline(projectID); //real:43026762, test:93160273
-		JSONArray scriptableInput = TestUtil.getScripts(stringInput,"testForever");
+		JSONArray scriptableInput = TestUtils.getScripts(stringInput,"testForever");
 		Script script = parser.loadScript(scriptableInput.get(0));
 	}
 	
@@ -157,7 +157,7 @@ public class ParserTest {
 	@Test
 	public void testLoadScriptable() throws IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(96725247);
-		JSONObject sprite = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		JSONObject sprite = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable s = Parser.loadScriptable(sprite);
 		assertEquals(s.getScript(0).getBlocks().size(),2);	
 	}
@@ -166,7 +166,7 @@ public class ParserTest {
 	public void testParseStageShouldCollectGlobalVariables() throws IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(93160273);
 		
-		JSONObject stageJSON = TestUtil.getJSONScriptable(projectSrc, "Stage");
+		JSONObject stageJSON = TestUtils.getJSONScriptable(projectSrc, "Stage");
 		ScratchProject proj = Parser.loadProject((JSONObject) jsonParser.parse(projectSrc));
 		Scriptable stage = Parser.loadScriptable(stageJSON);
 		assertTrue(stage.getAllVariables().keySet().contains("global1"));
@@ -175,7 +175,7 @@ public class ParserTest {
 	@Test
 	public void testParseSpritesShouldCollectLocalVariables() throws IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(93160273);
-		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "testLocalGlobalVar");
+		JSONObject spriteJSON = TestUtils.getJSONScriptable(projectSrc, "testLocalGlobalVar");
 		Scriptable sprite= Parser.loadScriptable(spriteJSON);
 		assertEquals(sprite.getAllVariables().size(),1);
 		assertTrue(sprite.getAllVariables().keySet().contains("local1"));
@@ -185,7 +185,7 @@ public class ParserTest {
 	@Test
 	public void bug() throws ParseException, IOException, ParsingException{
 		String projectSrc = Util.retrieveProjectOnline(96033699);
-		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		JSONObject spriteJSON = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable sprite= Parser.loadScriptable(spriteJSON);
 	}
 	
@@ -193,7 +193,7 @@ public class ParserTest {
 	@Test
 	public void bugEmptyStringCustomBlock() throws ParseException, IOException, ParsingException{
 		String projectSrc = Util.retrieveProjectOnline(106930272);
-		JSONObject spriteJSON = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		JSONObject spriteJSON = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable sprite= Parser.loadScriptable(spriteJSON);
  		sprite.toString();
 	}

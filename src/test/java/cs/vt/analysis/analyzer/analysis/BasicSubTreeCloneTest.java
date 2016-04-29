@@ -26,7 +26,7 @@ public class BasicSubTreeCloneTest {
 
 	@Test
 	public void extractSubtree() throws ParseException, ParsingException {
-		JSONObject sprite = TestUtil.getJSONScriptable(projectSrc, "Sprite1");
+		JSONObject sprite = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable s = Parser.loadScriptable(sprite);
 		
 	}
