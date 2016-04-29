@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.simple.JSONObject;
 
+import cs.vt.analysis.analyzer.analysis.Report.ReportType;
 import cs.vt.analysis.analyzer.nodes.Block;
 import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
@@ -295,6 +296,7 @@ public class MasteryAnalyzer extends Analyzer {
 	@Override
 	public Report getReport() {
 		report.setTitle("Mastery Level");
+		report.setReportType(ReportType.METRIC);
 		// JSONObject masteryRecord = new JSONObject();
 		// masteryRecord.put("CT-Mastery", concepts);
 		report.addRecord(concepts);
