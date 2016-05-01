@@ -20,6 +20,10 @@ public class Insert {
 		this.name = typeSymbol;
 		this.type = inputType;
 	}
+	
+	public String getType(){
+		return this.type;		
+	}
 
 	@Override
 	public String toString() {

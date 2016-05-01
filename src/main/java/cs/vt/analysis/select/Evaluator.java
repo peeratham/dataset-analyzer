@@ -18,4 +18,14 @@ public abstract class Evaluator {
 		}
 		
 	}
+	
+	public static final class  AnyBlock extends Evaluator {
+		public AnyBlock(){
+		}
+		@Override
+		public boolean matches(Block element) {
+			return true;
+		}
+		
+	}
 }
