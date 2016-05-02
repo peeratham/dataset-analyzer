@@ -35,8 +35,8 @@ public class TestAnalysisManager {
 				id =  (Long) record.get("_id");
 				 String src = record.get("src").toString();
 			     JSONObject report = blockAnalyzer.analyze(src);
-			     System.out.println(report.toJSONString());
-			     System.out.println(id);
+//			     System.out.println(report.toJSONString());
+//			     System.out.println(id);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
