@@ -131,6 +131,7 @@ public class AnalysisManager {
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedVariableAnalyzer");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedBlockAnalyzer");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.ScriptLengthMetricAnalyzer");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.DuplicateValueAnalyzer");
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

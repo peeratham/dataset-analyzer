@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -33,8 +34,9 @@ public class TestAnalysisManager {
 				JSONObject record = (JSONObject) jsonParser.parse(line.toString());
 				id =  (Long) record.get("_id");
 				 String src = record.get("src").toString();
-				 System.out.println(id);
 			     JSONObject report = blockAnalyzer.analyze(src);
+			     System.out.println(report.toJSONString());
+			     System.out.println(id);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
