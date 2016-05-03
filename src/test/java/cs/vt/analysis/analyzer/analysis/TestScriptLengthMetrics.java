@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +34,8 @@ public class TestScriptLengthMetrics {
 		analyzer.setProject(project);
 		analyzer.analyze();	
 		HashMap result = (HashMap)analyzer.getReport().getResult();
-		assertEquals(19.0,result.get("mean"));
+		assertEquals(4.75,result.get("mean"));
+		assertEquals(19.0,result.get("sum"));
 		System.out.println(analyzer.getReport().getJSONReport());
 	}
 

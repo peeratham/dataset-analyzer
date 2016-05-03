@@ -2,11 +2,15 @@ package cs.vt.analysis.analyzer.analysis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
+import org.apache.commons.math3.stat.Frequency;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.json.simple.JSONObject;
 
 import cs.vt.analysis.analyzer.analysis.Report.ReportType;
 import cs.vt.analysis.analyzer.nodes.Block;
+import cs.vt.analysis.analyzer.nodes.Script;
 import cs.vt.analysis.analyzer.nodes.Scriptable;
 import cs.vt.analysis.analyzer.visitor.All;
 import cs.vt.analysis.analyzer.visitor.Identity;
@@ -17,7 +21,9 @@ import cs.vt.analysis.analyzer.visitor.Visitor;
 public class ScriptLengthMetricAnalyzer extends Analyzer {
 	DictAnalysisReport report = new DictAnalysisReport();
 	DescriptiveStatistics stats = new DescriptiveStatistics();
-	HashMap<String, Double> record = new HashMap<String, Double>();
+	Frequency freqCount = new Frequency();
+	HashSet<Integer> uniqueScriptLengths = new HashSet<Integer>();
+	JSONObject record = new JSONObject();
 
 	class TopDownNestedNonConditional extends Sequence {
 		public TopDownNestedNonConditional(Visitor v) {
@@ -66,17 +72,27 @@ public class ScriptLengthMetricAnalyzer extends Analyzer {
 		try {
 			for (String name : project.getAllScriptables().keySet()) {
 				Scriptable sc = project.getScriptable(name);
-				CountScriptLengthVisitor counter = new CountScriptLengthVisitor();
-				TopDownNestedNonConditional visitor = new TopDownNestedNonConditional(counter);
-				sc.accept(visitor);
-				if (counter.getCount() > 0) {
-					stats.addValue(counter.getCount());
+				for(Script s: sc.getScripts()){
+					CountScriptLengthVisitor counter = new CountScriptLengthVisitor();
+					TopDownNestedNonConditional visitor = new TopDownNestedNonConditional(counter);
+					s.accept(visitor);
+					if (counter.getCount() > 0) {
+						stats.addValue(counter.getCount());
+						freqCount.addValue(counter.getCount());
+						uniqueScriptLengths.add(counter.getCount());
+					}
 				}
+				
 			}
 			record.put("mean", stats.getMean());
 			record.put("max", stats.getMax());
 			record.put("min", stats.getMin());
-			record.put("std", stats.getStandardDeviation());
+			record.put("sum", stats.getSum());
+			JSONObject dist = new JSONObject();
+			for(Integer cnt : uniqueScriptLengths){
+				dist.put(cnt, freqCount.getCount(cnt));
+			}
+			record.put("dist", dist);
 		} catch (VisitFailure e) {
 			e.printStackTrace();
 		}
