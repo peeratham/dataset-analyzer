@@ -122,7 +122,7 @@ public class AnalysisManager {
 		try {
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.MasteryAnalyzer");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.LongScriptVisitor");
+			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.TooLongScriptAnalyzer");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAroundAnalyzer");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
 			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeAnalyzer");
