@@ -14,6 +14,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import vt.cs.smells.analyzer.analysis.BroadCastWorkAroundAnalyzer;
+import vt.cs.smells.analyzer.analysis.BroadVarScopeAnalyzer;
+import vt.cs.smells.analyzer.analysis.CloneAnalyzer;
+import vt.cs.smells.analyzer.analysis.DuplicateValueAnalyzer;
+import vt.cs.smells.analyzer.analysis.MasteryAnalyzer;
+import vt.cs.smells.analyzer.analysis.ScriptLengthMetricAnalyzer;
+import vt.cs.smells.analyzer.analysis.TooLongScriptAnalyzer;
+import vt.cs.smells.analyzer.analysis.UncommunicativeNamingVisitor;
+import vt.cs.smells.analyzer.analysis.UnnecessaryBroadcastAnalyzer;
+import vt.cs.smells.analyzer.analysis.UnreachableAnalysisVisitor;
+import vt.cs.smells.analyzer.analysis.UnusedBlockAnalyzer;
+import vt.cs.smells.analyzer.analysis.UnusedVariableAnalyzer;
 import vt.cs.smells.analyzer.analysis.VisitorBasedAnalyzer;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.parser.ParsingException;
@@ -121,18 +133,18 @@ public class AnalysisManager {
 	private AnalysisConfigurator getDefaultConfig() {
 		AnalysisConfigurator defaultConfig = new AnalysisConfigurator();
 		try {
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.MasteryAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnreachableAnalysisVisitor");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.TooLongScriptAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadCastWorkAroundAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UncommunicativeNamingVisitor");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.BroadVarScopeAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.CloneAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnnecessaryBroadcastAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedVariableAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.UnusedBlockAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.ScriptLengthMetricAnalyzer");
-			defaultConfig.addAnalysis("cs.vt.analysis.analyzer.analysis.DuplicateValueAnalyzer");
+			defaultConfig.addAnalysis(MasteryAnalyzer.class.getName());
+			defaultConfig.addAnalysis(UnreachableAnalysisVisitor.class.getName());
+			defaultConfig.addAnalysis(TooLongScriptAnalyzer.class.getName());
+			defaultConfig.addAnalysis(BroadCastWorkAroundAnalyzer.class.getName());
+			defaultConfig.addAnalysis(UncommunicativeNamingVisitor.class.getName());
+			defaultConfig.addAnalysis(BroadVarScopeAnalyzer.class.getName());
+			defaultConfig.addAnalysis(CloneAnalyzer.class.getName());
+			defaultConfig.addAnalysis(UnnecessaryBroadcastAnalyzer.class.getName());
+			defaultConfig.addAnalysis(UnusedVariableAnalyzer.class.getName());
+			defaultConfig.addAnalysis(UnusedBlockAnalyzer.class.getName());
+			defaultConfig.addAnalysis(ScriptLengthMetricAnalyzer.class.getName());
+			defaultConfig.addAnalysis(DuplicateValueAnalyzer.class.getName());
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -166,9 +178,24 @@ public class AnalysisManager {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String inputFile = "C:/Users/Peeratham/workspace/dataset-analyzer/src/test/resources/example-dataset.json";
-		String classURL = "cs.vt.analysis.analyzer.analysis.CloneAnalyzer";
-		runSingleAnalysis(inputFile, classURL);
+		AnalysisManager blockAnalyzer = new AnalysisManager();
+		String src = null;
+		int projectID = 104240489;
+		try {
+			src = Util.retrieveProjectOnline(projectID);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			JSONObject result = blockAnalyzer.analyze(src);
+			System.out.println(result.toJSONString());
+		} catch (AnalysisException e) {
+			e.printStackTrace();
+		} catch (ParsingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void runSingleAnalysis(String inputFile, String analysisClassURL)
