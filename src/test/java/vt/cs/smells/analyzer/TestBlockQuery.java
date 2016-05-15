@@ -13,7 +13,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import vt.cs.smells.analyzer.analysis.TestUtils;
 import vt.cs.smells.analyzer.nodes.Block;
 import vt.cs.smells.analyzer.nodes.Scriptable;
 import vt.cs.smells.analyzer.parser.Parser;

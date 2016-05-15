@@ -1,4 +1,4 @@
-package vt.cs.smells.analyzer.analysis;
+package vt.cs.smells.analyzer;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

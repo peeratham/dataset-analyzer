@@ -1,4 +1,4 @@
-package vt.cs.smells.analyzer.analysis;
+package vt.cs.smells.analyzer;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
