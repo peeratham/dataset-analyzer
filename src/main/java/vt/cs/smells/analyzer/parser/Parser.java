@@ -80,10 +80,15 @@ public class Parser {
 		String spriteName = (String) spriteJSON.get("objName");
 		JSONArray scripts = (JSONArray) spriteJSON.get("scripts");
 		JSONArray variables = (JSONArray) spriteJSON.get("variables");
+		JSONArray costumes = (JSONArray) spriteJSON.get("costumes");
 		sprite.setName(spriteName);
 
 		if (variables != null) {
 			sprite.setVars(loadVariables(variables));
+		}
+		
+		if (costumes != null) {
+			sprite.setCostumes(loadCostumes(costumes));
 		}
 
 		if (scripts == null) { // empty script
@@ -128,6 +133,15 @@ public class Parser {
 			}
 		}
 		return sprite;
+	}
+
+	private static ArrayList<String> loadCostumes(JSONArray costumes) {
+		ArrayList<String> costumeList = new ArrayList<String>();
+		for (int i = 0; i < costumes.size(); i++){
+			JSONObject costume = (JSONObject) costumes.get(i);
+			costumeList.add((String) costume.get("costumeName"));
+		}
+		return costumeList;
 	}
 
 	private static Map<String, Object> loadVariables(JSONArray variables) {

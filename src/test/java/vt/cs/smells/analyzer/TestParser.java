@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -195,6 +196,20 @@ public class TestParser {
 		JSONObject spriteJSON = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
 		Scriptable sprite= Parser.loadScriptable(spriteJSON);
  		sprite.toString();
+	}
+	
+	@Test
+	public void testParseMultimediaCorrectOrdering() throws IOException, ParseException, ParsingException{
+		String projectSrc = Util.retrieveProjectOnline(109963080);
+		JSONObject spriteJSON = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
+		Scriptable sprite= Parser.loadScriptable(spriteJSON);
+		ArrayList<String> costumes = sprite.getCostumes();
+		ArrayList<String> expected = new ArrayList<String>();
+		expected.add("costume1");
+		expected.add("costume2");
+		expected.add("costume4");
+		expected.add("costume3");
+		assertEquals(expected, costumes);
 	}
 		
 }

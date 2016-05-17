@@ -12,10 +12,12 @@ public class Scriptable implements Visitable {
 	String name;
 	ArrayList<Script> scripts;
 	private Map<String,Object> variables;
+	private ArrayList<String> costumes;
 
 	public Scriptable(){
 		scripts = new ArrayList<Script>();
 		variables = new HashMap<String, Object>();
+		costumes = new ArrayList<String>();
 	}
 
 	public String getName() {
@@ -68,6 +70,15 @@ public class Scriptable implements Visitable {
 
 	public void setVars(Map<String, Object> loadVariables) {
 		this.variables = loadVariables;
+		
+	}
+
+	public ArrayList<String> getCostumes() {
+		return this.costumes;
+	}
+
+	public void setCostumes(ArrayList<String> costumes) {
+		this.costumes.addAll(costumes);
 		
 	}
 	
