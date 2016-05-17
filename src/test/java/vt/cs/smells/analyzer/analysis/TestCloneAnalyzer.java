@@ -1,13 +1,10 @@
 package vt.cs.smells.analyzer.analysis;
 
-import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import vt.cs.smells.analyzer.AnalysisException;
-import vt.cs.smells.analyzer.analysis.CloneAnalyzer;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.parser.Util;
 

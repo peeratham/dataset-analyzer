@@ -54,4 +54,13 @@ public class CloneUtil {
 		}
 		return count;
 	}
+
+	public static int hashBlockSequence(ArrayList<Block> blockSeq) {
+		int hash = 7;
+		for(Block b : blockSeq){
+			int blockIndex = getBlockIndex(b);
+			hash = hash*31 + blockIndex;
+		}
+		return hash;
+	}
 }
