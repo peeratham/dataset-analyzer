@@ -1,6 +1,7 @@
 package vt.cs.smells.analyzer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import vt.cs.smells.analyzer.nodes.Block;
 import vt.cs.smells.analyzer.parser.CommandLoader;
@@ -63,4 +64,7 @@ public class CloneUtil {
 		}
 		return hash;
 	}
+
+
+
 }

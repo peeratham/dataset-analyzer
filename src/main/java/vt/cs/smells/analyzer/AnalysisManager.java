@@ -40,7 +40,7 @@ public class AnalysisManager {
 	private AnalysisConfigurator config = null;
 	private int projectID;
 	static Logger logger = Logger.getLogger(AnalysisManager.class);
-	public static final String testInput = "C:/Users/Peeratham/workspace/dataset/sources-0.json";
+	public static final String testInput = "C:/Users/Peeratham/workspace/dataset/hundred.json";
 
 	public AnalysisManager() {
 		jsonParser = new JSONParser();
