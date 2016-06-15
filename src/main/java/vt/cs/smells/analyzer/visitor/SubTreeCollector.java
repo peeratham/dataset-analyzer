@@ -10,8 +10,8 @@ import vt.cs.smells.analyzer.nodes.Scriptable;
 
 public class SubTreeCollector implements Visitor {
 	Visitor v;
-	public final int maxSequenceLength = 5;
-	private int minSequenceLength = 3;
+	public final int maxSequenceLength = 8;
+	private int minSequenceLength = 5;
 	private static int length = 0;
 	private ArrayList<Block> subtreeList = new ArrayList<Block>();
 

@@ -6,6 +6,8 @@ public class BlockPath {
 
 	
 	ArrayList<String> path = new ArrayList<String>();
+	private Scriptable scriptable;
+	private Script script;
 	public BlockPath(Block current) {
 		
 		
@@ -24,12 +26,12 @@ public class BlockPath {
 			}
 		} while (true);
 		
-		Script scrpt = (Script) current.getParent();
-		String firstBlock = scrpt.getBlocks().get(0).getCompactString();
-		String scriptString = "Script@x"+scrpt.getPosition()[0]+" y"+scrpt.getPosition()[1]+"["+firstBlock+"]";
+		script = (Script) current.getParent();
+		String firstBlock = script.getBlocks().get(0).getCompactString();
+		String scriptString = "Script@x"+script.getPosition()[0]+" y"+script.getPosition()[1]+"["+firstBlock+"]";
 		path.add(0,scriptString);
-		Scriptable scrptable = scrpt.getParent();
-		path.add(0, scrptable.getName());
+		scriptable = script.getParent();
+		path.add(0, scriptable.getName());
 	}
 
 	public void setPathList(ArrayList<String> path) {
@@ -39,7 +41,16 @@ public class BlockPath {
 	public ArrayList<String> getPathList(){
 		return path;
 	}
+
 	
+	public Scriptable getScriptable() {
+		return scriptable;
+	}
+
+	public Script getScript() {
+		return script;
+	}
+
 	@Override
 	public String toString(){
 		return String.join("|", path);

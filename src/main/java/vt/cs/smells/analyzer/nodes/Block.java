@@ -429,7 +429,7 @@ public class Block implements Visitable, Cloneable {
         	}
         	break;
         case "message":
-        	if(command.equals("whenIReceive")){
+        	if(command.equals("whenIReceive")||command.equals("broadcast:")||command.equals("doBroadcastAndWait")){
         		return args.get(0).toString();
         	}
         	break;

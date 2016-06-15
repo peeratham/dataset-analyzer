@@ -56,6 +56,10 @@ public class ScratchProject implements Visitable{
 		Object obj = jsonParser.parse(jsonInputString);
 		JSONObject jsonObject = (JSONObject) obj;
 		
+		return loadProject(jsonObject);
+	}
+	
+	public static ScratchProject loadProject(JSONObject jsonObject) throws ParseException, ParsingException {
 		return Parser.loadProject(jsonObject);
 	}
 
