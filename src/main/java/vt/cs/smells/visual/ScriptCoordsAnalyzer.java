@@ -6,11 +6,11 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +24,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.apache.commons.collections15.Transformer;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bson.Document;
 import org.json.simple.JSONObject;
@@ -51,11 +52,12 @@ import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Script;
 import vt.cs.smells.analyzer.parser.ParsingException;
 import vt.cs.smells.analyzer.parser.Util;
+import vt.cs.smells.crawler.AnalysisDBManager;
 
 public class ScriptCoordsAnalyzer extends Analyzer {
 	VisualizationHelper visHelper = null;
 	HashMap<String, List<Node>> nodesForEachScriptable = new HashMap<>();
-	private static final int max_xi_id = 100000;
+	private static final int max_xi_id = 1000000;
 	private ListAnalysisReport report = null;
 
 	public void showVisualization() {
@@ -173,7 +175,7 @@ public class ScriptCoordsAnalyzer extends Analyzer {
 			ArrayList<Node> nodes = new ArrayList<Node>();
 			for (Script s : project.getAllScriptables().get(scriptableName).getScripts()) {
 				Block firstBlock = s.getBlocks().get(0);
-				if(firstBlock.getBlockType().getShape().equals("hat")){
+				if (firstBlock.getBlockType().getShape().equals("hat")) {
 					Node node = new Node(s);
 					nodes.add(node);
 				}
@@ -191,16 +193,16 @@ public class ScriptCoordsAnalyzer extends Analyzer {
 
 			// if every nodes are the same no purity evaluation is useless
 			HashSet<NodeClass> nodeClassSet = new HashSet<NodeClass>();
-			for(List<Node> cluster: clusters){
-				for(Node n: cluster){
+			for (List<Node> cluster : clusters) {
+				for (Node n : cluster) {
 					nodeClassSet.add(n.getNodeClass());
 				}
 			}
-			if(nodeClassSet.size()==1){
+			if (!(nodeClassSet.size()> 1)) {
 				continue;
 			}
 			// purity evaluation
-			
+
 			for (List<Node> cluster : clusters) {
 				HashMap<NodeClass, Integer> clusterCount = new HashMap<>();
 				for (Node n : cluster) {
@@ -230,8 +232,7 @@ public class ScriptCoordsAnalyzer extends Analyzer {
 				}
 
 			}
-			
-			
+
 		}
 
 	}
@@ -248,7 +249,7 @@ public class ScriptCoordsAnalyzer extends Analyzer {
 	}
 
 	private static void runOnce() throws IOException, ParseException, ParsingException, AnalysisException {
-		String projectSrc = Util.retrieveProjectOnline(102796854);
+		String projectSrc = Util.retrieveProjectOnline(94833586);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
 		ScriptCoordsAnalyzer analyzer = new ScriptCoordsAnalyzer();
 		analyzer.setProject(project);
@@ -256,7 +257,7 @@ public class ScriptCoordsAnalyzer extends Analyzer {
 		System.out.println(analyzer.getReport().getJSONReport());
 		analyzer.showVisualization();
 		Document report = Document.parse(analyzer.getReport().getJSONReport().toJSONString());
-		
+
 		if (((Document) report.get("records")).getInteger("count") > 0) {
 			System.out.println(analyzer.getReport().getJSONReport());
 		}
@@ -266,30 +267,50 @@ public class ScriptCoordsAnalyzer extends Analyzer {
 			throws FileNotFoundException, IOException, ParseException, ParsingException, AnalysisException {
 		DatasetFilter filter = new DatasetFilter();
 		FileInputStream is = new FileInputStream(AnalysisManager.largeTestInput);
+		AnalysisDBManager dbManager = new AnalysisDBManager("localhost", "exploration");
 
 		String[] lines = IOUtils.toString(is).split("\n");
 		filter.setDataSource(lines);
 		filter.setScriptableThreshold(5);
 		filter.setAvgScriptPerSprite(3.0);
-		HashMap<Integer, JSONObject> datasetDict = filter.getFilteredProjectsFrom(0.1);
+		HashMap<Integer, JSONObject> datasetDict = filter.getFilteredProjectsFrom(1);
 
 		System.out.println("Original Size: " + lines.length);
 		System.out.println("Filtered Size: " + datasetDict.size());
 
 		ScriptCoordsAnalyzer analyzer = new ScriptCoordsAnalyzer();
+		StringBuilder sb = new StringBuilder();
+		sb.append("ID,scriptCount, spriteCount, avgScripts, remixes, views, counts\n");
 		for (Integer id : datasetDict.keySet()) {
+			sb.append(id + ",");
 			JSONObject projectJson = datasetDict.get(id);
 			ScratchProject project = ScratchProject.loadProject((String) projectJson.get("src"));
 			analyzer.setProject(project);
 			analyzer.analyze();
 			// analyzer.showVisualization();
+
 			Document report = Document.parse(analyzer.getReport().getJSONReport().toJSONString());
-			if (((Document) report.get("records")).getInteger("count") > 2) {
+			if (((Document) report.get("records")).getInteger("count") > 0) {
 				System.out.println(id);
 				System.out.println(analyzer.getReport().getJSONReport());
 			}
+			//
+			Document metricReport = dbManager.findMetricsReport(id);
+			 sb.append(metricReport.getInteger("scriptCount")+",");
+			 sb.append(metricReport.getInteger("spriteCount")+",");
+			 double avgScripts = (double) metricReport.getInteger("scriptCount")/(metricReport.getInteger("spriteCount")+1);
+			 sb.append(avgScripts+",");
+			Document metadata = dbManager.findMetadata(id);
+			if (metadata != null) {
+				sb.append(metadata.getInteger("remixes") + ",");
+				sb.append(metadata.getInteger("views")+",");
+			}
 
+			sb.append(((Document) report.get("records")).getInteger("count") + ",");
+			sb.append("\n");
 		}
+		File f = new File("./result2.csv");
+		FileUtils.writeStringToFile(f, sb.toString());
 	}
 
 	public HashMap<String, List<Node>> getAllScriptNodes() {

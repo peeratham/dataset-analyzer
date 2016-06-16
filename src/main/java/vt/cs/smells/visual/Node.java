@@ -1,5 +1,7 @@
 package vt.cs.smells.visual;
 
+import java.util.ArrayList;
+
 import org.apache.commons.math3.ml.clustering.Clusterable;
 
 import vt.cs.smells.analyzer.nodes.Block;
@@ -67,7 +69,12 @@ public class Node implements Clusterable{
 	public NodeClass getNodeClass() {
 		NodeClass nc = new NodeClass();
 		nc.command = this.block.getCommand();
-		nc.args = this.block.getArgs();
+		if(nc.command.equals("whenIReceive")){
+			nc.args = this.block.getArgs();
+		}else{
+			nc.args = new ArrayList();
+		}
+		
 		return nc;
 	}
 

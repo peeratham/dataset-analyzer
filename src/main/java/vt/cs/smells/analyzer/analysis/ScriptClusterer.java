@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.math3.ml.clustering.Clusterable;
 
+import de.lmu.ifi.dbs.elki.algorithm.clustering.optics.OPTICSHeap;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.optics.OPTICSList;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.optics.OPTICSXi;
 import de.lmu.ifi.dbs.elki.data.Clustering;
@@ -67,12 +68,12 @@ public class ScriptClusterer<T extends Clusterable> {
 		db.initialize();
 
 		ListParameterization params = new ListParameterization();
-		params.addParameter(OPTICSList.Parameterizer.MINPTS_ID, 2);
-		params.addParameter(OPTICSXi.Parameterizer.XI_ID, xi_id);
-		params.addParameter(OPTICSXi.Parameterizer.XIALG_ID, OPTICSList.class);
+		params.addParameter(OPTICSList.Parameterizer.MINPTS_ID, 1);
+		params.addParameter(OPTICSXi.Parameterizer.XI_ID, 0.01);
+		params.addParameter(OPTICSXi.Parameterizer.XIALG_ID, OPTICSHeap.class);
 		OPTICSXi opticsxi = ClassGenericsUtil.parameterizeOrAbort(OPTICSXi.class, params);
-
 		Clustering<OPTICSModel> c = opticsxi.run(db);
+		
 		Relation<NumberVector> rel = null;
 		List<List<Node>> resultClusters = new ArrayList<>();
 		try{
