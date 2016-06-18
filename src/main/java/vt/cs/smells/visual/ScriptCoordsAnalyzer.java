@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -270,7 +271,8 @@ public class ScriptCoordsAnalyzer extends Analyzer {
 		AnalysisDBManager dbManager = new AnalysisDBManager("localhost", "exploration");
 
 		String[] lines = IOUtils.toString(is).split("\n");
-		filter.setDataSource(lines);
+		List<String> data = new ArrayList<>(Arrays.asList(lines));
+		filter.setDataSource(data);
 		filter.setScriptableThreshold(5);
 		filter.setAvgScriptPerSprite(3.0);
 		HashMap<Integer, JSONObject> datasetDict = filter.getFilteredProjectsFrom(1);

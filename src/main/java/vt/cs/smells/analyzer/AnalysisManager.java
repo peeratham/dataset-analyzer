@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
+import org.bson.Document;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -32,6 +35,7 @@ import vt.cs.smells.analyzer.parser.ParsingException;
 import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.analyzer.visitor.AnalysisVisitor;
 import vt.cs.smells.analyzer.visitor.Visitor;
+import vt.cs.smells.crawler.AnalysisDBManager;
 
 public class AnalysisManager {
 	JSONParser jsonParser;
@@ -40,7 +44,7 @@ public class AnalysisManager {
 	private AnalysisConfigurator config = null;
 	private int projectID;
 	static Logger logger = Logger.getLogger(AnalysisManager.class);
-	public static final String testInput = "C:/Users/Peeratham/workspace/dataset/hundred.json";
+	public static final String smallTestInput = "C:/Users/Peeratham/workspace/dataset/hundred.json";
 	public static final String largeTestInput = "C:/Users/Peeratham/workspace/dataset/sources-0.json";
 
 	public AnalysisManager() {
@@ -204,9 +208,9 @@ public class AnalysisManager {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
 		JSONParser jsonParser = new JSONParser();
 		AnalysisConfigurator mainConfig = new AnalysisConfigurator();
-		
+
 		try {
-			
+
 			mainConfig.addAnalysis(analysisClassURL);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -229,23 +233,77 @@ public class AnalysisManager {
 				JSONObject record = (JSONObject) smells.get(smellName);
 				Integer count = (Integer) record.get("count");
 				stats.addValue(count);
-				
-				
-				if(count>0){
-					found +=1;
-					logger.info(id);;
+
+				if (count > 0) {
+					found += 1;
+					logger.info(id);
+					;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		DecimalFormat df2 = new DecimalFormat(".##");
-		System.out.println("Found:"+found+" out of "+stats.getN()+" or "+df2.format((double)found/stats.getN()*100)+"%");
-		System.out.println("Average:"+df2.format(stats.getMean())+" per project");
+		System.out.println("Found:" + found + " out of " + stats.getN() + " or "
+				+ df2.format((double) found / stats.getN() * 100) + "%");
+		System.out.println("Average:" + df2.format(stats.getMean()) + " per project");
 	}
-	
+
 	public static void runAnalysis(String analysisClassName) throws FileNotFoundException, IOException {
-		runSingleAnalysis(testInput, analysisClassName);		
+		runSingleAnalysis(smallTestInput, analysisClassName);
+	}
+
+	public static String runAnalysis2(Analyzer analyzer, double percent) throws IOException {
+		DatasetFilter filter = new DatasetFilter();
+		FileInputStream is = new FileInputStream(AnalysisManager.smallTestInput);
+		AnalysisDBManager dbManager = new AnalysisDBManager("localhost", "exploration");
+
+		String[] lines = IOUtils.toString(is).split("\n");
+		List<String> data = new ArrayList<>(Arrays.asList(lines));
+		int endIndex = (int) Math.round(percent * lines.length);
+		List<String> partition = data.subList(0, endIndex);
+		filter.setDataSource(partition);
+		filter.setScriptableThreshold(5);
+		filter.setAvgScriptPerSprite(3.0);
+
+		HashMap<Integer, JSONObject> datasetDict = filter.getFilteredProjectsFrom(1);
+		System.out.println("Original Size: " + lines.length);
+		System.out.println("Filtered Size: " + datasetDict.size());
+
+		CSVGenerator gen = new CSVGenerator();
+		gen.setColumn(new String[] { "ID", "count" });
+
+		for (Integer id : datasetDict.keySet()) {
+			JSONObject projectJson = datasetDict.get(id);
+			ScratchProject project = null;
+			try {
+				project = ScratchProject.loadProject((String) projectJson.get("src"));
+				analyzer.setProject(project);
+				analyzer.analyze();
+				Document report = Document.parse(analyzer.getReport().getJSONReport().toJSONString());
+				if (((Document) report.get("records")).getInteger("count") > 0) {
+					System.out.println(id);
+					System.out.println(analyzer.getReport().getJSONReport());
+				}
+				gen.addLine(new Object[] { id, ((Document) report.get("records")).getInteger("count") });
+			} catch (ParseException e) {
+				e.printStackTrace();
+			} catch (ParsingException e) {
+				e.printStackTrace();
+			} catch (AnalysisException e) {
+				e.printStackTrace();
+			}
+		}
+		return gen.generateCSV();
+	}
+
+	public static Report runSingleAnalysis(int i, Analyzer analyzer)
+			throws AnalysisException, IOException, ParseException, ParsingException {
+		String projectSrc = Util.retrieveProjectOnline(i);
+		ScratchProject project = ScratchProject.loadProject(projectSrc);
+		analyzer.setProject(project);
+		analyzer.analyze();
+		return analyzer.getReport();
 	}
 
 }

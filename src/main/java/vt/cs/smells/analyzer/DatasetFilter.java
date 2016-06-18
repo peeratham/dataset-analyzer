@@ -3,6 +3,7 @@ package vt.cs.smells.analyzer;
 import static java.lang.Math.toIntExact;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.bson.Document;
 import org.json.simple.JSONObject;
@@ -24,7 +25,7 @@ public class DatasetFilter {
 	Crawler crawler = new Crawler();
 	AnalysisDBManager dbManager = new AnalysisDBManager("localhost", "exploration");
 
-	public void setDataSource(String[] lines) {
+	public void setDataSource(List<String> lines) {
 		for (String line : lines) {
 			JSONObject srcLine;
 			try {
