@@ -82,4 +82,14 @@ public class AnalysisUtil  {
 		return varBlocks;
 	}
 
+	public static ArrayList<Block> getVarRelatedBlocks(Script root) {
+		ArrayList<Block> varBlocks = new ArrayList<>();
+		String[] varRelatedCommands = {"changeVar:by:","showVariable:","hideVariable:"};
+		for(String command: varRelatedCommands){
+			varBlocks.addAll(findBlock(root,command));
+		}
+		
+		return varBlocks;
+	}
+
 }

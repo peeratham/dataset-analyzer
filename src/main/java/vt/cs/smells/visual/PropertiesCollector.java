@@ -17,7 +17,19 @@ public class PropertiesCollector {
 			result.add(b.arg("varName"));
 		}
 		
+		for(Block b: AnalysisUtil.getVarRelatedBlocks(script)){
+			result.add(b.getArgs(0).toString());
+		}
+		
 		return result;
 		
+	}
+	
+	public static final HashSet<String> collectVarRefBlocks(Script script){
+		HashSet<String> result= new HashSet<String>();
+		for(Block b:AnalysisUtil.getVarRefBlocks(script)){
+			result.add(b.arg("varName"));
+		}
+		return result;
 	}
 }

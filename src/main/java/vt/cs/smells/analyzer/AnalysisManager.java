@@ -255,7 +255,7 @@ public class AnalysisManager {
 
 	public static String runAnalysis2(Analyzer analyzer, double percent) throws IOException {
 		DatasetFilter filter = new DatasetFilter();
-		FileInputStream is = new FileInputStream(AnalysisManager.smallTestInput);
+		FileInputStream is = new FileInputStream(AnalysisManager.largeTestInput);
 		AnalysisDBManager dbManager = new AnalysisDBManager("localhost", "exploration");
 
 		String[] lines = IOUtils.toString(is).split("\n");

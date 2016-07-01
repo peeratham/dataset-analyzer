@@ -28,24 +28,22 @@ public class TestExtractSubTreeVisitor {
 	private String projectSrc;
 	Parser parser = new Parser();
 	List<Block> subtreeList = null;
+	private Scriptable s;
+	private Visitor collector;
 	
 	@Before
 	public void setUp() throws Exception {
 		projectSrc = Util.retrieveProjectOnline(101357446);
-		JSONObject sprite = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
-		Scriptable s = Parser.loadScriptable(sprite);
-		Visitor collector = new TopDownSubTreeCollector(new Identity());
+		JSONObject sprite = TestUtils.getJSONScriptable(projectSrc, "Sprite2");
+		s = Parser.loadScriptable(sprite);
+		collector = new TopDownSubTreeCollector(new Identity());
 		s.accept(collector);
 		subtreeList = ((TopDownSubTreeCollector)collector).getSubTreeList();
-	}
-
-	@After
-	public void tearDown() throws Exception {
 	}
 	
 	@Test
 	public void testExtractFragmentVisitor() throws VisitFailure, ParseException, ParsingException {
-		assertEquals(7,subtreeList.size());
+		assertEquals(3,subtreeList.size());
 	}
 	
 	@Test

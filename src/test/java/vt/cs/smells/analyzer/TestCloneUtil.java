@@ -52,10 +52,7 @@ public class TestCloneUtil {
 		Scriptable sprite3 = project.getScriptable("Sprite3");
 		Script s0 = sprite3.getScript(0);
 		Script s1 = sprite3.getScript(1);
-		Script s2 = sprite3.getScript(2);
 		assertEquals(CloneUtil.hashSubTree(s0.getBlocks().get(0)),CloneUtil.hashSubTree(s1.getBlocks().get(0)));
-		
-		
 	}	
 	
 	
@@ -72,15 +69,14 @@ public class TestCloneUtil {
 	
 	@Test
 	public void differentHashForDifferentOrderingOfCommands() {
-		Scriptable sprite4 = project.getScriptable("Sprite4");
-		Script s0 = sprite4.getScript(0);
-		Script s1 = sprite4.getScript(1);
-		Script s2 = sprite4.getScript(2);
+		Scriptable sprite3 = project.getScriptable("Sprite3");
+		Script s0 = sprite3.getScript(0);
+		Script s3 = sprite3.getScript(3);
+		
 		int hash0 = CloneUtil.hashSubTree(s0.getBlocks().get(0));
-		int hash1 = CloneUtil.hashSubTree(s1.getBlocks().get(0));
-		int hash2 = CloneUtil.hashSubTree(s2.getBlocks().get(0));
-		assertEquals(hash0,hash1);
-		assertNotEquals(hash0,hash2);
+		int hash3 = CloneUtil.hashSubTree(s3.getBlocks().get(0));
+	
+		assertNotEquals(hash0,hash3);
 	}
 	
 	@Test

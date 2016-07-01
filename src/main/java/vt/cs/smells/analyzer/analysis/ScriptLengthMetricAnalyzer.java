@@ -77,13 +77,11 @@ public class ScriptLengthMetricAnalyzer extends Analyzer {
 			for (String name : project.getAllScriptables().keySet()) {
 				Scriptable sc = project.getScriptable(name);
 				for(Script s: sc.getScripts()){
-					CountScriptLengthVisitor counter = new CountScriptLengthVisitor();
-					TopDownNestedNonConditional visitor = new TopDownNestedNonConditional(counter);
-					s.accept(visitor);
-					if (counter.getCount() > 0) {
-						stats.addValue(counter.getCount());
-						freqCount.addValue(counter.getCount());
-						uniqueScriptLengths.add(counter.getCount());
+					int length= measureLength(s);
+					if (length > 0) {
+						stats.addValue(length);
+						freqCount.addValue(length);
+						uniqueScriptLengths.add(length);
 					}
 				}
 				
@@ -100,6 +98,13 @@ public class ScriptLengthMetricAnalyzer extends Analyzer {
 		} catch (VisitFailure e) {
 			e.printStackTrace();
 		}
+	}
+
+	public int measureLength(Script s) throws VisitFailure {
+		CountScriptLengthVisitor counter = new CountScriptLengthVisitor();
+		TopDownNestedNonConditional visitor = new TopDownNestedNonConditional(counter);
+		s.accept(visitor);
+		return counter.getCount();
 	}
 
 	@Override

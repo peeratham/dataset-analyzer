@@ -28,28 +28,59 @@ public class ScriptProperty {
 
 	private void extractProperties() {
 		int[] pos = script.getPosition();
-		this.coordinate = new Coordinate(pos[0],pos[1]);
-		
+		this.coordinate = new Coordinate(pos[0], pos[1]);
+
 		variables = PropertiesCollector.collectVariables(script);
 	}
-	
-	public Block getFirstBlock(){
-			return script.getBlocks().get(0);
+
+	public Block getFirstBlock() {
+		return script.getBlocks().get(0);
 	}
 
 	@Override
 	public String toString() {
-		return "ScriptProperty ["
-				+ (script != null ? "script=" + script + ", " : "")
-				+ (coordinate != null ? "coordinate=" + coordinate + ", " : "")
-				+ (variables != null ? "variables=" + variables : "") + "]";
+		return hashCode()+getFirstBlock().toString();
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(!(o instanceof ScriptProperty)){
+			return false;
+		}
+		ScriptProperty other = (ScriptProperty)o;
+		if(!other.getFirstBlock().equals(this.getFirstBlock())){
+			return false;
+		}
+		if(other.getFirstBlock().hasCommand("whenIReceive")){
+			if(!other.getFirstBlock().getArgs(0).equals(this.getFirstBlock().getArgs(0))){
+				return false;
+			}
+		}
+		
+		if(other.getVariables().isEmpty() && this.getVariables().isEmpty()){
+			return false;
+		}
+		
+		if(!other.getVariables().equals(this.getVariables())){
+			return false;
+		}
+		
+		return true;
 	}
 
 	public Script getScript() {
 		return script;
 	}
-	
-	
-	
-	
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 31 * hash + getFirstBlock().getCommand().hashCode();
+		if (getFirstBlock().hasCommand("whenIReceive")) {
+			hash = 31 * hash + getFirstBlock().getArgs(0).hashCode();
+		}
+		hash = 31 * hash + getVariables().hashCode();
+		return hash;
+	}
+
 }
