@@ -1,5 +1,7 @@
 package vt.cs.smells.analyzer.analysis;
 
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +19,7 @@ public class TestCouplingMetricAnalyzer {
 
 	@Before
 	public void setUp() throws Exception {
-		String projectSrc = Util.retrieveProjectOnline(111244183);
+		String projectSrc = Util.retrieveProjectOnline(115367090);
 		project = ScratchProject.loadProject(projectSrc);
 	}
 
@@ -26,11 +28,14 @@ public class TestCouplingMetricAnalyzer {
 	}
 
 	@Test
-	public void test() throws AnalysisException {
+	public void testGetNumberOfUniqueOutGoingEdgeToOtherScriptable() throws AnalysisException {
 		CouplingMetricAnalyzer analyzer = new CouplingMetricAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-		System.out.println(analyzer.getReport().getJSONReport());
+		
+		Set<CouplingMetricAnalyzer.Node> nodes = analyzer.getMessageReceiverNodes("Sprite1");
+		
+//		System.out.println(analyzer.getReport().getJSONReport());
 		
 
 	}

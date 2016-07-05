@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.JFrame;
 
@@ -20,6 +22,7 @@ import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.EdgeType;
+import edu.uci.ics.jung.graph.util.Pair;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
@@ -30,6 +33,7 @@ import vt.cs.smells.analyzer.AnalysisManager;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.Report;
+import vt.cs.smells.analyzer.analysis.CouplingMetricAnalyzer.Node;
 import vt.cs.smells.analyzer.nodes.Block;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Scriptable;
@@ -44,6 +48,8 @@ public class CouplingMetricAnalyzer extends Analyzer {
 	HashMap<String, HashSet<Node>> msgSenders = new HashMap<>();
 	HashMap<String, HashSet<Node>> msgReceivers = new HashMap<>();
 	static Graph<Node, Message> graph = new DirectedSparseMultigraph<Node, Message>();
+	static Graph<String, Message> couplingGraph = new DirectedSparseMultigraph<>();
+	
 
 	class Node {
 		String sprite;
@@ -101,16 +107,20 @@ public class CouplingMetricAnalyzer extends Analyzer {
 		broadcastCommands.add("doBroadcastAndWait");
 		broadcastCommands.add("broadcast:");
 		String receiveCmd = "whenIReceive";
-		for (String sname : project.getAllScriptables().keySet()) {
-			Scriptable scriptable = project.getScriptable(sname);
+		for (String scriptableName : project.getAllScriptables().keySet()) {
+			Scriptable scriptable = project.getScriptable(scriptableName);
+			
 			HashSet<Block> broadcastBlocks = new HashSet<>();
 			for (String cmdName : broadcastCommands) {
 				ArrayList<Block> atemp = Collector.collect(new Evaluator.BlockCommand(cmdName), scriptable);
 				broadcastBlocks.addAll(atemp);
 			}
+			
 			HashSet<Block> receiveBlocks = new HashSet<>();
 			receiveBlocks.addAll(Collector.collect(new Evaluator.BlockCommand(receiveCmd), scriptable));
-
+			
+			
+			
 			for (Block b : broadcastBlocks) {
 				String msg = b.arg("message");
 				if (!msgSenders.containsKey(msg)) {
@@ -140,27 +150,33 @@ public class CouplingMetricAnalyzer extends Analyzer {
 				msgReceivers.put(msg, receivers);
 			}
 		}
-
+		
 		for (String msg : msgSenders.keySet()) {
 			int counter = 0;
 			for (Node sender : msgSenders.get(msg)) {
 				graph.addVertex(sender);
+				couplingGraph.addVertex(sender.sprite);
 				for (Node receiver : msgReceivers.get(msg)) {
 					graph.addVertex(receiver);
+					couplingGraph.addVertex(receiver.sprite);
 					Message msgObj = new Message();
 					msgObj.message = msg;
 					msgObj.index = counter;
 					graph.addEdge(msgObj, sender, receiver, EdgeType.DIRECTED);
+					couplingGraph.addEdge(msgObj, sender.sprite, receiver.sprite, EdgeType.DIRECTED);
+					
 					counter++;
 				}
 			}
 		}
-
-		// compute metric based
+		
+		
 		for (Node n : graph.getVertices()) {
 			int CINT = graph.getSuccessorCount(n);
 			HashSet<String> scriptables = new HashSet<>();
 			graph.getSuccessors(n).forEach((s) -> scriptables.add(s.sprite));
+			
+			
 			int CDISP = scriptables.size();
 			double HALF_THRESHOLD = (double) project.getAllScriptables().size() / 2;
 			if (CINT > SHORT_TERM_MEM && CDISP > HALF_THRESHOLD) {
@@ -169,6 +185,23 @@ public class CouplingMetricAnalyzer extends Analyzer {
 				report.addRecord(n.toString());
 			}
 
+		}
+		
+		Set<Pair<String>> uniqueMessagePerReceiver = new HashSet<>();
+		
+		for (String node : couplingGraph.getVertices()) {
+			int uniqueReceiverScriptables = couplingGraph.getSuccessorCount(node);
+			int out = couplingGraph.getOutEdges(node).size();
+			HashSet<Pair> uniqueMessagesPerScriptable = new HashSet<Pair>(); 
+			for(Message message : couplingGraph.getOutEdges(node)){
+				Pair<String> endPoints = couplingGraph.getEndpoints(message);
+				Pair msgToReceiver = new Pair(message.message, endPoints.getSecond());
+				uniqueMessagesPerScriptable.add(msgToReceiver);
+			}
+			System.out.println(uniqueMessagesPerScriptable.size());
+			double intensity = (double)uniqueMessagesPerScriptable.size()/uniqueReceiverScriptables;
+			System.out.println(intensity);
+			
 		}
 	}
 
@@ -223,13 +256,18 @@ public class CouplingMetricAnalyzer extends Analyzer {
 
 	public static void main(String[] args) throws IOException, ParseException, ParsingException, AnalysisException {
 		// 110445064
-		String projectSrc = Util.retrieveProjectOnline(111244183);
+		String projectSrc = Util.retrieveProjectOnline(115367090);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
 		CouplingMetricAnalyzer analyzer = new CouplingMetricAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
 //		showGraph(graph);
 		
-		AnalysisManager.runAnalysis(CouplingMetricAnalyzer.class.getName());
+//		AnalysisManager.runAnalysis(CouplingMetricAnalyzer.class.getName());
+	}
+
+	public Set<Node> getMessageReceiverNodes(String string) {
+		
+		return null;
 	}
 }

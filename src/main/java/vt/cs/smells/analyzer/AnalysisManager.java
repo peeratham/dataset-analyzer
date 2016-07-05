@@ -21,8 +21,10 @@ import vt.cs.smells.analyzer.analysis.BroadCastWorkAroundAnalyzer;
 import vt.cs.smells.analyzer.analysis.BroadVarScopeAnalyzer;
 import vt.cs.smells.analyzer.analysis.CloneAnalyzer;
 import vt.cs.smells.analyzer.analysis.DuplicateValueAnalyzer;
+import vt.cs.smells.analyzer.analysis.HardCodedMediaSequenceAnalyzer;
 import vt.cs.smells.analyzer.analysis.MasteryAnalyzer;
 import vt.cs.smells.analyzer.analysis.ScriptLengthMetricAnalyzer;
+import vt.cs.smells.analyzer.analysis.TooFineGrainScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooLongScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.UncommunicativeNamingVisitor;
 import vt.cs.smells.analyzer.analysis.UnnecessaryBroadcastAnalyzer;
@@ -150,6 +152,8 @@ public class AnalysisManager {
 			defaultConfig.addAnalysis(UnusedBlockAnalyzer.class.getName());
 			defaultConfig.addAnalysis(ScriptLengthMetricAnalyzer.class.getName());
 			defaultConfig.addAnalysis(DuplicateValueAnalyzer.class.getName());
+			defaultConfig.addAnalysis(TooFineGrainScriptAnalyzer.class.getName());
+			defaultConfig.addAnalysis(HardCodedMediaSequenceAnalyzer.class.getName());
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
