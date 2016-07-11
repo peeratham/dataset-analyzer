@@ -54,7 +54,7 @@ public class AnalysisManager {
 		jsonParser = new JSONParser();
 	}
 
-	public ArrayList<Report> analyze2(String src) throws ParsingException,
+	public ArrayList<Report> analyze(String src) throws ParsingException,
 			AnalysisException {
 		reports = new ArrayList<>();
 		if (config == null) {
@@ -168,88 +168,6 @@ public class AnalysisManager {
 		return report;
 	}
 
-	public JSONObject analyze(String src) throws ParsingException,
-			AnalysisException {
-
-		ArrayList<JSONObject> smellReports = new ArrayList<JSONObject>();
-		ArrayList<JSONObject> metricReports = new ArrayList<JSONObject>();
-		if (config == null) {
-			config = getDefaultConfig();
-		}
-		ScratchProject project = null;
-		try {
-			project = ScratchProject.loadProject(src);
-			projectID = project.getProjectID();
-
-			for (Class k : config.listAnalyzers()) {
-				Analyzer analyzer = null;
-				if (Arrays.asList(k.getInterfaces()).contains(
-						AnalysisVisitor.class)) {
-					AnalysisVisitor v = (AnalysisVisitor) k.newInstance();
-					analyzer = new VisitorBasedAnalyzer();
-					((VisitorBasedAnalyzer) analyzer).addAnalysisVisitor(v);
-				} else {
-					analyzer = (Analyzer) k.newInstance();
-				}
-
-				analyzer.setProject(project);
-
-				try {
-					analyzer.analyze();
-				} catch (AnalysisException e) {
-					logger.error(k + " fail to analyze project " + projectID);
-					throw new AnalysisException("Analysis Error["
-							+ analyzer.getClass() + "]:\n" + e.getMessage());
-				}
-				Report analysisReport = analyzer.getReport();
-				switch (analysisReport.getReportType()) {
-				case SMELL:
-					smellReports.add(analysisReport.getJSONReport());
-					break;
-				case METRIC:
-					metricReports.add(analysisReport.getJSONReport());
-					break;
-				default:
-					smellReports.add(analysisReport.getJSONReport());
-					break;
-				}
-
-			}
-			JSONObject report = new JSONObject();
-			report.put("_id", projectID);
-			JSONObject smells = new JSONObject();
-
-			for (JSONObject a : smellReports) {
-				smells.put(a.get("name"), a.get("records"));
-			}
-			report.put("smells", smells);
-
-			JSONObject metrics = new JSONObject();
-			for (JSONObject m : metricReports) {
-				metrics.put(m.get("name"), m.get("records"));
-			}
-			// additional
-			metrics.put("scriptCount", project.getScriptCount());
-			metrics.put("spriteCount", project.getSpriteCount());
-
-			report.put("metrics", metrics);
-
-			return report;
-
-		} catch (ParseException e) {
-			logger.error("Fail to read JSONObject of projectID: " + projectID);
-			throw new ParsingException(e);
-		} catch (ParsingException e) {
-			logger.error("Fail to parse Scratch project: " + projectID);
-			throw new ParsingException(e);
-		} catch (InstantiationException | IllegalAccessException e) {
-			logger.error("Fail to instantiate analyzer: " + e);
-			throw new AnalysisException(e);
-		} catch (Exception e) {
-			logger.error("Fail: " + projectID);
-			throw new AnalysisException(e);
-		}
-	}
 
 	public int getProjectID() {
 		return projectID;
@@ -301,7 +219,8 @@ public class AnalysisManager {
 		StringBuilder sb = new StringBuilder();
 		for (int id : projectIDs) {
 			String src = Util.retrieveProjectOnline(id);
-			JSONObject report = blockAnalyzer.analyze(src);
+			blockAnalyzer.analyze(src);
+			JSONObject report = blockAnalyzer.getFullJSONReport();
 			String result = report.toJSONString();
 			sb.append(id);
 			sb.append("\t");
@@ -339,7 +258,8 @@ public class AnalysisManager {
 						.toString());
 				id = (Long) srcLine.get("_id");
 				String src = srcLine.get("src").toString();
-				JSONObject report = blockAnalyzer.analyze(src);
+				blockAnalyzer.analyze(src);
+				JSONObject report = blockAnalyzer.getFullJSONReport();
 				JSONObject smells = (JSONObject) report.get("smells");
 				String smellName = (String) smells.keySet().iterator().next();
 				JSONObject record = (JSONObject) smells.get(smellName);
@@ -441,7 +361,7 @@ public class AnalysisManager {
 
 		try {
 //			JSONObject result = blockAnalyzer.analyze(src);
-			blockAnalyzer.analyze2(src);
+			blockAnalyzer.analyze(src);
 			JSONObject result = blockAnalyzer.getConciseJSONReports();
 			System.out.println(result.toJSONString());
 		} catch (AnalysisException e) {

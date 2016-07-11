@@ -42,7 +42,8 @@ public class Main {
         
         for(File f: datasetDirectory.listFiles()){
         	try {
-				JSONObject result = blockAnalyzer.analyze(FileUtils.readFileToString(f));
+        		blockAnalyzer.analyze(FileUtils.readFileToString(f));
+				JSONObject result = blockAnalyzer.getFullJSONReport();
 				int projectID = blockAnalyzer.getProjectID();
 				
 				File path = new File(ANALYSIS_OUTPUT_DIR, projectID+"-m-1");
