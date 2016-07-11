@@ -207,8 +207,8 @@ public class TestParser {
 		ArrayList<String> expected = new ArrayList<String>();
 		expected.add("costume1");
 		expected.add("costume2");
-		expected.add("costume4");
 		expected.add("costume3");
+		expected.add("costume4");
 		assertEquals(expected, costumes);
 	}
 		

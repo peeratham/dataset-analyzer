@@ -33,14 +33,14 @@ import vt.cs.smells.analyzer.visitor.Visitor;
 public class DuplicateCodeAnalyzer extends Analyzer {
 	private static final String name = "DuplicateCode";
 	private static final String abbr = "DC";
-	private ListAnalysisReport report = new ListAnalysisReport(name, abbr);
-	private ArrayList<Block> subtreeList;
-	private HashMap<Integer, ArrayList<Block>> cloneDictionary = new HashMap<Integer, ArrayList<Block>>();
-	private HashMap<Integer, ArrayList<ArrayList<Block>>> cloneSequenceDictionary;
-	private ArrayList<ArrayList<Block>> cloneSequenceList;
+	ListAnalysisReport report = new ListAnalysisReport(name, abbr);
+	ArrayList<Block> subtreeList;
+	HashMap<Integer, ArrayList<Block>> cloneDictionary = new HashMap<Integer, ArrayList<Block>>();
+	HashMap<Integer, ArrayList<ArrayList<Block>>> cloneSequenceDictionary;
+	ArrayList<ArrayList<Block>> cloneSequenceList;
 	DescriptiveStatistics cloneInstanceSizeStats = new DescriptiveStatistics();
 	DescriptiveStatistics cloneGroupSizeStats = new DescriptiveStatistics();
-	int cloneGroupCount;
+	int cloneGroupCount = 0;
 	
 
 	@SuppressWarnings("unchecked")

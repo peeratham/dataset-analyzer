@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import vt.cs.smells.analyzer.AnalysisException;
@@ -25,7 +26,8 @@ public class TestAnalysisManager {
 		 jsonParser = new JSONParser();
 		 blockAnalyzer = new AnalysisManager();
 	}
-
+	
+	@Ignore
 	@Test
 	public void testAnalysisManager() throws IOException, ParsingException, AnalysisException {
 		InputStream in = Main.class.getClassLoader().getResource("example-dataset.json").openStream();

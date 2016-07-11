@@ -43,14 +43,13 @@ public class TestExtractSubTreeVisitor {
 	
 	@Test
 	public void testExtractFragmentVisitor() throws VisitFailure, ParseException, ParsingException {
-		assertEquals(3,subtreeList.size());
+		assertEquals(2,subtreeList.size());
 	}
 	
 	@Test
 	public void similarSubtreeAreInSameHashBucket(){
 		System.out.println(subtreeList.get(1));
-		System.out.println(CloneUtil.hashSubTree(subtreeList.get(1)));
 		System.out.println(CommandLoader.COMMAND_TO_INDEX);
-		assertEquals(CloneUtil.hashSubTree(subtreeList.get(1)), CloneUtil.hashSubTree(subtreeList.get(2)));
+		assertEquals(CloneUtil.hashSubTree(subtreeList.get(0)), CloneUtil.hashSubTree(subtreeList.get(1)));
 	}
 }
