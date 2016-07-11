@@ -31,9 +31,8 @@ public class TestUnnecessaryBroadcast {
 		UnnecessaryBroadcastAnalyzer analyzer = new UnnecessaryBroadcastAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-		ListAnalysisReport report = analyzer.getReport();
-		assertEquals(1,report.resultJSON.size());
-		System.out.println(report.getJSONReport());
+		assertEquals(1,analyzer.count);
+		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
 
 }

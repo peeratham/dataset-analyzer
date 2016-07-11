@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -22,51 +23,39 @@ import vt.cs.smells.analyzer.nodes.Scriptable;
 import vt.cs.smells.analyzer.parser.ParsingException;
 
 public class HardCodedMediaSequenceAnalyzer extends Analyzer {
+	private static final String name = "HardCodedMediaSequence";
+	private static final String abbr = "HCMS";
+	DescriptiveStatistics sequenceSizeStats = new DescriptiveStatistics();
 
 	private Report report;
+	int count = 0;
 
 	@Override
 	public void analyze() throws AnalysisException {
-		initialize();
+		report = new ListAnalysisReport(name,abbr);
+
 		for (Scriptable s : project.getAllScriptables().values()) {
 			List<String> mediaSeq = s.getCostumes();
-			List<List<String>> patterns = getMediaAccessPatternFlat(s);
+			List<List<String>> patterns = getMediaAccessSameControlStructure(s);
 			JSONObject record = new JSONObject();
 			for (List<String> accessSeq : patterns) {
 				List<String> subseq = matchSubsequence(accessSeq, mediaSeq);
-				if (subseq.size() > 3) {
+				if (subseq.size() > 2) {
 					record.put("seq", subseq);
+					sequenceSizeStats.addValue(subseq.size());
 					record.put("scriptable", s.getName());
 					report.addRecord(record);
+					count++;
 				}
 			}
-
 		}
-	}
-
-	private void initialize() {
-		report = new ListAnalysisReport();
-	}
-
-	@Override
-	public Report getReport() {
-		report.setProjectID(project.getProjectID());
-		report.setTitle("HardCodedSequence");
-		return report;
-	}
-
-	public static void main(String[] args) throws FileNotFoundException, IOException, AnalysisException, ParseException, ParsingException {
-		String csvResult = AnalysisManager.runAnalysis2(new HardCodedMediaSequenceAnalyzer(), 1);
-		FileUtils.writeStringToFile(new File(HardCodedMediaSequenceAnalyzer.class+".csv"), csvResult);
-//		Report result= AnalysisManager.runSingleAnalysis(17407891, new UnorganizedMultimediaAnalyzer());
-//		System.out.println(result.getJSONReport());
 	}
 
 	public List<String> matchSubsequence(List<String> seq1, List<String> seq2) {
 		return ListUtils.longestCommonSubsequence(seq1, seq2);
 	}
 
-	public List<List<String>> getMediaAccessPatternFlat(Scriptable sprite1) {
+	public List<List<String>> getMediaAccessSameControlStructure(Scriptable sprite1) {
 		List<List<String>> mediaAccessOrder = new ArrayList<>();
 		for (Script sc : sprite1.getScripts()) {
 			List<String> pattern = new ArrayList<String>();
@@ -104,4 +93,27 @@ public class HardCodedMediaSequenceAnalyzer extends Analyzer {
 		}
 	}
 
+
+	@Override
+	public Report getReport() {
+		
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", count);
+		if(count>0){
+			conciseReport.put("groupSize", sequenceSizeStats.getMean());
+		}else{
+			conciseReport.put("groupSize", 0);
+		}
+	
+		report.setConciseJSONReport(conciseReport);
+		
+		return report;
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException, IOException, AnalysisException, ParseException, ParsingException {
+//		String csvResult = AnalysisManager.runAnalysis2(new HardCodedMediaSequenceAnalyzer(), 1);
+//		FileUtils.writeStringToFile(new File(HardCodedMediaSequenceAnalyzer.class+".csv"), csvResult);
+		Report result= AnalysisManager.runSingleAnalysis(17407891, new HardCodedMediaSequenceAnalyzer());
+		System.out.println(result.getJSONReport());
+	}
 }

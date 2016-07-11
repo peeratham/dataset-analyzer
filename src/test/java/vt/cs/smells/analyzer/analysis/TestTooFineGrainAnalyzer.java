@@ -1,5 +1,6 @@
 package vt.cs.smells.analyzer.analysis;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -34,22 +35,17 @@ public class TestTooFineGrainAnalyzer {
 		analyzer.setProject(project);
 		analyzer.analyze();
 		System.out.println(analyzer.getReport().getJSONReport());
-		
 	}
 	
+	
 	@Test
-	public void testHashOfScriptProperties(){
+	public void testAnalysisProperty() throws AnalysisException{
 		TooFineGrainScriptAnalyzer analyzer = new TooFineGrainScriptAnalyzer();
-		Scriptable s = project.getScriptable("Sprite1");
-		Script sc0 = s.getScript(0);
-		Script sc1 = s.getScript(1);
-		
-		ScriptProperty sProp0 = new ScriptProperty(sc0);
-		ScriptProperty sProp1 = new ScriptProperty(sc1);
-		int sProp0Hash = sProp0.hashCode();
-		int sProp1Hash = sProp1.hashCode();
-		
-		assertTrue(sProp0Hash==sProp1Hash);
+		analyzer.setProject(project);
+		analyzer.analyze();
+		assertEquals(1, analyzer.count);
+		assertEquals(2, analyzer.sizeStats.getSum(), 0.01);
+		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
 
 }

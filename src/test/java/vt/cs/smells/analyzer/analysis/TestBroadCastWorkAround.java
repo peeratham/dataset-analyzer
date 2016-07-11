@@ -1,5 +1,7 @@
 package vt.cs.smells.analyzer.analysis;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,12 +28,10 @@ public class TestBroadCastWorkAround {
 
 	@Test
 	public void detectFlagVariables() throws AnalysisException {
-		Analyzer analyzer = new BroadCastWorkAroundAnalyzer();
+		BroadCastWorkAroundAnalyzer analyzer = new BroadCastWorkAroundAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();	
-		System.out.println(analyzer);
-		System.out.println(analyzer.getReport().getJSONReport());
-		
+		assertEquals(2, analyzer.count);
 	}
 
 }

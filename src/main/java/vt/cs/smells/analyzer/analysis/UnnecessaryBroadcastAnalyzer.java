@@ -17,7 +17,11 @@ import vt.cs.smells.analyzer.nodes.Script;
 import vt.cs.smells.analyzer.nodes.Scriptable;
 
 public class UnnecessaryBroadcastAnalyzer extends Analyzer{
-	ListAnalysisReport report = new ListAnalysisReport();
+	private static final String name = "UnnecessaryBroadcast";
+	private static final String abbr = "UBC";
+	
+	ListAnalysisReport report = new ListAnalysisReport(name,abbr);
+	int count = 0;
 	
 	class BroadCastReceivePair {
 		private String message;
@@ -26,7 +30,6 @@ public class UnnecessaryBroadcastAnalyzer extends Analyzer{
 
 		public void putSrc(String name) {
 			src.add(name);
-			
 		}
 
 		public void putDest(String name, Script parent) {
@@ -95,21 +98,19 @@ public class UnnecessaryBroadcastAnalyzer extends Analyzer{
 						JSONObject record = new JSONObject();
 						record.put(spriteName, message);
 						report.addRecord(record);
+						count++;
 					}
 				}
 			}
 		}
-		
 	}
 
-	private HashSet<Block> findBroadCastBlock(Script s) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public ListAnalysisReport getReport() {
-		report.setTitle("Unnecessary Broadcast");
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", count);
+		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
 	

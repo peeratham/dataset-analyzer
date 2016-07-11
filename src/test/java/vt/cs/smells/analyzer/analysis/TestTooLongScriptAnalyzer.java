@@ -31,7 +31,9 @@ public class TestTooLongScriptAnalyzer {
 		TooLongScriptAnalyzer analyzer = new TooLongScriptAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-		System.out.println(analyzer.getReport().getJSONReport());
+		assertEquals(1, analyzer.count);
+		assertEquals(17, analyzer.sizeStats.getMean(),0.01);
+		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
 
 }

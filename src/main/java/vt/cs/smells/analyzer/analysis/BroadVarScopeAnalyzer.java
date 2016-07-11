@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
@@ -20,7 +22,10 @@ import vt.cs.smells.select.Evaluator;
 public class BroadVarScopeAnalyzer extends Analyzer {
 	public HashMap<String, HashSet<String>> globalVarRef = new HashMap<String, HashSet<String>>();
 	List<String> varRelatedCommands = new ArrayList<String>();
-	private ListAnalysisReport report = new ListAnalysisReport();
+	final String name = "TooBroadVariableScope";
+	private String abbr = "BVS";
+	private ListAnalysisReport report = new ListAnalysisReport(name, abbr);
+	int count = 0;
 	
 	public BroadVarScopeAnalyzer(){
 		varRelatedCommands.add("setVar:to:");
@@ -53,16 +58,21 @@ public class BroadVarScopeAnalyzer extends Analyzer {
 				}
 			}
 		}
-	}
-	@Override
-	public Report getReport() {
-		report.setTitle("Too Broad Variable Scope");
+		
 		for (String varName: globalVarRef.keySet()) {
 			if(globalVarRef.get(varName).size()==1){
 				report.addRecord(varName + globalVarRef.get(varName));
+				count++;
 			}
-			
 		}
+	}
+	
+	@Override
+	public Report getReport() {
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", count);
+		report.setConciseJSONReport(conciseReport);
+		
 		return report;
 	}
 }

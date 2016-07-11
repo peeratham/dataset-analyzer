@@ -23,11 +23,15 @@ import vt.cs.smells.analyzer.visitor.VisitFailure;
 import vt.cs.smells.analyzer.visitor.Visitor;
 
 public class ScriptLengthMetricAnalyzer extends Analyzer {
-	DictAnalysisReport report = new DictAnalysisReport();
+	private static final String name = "ScriptLength";
+	private static final String abbr = "SL";
+	
+	DictAnalysisReport report = new DictAnalysisReport(name, abbr);
 	DescriptiveStatistics stats = new DescriptiveStatistics();
 	Frequency freqCount = new Frequency();
 	HashSet<Integer> uniqueScriptLengths = new HashSet<Integer>();
 	JSONObject record = new JSONObject();
+	
 
 	class TopDownNestedNonConditional extends Sequence {
 		public TopDownNestedNonConditional(Visitor v) {
@@ -95,9 +99,11 @@ public class ScriptLengthMetricAnalyzer extends Analyzer {
 				dist.put(cnt, freqCount.getCount(cnt));
 			}
 			record.put("dist", dist);
+			report.addRecord(record);
 		} catch (VisitFailure e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	public int measureLength(Script s) throws VisitFailure {
@@ -109,9 +115,11 @@ public class ScriptLengthMetricAnalyzer extends Analyzer {
 
 	@Override
 	public Report getReport() {
-		report.setTitle("Script Length");
 		report.setReportType(ReportType.METRIC);
-		report.addRecord(record);
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("length", stats.getMean());
+		report.setConciseJSONReport(conciseReport);
+		
 		return report;
 	}
 

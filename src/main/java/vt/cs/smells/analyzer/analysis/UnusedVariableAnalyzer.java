@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
@@ -18,10 +20,13 @@ import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
 public class UnusedVariableAnalyzer extends Analyzer{
+	private static final String name = "UnusedVariable";
+	private static final String abbr = "UV";
 
 	public HashSet<String> allVar = new HashSet<String>();
 	List<String> varRelatedCommands = new ArrayList<String>();
-	private ListAnalysisReport report = new ListAnalysisReport();
+	private ListAnalysisReport report = new ListAnalysisReport(name,abbr);
+	int count = 0;
 	
 	public UnusedVariableAnalyzer(){
 		varRelatedCommands.add("setVar:to:");
@@ -51,16 +56,18 @@ public class UnusedVariableAnalyzer extends Analyzer{
 					}
 				}
 			}
-		}		
+		}
+		for (String s:allVar) {
+			report.addRecord(s);	
+			count++;
+		}
 	}
 
 	@Override
 	public Report getReport() {
-		// TODO Auto-generated method stub
-		report.setTitle("Unused variable");
-		for (String s:allVar) {
-			report.addRecord(s);			
-		}
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", count);
+		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
 

@@ -43,8 +43,11 @@ import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
 public class CouplingMetricAnalyzer extends Analyzer {
+	private static final String name = "IntensiveCoupling";
+	private static final String abbr = "IC";
 	private static final int SHORT_TERM_MEM = 7;
-	ListAnalysisReport report = new ListAnalysisReport();
+	
+	ListAnalysisReport report = new ListAnalysisReport(name, abbr);
 	HashMap<String, HashSet<Node>> msgSenders = new HashMap<>();
 	HashMap<String, HashSet<Node>> msgReceivers = new HashMap<>();
 	static Graph<Node, Message> graph = new DirectedSparseMultigraph<Node, Message>();
@@ -250,7 +253,6 @@ public class CouplingMetricAnalyzer extends Analyzer {
 
 	@Override
 	public Report getReport() {
-		report.setTitle("DispersedCoupling");
 		return report;
 	}
 

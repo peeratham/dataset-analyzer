@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Locale.LanguageRange;
 import java.util.Set;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -29,12 +30,18 @@ import vt.cs.smells.analyzer.visitor.TopDownSubTreeCollector;
 import vt.cs.smells.analyzer.visitor.VisitFailure;
 import vt.cs.smells.analyzer.visitor.Visitor;
 
-public class CloneAnalyzer extends Analyzer {
-	private ListAnalysisReport report = new ListAnalysisReport();
+public class DuplicateCodeAnalyzer extends Analyzer {
+	private static final String name = "DuplicateCode";
+	private static final String abbr = "DC";
+	private ListAnalysisReport report = new ListAnalysisReport(name, abbr);
 	private ArrayList<Block> subtreeList;
 	private HashMap<Integer, ArrayList<Block>> cloneDictionary = new HashMap<Integer, ArrayList<Block>>();
 	private HashMap<Integer, ArrayList<ArrayList<Block>>> cloneSequenceDictionary;
 	private ArrayList<ArrayList<Block>> cloneSequenceList;
+	DescriptiveStatistics cloneInstanceSizeStats = new DescriptiveStatistics();
+	DescriptiveStatistics cloneGroupSizeStats = new DescriptiveStatistics();
+	int cloneGroupCount;
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -65,10 +72,14 @@ public class CloneAnalyzer extends Analyzer {
 					locItem.put("path", cl.getBlockPath().toString());
 					loc.add(locItem);
 				}
+				int cloneSize = CloneUtil.getSubTreeSize(clones.get(0));
 				cloneRecordJSON.put("fragment", clones.get(0).toString());
-				cloneRecordJSON.put("size", CloneUtil.getSubTreeSize(clones.get(0)));
+				cloneRecordJSON.put("size", cloneSize);
 				cloneRecordJSON.put("loc", loc);
 				report.addRecord(cloneRecordJSON);
+				cloneInstanceSizeStats.addValue(cloneSize);
+				cloneGroupSizeStats.addValue(clones.size());
+				cloneGroupCount++;
 			}
 		}
 
@@ -77,7 +88,6 @@ public class CloneAnalyzer extends Analyzer {
 		HashMap<Integer, ArrayList<ArrayList<Block>>> initialCloneSequenceDictionary = hashIntoCloneGroup(
 				initialCloneSequenceList);
 
-//		HashMap<Integer, ArrayList<Integer>> cloneSeqLengthToHashVal = new HashMap<>();
 		ArrayList<ArrayList<Block>> filteredCloneList = new ArrayList<ArrayList<Block>>();
 		for (int key : initialCloneSequenceDictionary.keySet()) {
 			if (initialCloneSequenceDictionary.get(key).size() > 1) {
@@ -91,12 +101,12 @@ public class CloneAnalyzer extends Analyzer {
 
 		// now remove subclone sequence
 		ArrayList<ArrayList<Block>> finalListCloneSeq = new ArrayList<>();
-		for (int firstBlockHash : seqWithSameFirstBlock.keySet()) {
-			ArrayList<Block> largestSeqSoFar = seqWithSameFirstBlock.get(firstBlockHash).get(0);
-			if (!(seqWithSameFirstBlock.get(firstBlockHash).size() > 1)) {
+		for (int topBlockHash : seqWithSameFirstBlock.keySet()) {
+			ArrayList<Block> largestSeqSoFar = seqWithSameFirstBlock.get(topBlockHash).get(0);
+			if (seqWithSameFirstBlock.get(topBlockHash).size() > 1) {
 				// select largest one
-				for (ArrayList<Block> seq : seqWithSameFirstBlock.get(firstBlockHash)) {
-					if (seq.size() < largestSeqSoFar.size()) {
+				for (ArrayList<Block> seq : seqWithSameFirstBlock.get(topBlockHash)) {
+					if (seq.size() > largestSeqSoFar.size()) {
 						largestSeqSoFar = seq;
 					}
 				}
@@ -128,6 +138,9 @@ public class CloneAnalyzer extends Analyzer {
 			cloneSeqRecordJSON.put("size", cloneSeqList.size());
 			cloneSeqRecordJSON.put("loc", loc);
 			report.addRecord(cloneSeqRecordJSON);
+			cloneInstanceSizeStats.addValue(cloneSeqList.get(0).size());
+			cloneGroupSizeStats.addValue(loc.size());
+			cloneGroupCount++;
 		}
 
 	}
@@ -163,10 +176,7 @@ public class CloneAnalyzer extends Analyzer {
 			if(!isSubClone){
 				filteredSubCloneSeqs.add(smallerSeq);
 			}
-			
 		}
-		// 
-
 		return filteredSubCloneSeqs;
 	}
 
@@ -213,12 +223,22 @@ public class CloneAnalyzer extends Analyzer {
 
 	@Override
 	public Report getReport() {
-		report.setTitle("Duplicate Code");
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", cloneGroupCount);
+		if(cloneGroupCount==0){
+			conciseReport.put("groupSize", 0);
+			conciseReport.put("instanceSize", 0);
+		}else{
+			conciseReport.put("groupSize", cloneGroupSizeStats.getMean());
+			conciseReport.put("instanceSize", cloneInstanceSizeStats.getMean());
+		}
+		
+		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		AnalysisManager.runAnalysis(CloneAnalyzer.class.getName());
+		AnalysisManager.runAnalysis(DuplicateCodeAnalyzer.class.getName());
 	}
 
 }

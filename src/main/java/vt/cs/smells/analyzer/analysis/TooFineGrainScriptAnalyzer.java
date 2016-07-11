@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.bson.Document;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,11 +28,18 @@ import vt.cs.smells.visual.PropertiesCollector;
 import vt.cs.smells.visual.ScriptProperty;
 
 public class TooFineGrainScriptAnalyzer extends Analyzer {
+	private static final String name = "TooFineGrainScript";
+	private static final String abbr = "TFGS";
+	
+	
 	private ListAnalysisReport report;
+	DescriptiveStatistics sizeStats = new DescriptiveStatistics();
+	int count = 0;
 
 	@Override
 	public void analyze() throws AnalysisException {
-		initialize();
+		report = new ListAnalysisReport(name,abbr);
+		
 		for (Scriptable s : project.getAllScriptables().values()) {
 			HashMap<ScriptProperty, List<Script>> similarScripts = new HashMap<>();
 			for (Script sc : s.getScripts()) {
@@ -42,7 +50,7 @@ public class TooFineGrainScriptAnalyzer extends Analyzer {
 				} catch (VisitFailure e) {
 					continue;
 				}
-				if (scriptSize > 4) {
+				if (scriptSize > 5) {
 					continue;
 				}
 
@@ -88,21 +96,29 @@ public class TooFineGrainScriptAnalyzer extends Analyzer {
 			JSONObject record = new JSONObject();
 			record.put("scriptable", s.getName());
 			record.put("groups", groupsJSON);
+			
+			sizeStats.addValue(groupsJSON.size());
 			report.addRecord(record);
+			count++;
 		}
 
 	}
 
-	private void initialize() {
-		report = new ListAnalysisReport();
-	}
-
 	@Override
 	public Report getReport() {
-		report.setTitle("UnnecessaryForever");
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", count);
+		if(count>0){
+			conciseReport.put("size", sizeStats.getMean());
+		}else{
+			conciseReport.put("size", 0);
+		}
+		
+		report.setConciseJSONReport(conciseReport);
+		
 		return report;
 	}
-
+	
 	public static void main(String[] args)
 			throws FileNotFoundException, IOException, AnalysisException, ParseException, ParsingException {
 		 String csvResult = AnalysisManager.runAnalysis2(new

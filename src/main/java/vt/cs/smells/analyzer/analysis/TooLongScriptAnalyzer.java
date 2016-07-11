@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.json.simple.JSONObject;
+
 import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.AnalysisManager;
 import vt.cs.smells.analyzer.Analyzer;
@@ -19,7 +22,12 @@ import vt.cs.smells.analyzer.visitor.VisitFailure;
 import vt.cs.smells.analyzer.visitor.Visitor;
 
 public class TooLongScriptAnalyzer extends Analyzer {
-	private ListAnalysisReport report = new ListAnalysisReport();
+	private static final String name = "TooLongScript";
+	private static final String abbr = "TLS";
+	
+	private ListAnalysisReport report = new ListAnalysisReport(name,abbr);
+	int count;
+	DescriptiveStatistics sizeStats = new DescriptiveStatistics();
 	
 	class TopDownNestedNonConditional extends Sequence {
 		public TopDownNestedNonConditional(Visitor v) {
@@ -74,6 +82,9 @@ public class TooLongScriptAnalyzer extends Analyzer {
 					s.accept(visitor);
 					if (counter.getCount() > 10) {
 						report.addRecord(s.getPath());
+						sizeStats.addValue(counter.getCount());
+						count++;
+						
 					}
 				}
 				
@@ -86,7 +97,15 @@ public class TooLongScriptAnalyzer extends Analyzer {
 
 	@Override
 	public Report getReport() {
-		report.setTitle("Too Long Script");
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", count);
+		if(count>0){
+			conciseReport.put("size", sizeStats.getMean());
+		}else{
+			conciseReport.put("size", 0);
+		}
+		report.setConciseJSONReport(conciseReport);
+		
 		return report;
 	}
 	

@@ -29,10 +29,14 @@ import vt.cs.smells.analyzer.visitor.Visitor;
  */
 
 public class MasteryAnalyzer extends Analyzer {
-	DictAnalysisReport report = new DictAnalysisReport();
+	private static final String name = "MasteryScore";
+	private static final String abbr = "MS";
+	
+	DictAnalysisReport report = new DictAnalysisReport(name,abbr);
 	HashMap<String, Integer> blocks = new HashMap<String, Integer>();
 	HashMap<String, Integer> concepts = new HashMap<String, Integer>();
 	ArrayList<Script> allScripts = new ArrayList<Script>();
+	int total = 0;
 
 	private class BlockCollectorVisitor extends Identity {
 		@Override
@@ -62,7 +66,7 @@ public class MasteryAnalyzer extends Analyzer {
 		}
 
 		try {
-			countSynchronization(blocks);
+			synchronization(blocks);
 			flowControl(blocks);
 			abstraction(blocks);
 			dataRepresentation(blocks);
@@ -72,9 +76,12 @@ public class MasteryAnalyzer extends Analyzer {
 		} catch (Exception e) {
 			throw new AnalysisException(e);
 		}
+		
+		report.addRecord(concepts);
+		
 	}
 
-	public void countSynchronization(HashMap<String, Integer> blocks) {
+	public void synchronization(HashMap<String, Integer> blocks) {
 		int score = 0;
 		if (blocks.containsKey("doWaitUntil")
 				|| blocks.containsKey("startScene")
@@ -90,6 +97,7 @@ public class MasteryAnalyzer extends Analyzer {
 			score = 0;
 		}
 		concepts.put("Synchronization", score);
+		total+=score;
 	}
 
 	public void flowControl(HashMap<String, Integer> blocks) {
@@ -108,6 +116,7 @@ public class MasteryAnalyzer extends Analyzer {
 			}
 		}
 		concepts.put("FlowControl", score);
+		total+=score;
 	}
 
 	public void abstraction(HashMap<String, Integer> blocks) {
@@ -120,6 +129,7 @@ public class MasteryAnalyzer extends Analyzer {
 			score = 1;
 		}
 		concepts.put("abstraction", score);
+		total+=score;
 	}
 
 	public void dataRepresentation(HashMap<String, Integer> blocks) {
@@ -155,6 +165,7 @@ public class MasteryAnalyzer extends Analyzer {
 			}
 		}
 		concepts.put("DataRepresentation", score);
+		total+=score;
 	}
 
 	public void userInteractivity(HashMap<String, Integer> blocks) {
@@ -184,6 +195,7 @@ public class MasteryAnalyzer extends Analyzer {
 		}
 
 		concepts.put("User Interactivity", score);
+		total+=score;
 	}
 
 	public void logic(HashMap<String, Integer> blocks) {
@@ -201,6 +213,7 @@ public class MasteryAnalyzer extends Analyzer {
 				score = 1;
 			}
 			concepts.put("Logic", score);
+			total+=score;
 		}
 	}
 
@@ -293,6 +306,7 @@ public class MasteryAnalyzer extends Analyzer {
 		}
 
 		concepts.put("Parallelization", score);
+		total+=score;
 	}
 
 	private Block firstBlockOf(Script script) {
@@ -301,9 +315,11 @@ public class MasteryAnalyzer extends Analyzer {
 
 	@Override
 	public Report getReport() {
-		report.setTitle("Mastery Level");
 		report.setReportType(ReportType.METRIC);
-		report.addRecord(concepts);
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("total", total);
+		report.setConciseJSONReport(conciseReport);
+		
 		return report;
 	}
 	

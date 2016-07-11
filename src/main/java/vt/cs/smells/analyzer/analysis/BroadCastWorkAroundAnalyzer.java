@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.AnalysisUtil;
 import vt.cs.smells.analyzer.Analyzer;
@@ -15,12 +17,17 @@ import vt.cs.smells.analyzer.visitor.Identity;
 import vt.cs.smells.analyzer.visitor.TopDown;
 import vt.cs.smells.analyzer.visitor.VisitFailure;
 import vt.cs.smells.analyzer.visitor.Visitor;
+import weka.attributeSelection.ConsistencySubsetEval;
 
 public class BroadCastWorkAroundAnalyzer extends Analyzer {
+	final String name = "BroadcastWorkaround";
+	final String abbr = "BCW";
 	Map<String, HashSet<Object>> varMap = new HashMap<String, HashSet<Object>>();
 	HashSet<String> mayNotBeFlag = new HashSet<String>();
 	HashSet<String> pollingVars = new HashSet<String>();
-	private ListAnalysisReport report = new ListAnalysisReport();
+	private ListAnalysisReport report = new ListAnalysisReport(name, abbr);
+	
+	int count = 0;
 	
 	private class FlagVarCollectorVisitor extends Identity {
 		@Override
@@ -65,6 +72,7 @@ public class BroadCastWorkAroundAnalyzer extends Analyzer {
 			waitUntilVarNames.retainAll(setVarNames);
 			if(!waitUntilVarNames.isEmpty()){
 				report.addRecord(Arrays.toString(waitUntilVarNames.toArray())+"@"+loopBlock.getBlockPath().toString());
+				count++;
 			}
 		}
 	}
@@ -91,7 +99,9 @@ public class BroadCastWorkAroundAnalyzer extends Analyzer {
 	@Override
 	public Report getReport() {
 		report.setProjectID(project.getProjectID());
-		report.setTitle("BroadCastWorkaround");
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", count);
+		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
 

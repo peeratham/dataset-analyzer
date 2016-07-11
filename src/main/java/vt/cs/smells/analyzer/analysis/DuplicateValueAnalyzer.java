@@ -8,6 +8,7 @@ import java.util.SortedMap;
 
 import org.apache.commons.collections4.Trie;
 import org.apache.commons.collections4.trie.PatriciaTrie;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -24,9 +25,14 @@ import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
 public class DuplicateValueAnalyzer extends Analyzer {
-	private ListAnalysisReport report = new ListAnalysisReport();
+	private static final String name = "DuplicateValue";
+	private static final String abbr = "DV";
+	
+	private ListAnalysisReport report = new ListAnalysisReport(name, abbr);
 	private HashMap<String, ArrayList<BlockPath>> finalPath = new HashMap<String, ArrayList<BlockPath>>();
 	HashMap<String, SortedMap<String, List<BlockPath>>> subStringDupGroupMap = new HashMap<>();
+	public int count = 0;
+	DescriptiveStatistics groupSizeStats = new DescriptiveStatistics();
 
 	public DuplicateValueAnalyzer() {
 	}
@@ -97,11 +103,7 @@ public class DuplicateValueAnalyzer extends Analyzer {
 				}
 			}
 		}
-	}
-
-	@Override
-	public Report getReport() {
-		report.setTitle("Duplicate Value");
+		
 		for (String key : subStringDupGroupMap.keySet()) {
 			JSONObject cloneGroupJSON = new JSONObject();
 			SortedMap<String, List<BlockPath>> subStrMap = subStringDupGroupMap.get(key);
@@ -116,9 +118,23 @@ public class DuplicateValueAnalyzer extends Analyzer {
 			cloneGroupJSON.put("value", key);
 			cloneGroupJSON.put("instances", subCloneJSON);
 			cloneGroupJSON.put("size", size);
+			groupSizeStats.addValue(size);
 			report.addRecord(cloneGroupJSON);
+			count++;
 		}
+	}
 
+	@Override
+	public Report getReport() {
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", count);
+		if(count>0){
+			conciseReport.put("groupSize", groupSizeStats.getMean());
+		}else{
+			conciseReport.put("groupSize", 0);
+		}
+		
+		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
 

@@ -56,6 +56,9 @@ import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.crawler.AnalysisDBManager;
 
 public class ScriptCoordsAnalyzer extends Analyzer {
+	private static final String name = "ScriptOrganization";
+	private static final String abbr = "SO";
+	
 	VisualizationHelper visHelper = null;
 	HashMap<String, List<Node>> nodesForEachScriptable = new HashMap<>();
 	private static final int max_xi_id = 1000000;
@@ -169,7 +172,7 @@ public class ScriptCoordsAnalyzer extends Analyzer {
 
 	@Override
 	public void analyze() throws AnalysisException {
-		report = new ListAnalysisReport();
+		report = new ListAnalysisReport(name,abbr);
 		visHelper = new VisualizationHelper();
 		visHelper.setTitle(project.getProjectID());
 		for (String scriptableName : project.getAllScriptables().keySet()) {
@@ -240,7 +243,7 @@ public class ScriptCoordsAnalyzer extends Analyzer {
 
 	@Override
 	public Report getReport() {
-		report.setTitle("ScriptOrganization");
+		report.setName("ScriptOrganization");
 		return report;
 	}
 

@@ -40,6 +40,7 @@ public class TestScriptLengthMetrics {
 		assertEquals(4.75,result.get("mean"));
 		assertEquals(19.0,result.get("sum"));
 		System.out.println(analyzer.getReport().getJSONReport());
+		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
 
 }

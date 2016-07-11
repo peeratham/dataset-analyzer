@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.AnalysisUtil;
 import vt.cs.smells.analyzer.Analyzer;
@@ -20,18 +22,22 @@ import vt.cs.smells.analyzer.parser.Insert;
 import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
-public class UnusedBlockAnalyzer extends Analyzer{
+public class UnusedCustomBlockAnalyzer extends Analyzer{
+	private static final String name = "UnusedCustomBlock";
+	private static final String abbr = "UCB";
+	
+	
 	public HashSet<String> allBlock = new HashSet<String>();
 	List<String> blockRelatedCommands = new ArrayList<String>();
-	private ListAnalysisReport report = new ListAnalysisReport();
+	private ListAnalysisReport report = new ListAnalysisReport(name,abbr);
 	public  ArrayList<Block> allBlocks;
+	int count = 0;
 	
-	public UnusedBlockAnalyzer(){
+	public UnusedCustomBlockAnalyzer(){
 		blockRelatedCommands.add("call");
 	}
 
 	public void analyze() throws AnalysisException{
-		// TODO Auto-generated method stub
 		Scriptable stage = project.getScriptable("Stage");		
 		for (String name : project.getAllScriptables().keySet()) {
 			if(name!="Stage"){
@@ -55,15 +61,18 @@ public class UnusedBlockAnalyzer extends Analyzer{
 			}		
 		} catch (Exception e) {
 			throw new AnalysisException(e);
-		}		
+		}
+		
+		for (String s:allBlock) {
+			report.addRecord(s);
+			count++;
+		}
 	}
 	
 	public Report getReport() {
-		// TODO Auto-generated method stub
-		report.setTitle("Unused block");
-		for (String s:allBlock) {
-			report.addRecord(s);
-		}
+		JSONObject conciseReport = new JSONObject();
+		conciseReport.put("count", count);
+		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
 }

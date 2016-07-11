@@ -11,14 +11,9 @@ import org.json.simple.JSONObject;
 public class ListAnalysisReport extends Report<JSONArray> {
 
 	private int projectID;
-	String title;
 	
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
+	public String getName() {
+		return name;
 	}
 
 	Map<String,Object> summary;
@@ -32,7 +27,8 @@ public class ListAnalysisReport extends Report<JSONArray> {
 
 	public JSONArray resultJSON;
 	
-	public ListAnalysisReport(){
+	public ListAnalysisReport(String name, String abbr){
+		super(name,abbr);
 		resultJSON = new JSONArray();
 		summary = new HashMap<String, Object>();
 	}
@@ -53,7 +49,7 @@ public class ListAnalysisReport extends Report<JSONArray> {
 	public JSONObject getJSONReport(){
 		generateSummary();
 		JSONObject container = new JSONObject();
-		container.put("name",title);
+		container.put("name",name);
 		JSONObject report = new JSONObject();
 			report.put("instances", resultJSON);
 			report.put("count", resultJSON.size());
@@ -73,4 +69,14 @@ public class ListAnalysisReport extends Report<JSONArray> {
 	public JSONArray getResult() {
 		return resultJSON;
 	}
+
+	@Override
+	public JSONObject getConciseJSONReport(){
+		JSONObject container = new JSONObject();
+		container.put("name", abbr);
+		container.put("records", conciseJSONReport);
+		return container;
+	}
+
+
 }

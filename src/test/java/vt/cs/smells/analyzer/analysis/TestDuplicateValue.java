@@ -1,5 +1,7 @@
 package vt.cs.smells.analyzer.analysis;
 
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,12 +24,22 @@ public class TestDuplicateValue {
 		DuplicateValueAnalyzer analyzer = new DuplicateValueAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-		System.out.println(analyzer.getReport().getJSONReport());
+//		System.out.println(analyzer.getReport().getJSONReport());
 	}
 	
 	@Test
 	public void testDuplicateValueWithSubStringSuffix(){
 		
-	}	
+	}
+	
+	@Test
+	public void testOutput() throws AnalysisException{
+		DuplicateValueAnalyzer analyzer = new DuplicateValueAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		assertEquals(3, analyzer.count);
+		assertEquals(7, analyzer.groupSizeStats.getSum(),0.01);
+		System.out.println(analyzer.getReport().getConciseJSONReport());
+	}
 
 }

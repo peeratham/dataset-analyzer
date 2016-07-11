@@ -25,7 +25,11 @@ public class TestUnusedVariableAnalyzer {
 		UnusedVariableAnalyzer analyzer = new UnusedVariableAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
+		assertEquals(2, analyzer.count);
+		
 		System.out.println(analyzer.getReport().getJSONReport());
+		System.out.println(analyzer.getReport().getConciseJSONReport());
+		
 	}
 
 }
