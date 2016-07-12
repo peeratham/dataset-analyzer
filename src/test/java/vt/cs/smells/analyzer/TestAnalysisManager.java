@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,10 +11,10 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import vt.cs.smells.analyzer.AnalysisException;
-import vt.cs.smells.analyzer.AnalysisManager;
-import vt.cs.smells.analyzer.Main;
+import vt.cs.smells.analyzer.analysis.DuplicateCodeAnalyzer;
+import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.Util;
 
 public class TestAnalysisManager {
 	private JSONParser jsonParser;

@@ -145,7 +145,7 @@ public class DuplicateCodeAnalyzer extends Analyzer {
 
 	}
 
-	public static Comparator<ArrayList<Block>> sequenceComparator = new Comparator<ArrayList<Block>>() {
+	public Comparator<ArrayList<Block>> sequenceComparator = new Comparator<ArrayList<Block>>() {
 		@Override
 		public int compare(ArrayList<Block> seq1, ArrayList<Block> seq2) {
 			return seq1.size() - seq2.size();

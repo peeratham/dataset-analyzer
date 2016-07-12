@@ -15,7 +15,7 @@ public class SubTreeCollector implements Visitor {
 	private static int length = 0;
 	private ArrayList<Block> subtreeList = new ArrayList<Block>();
 
-	public static ArrayList<ArrayList<Block>> cloneSequenceList = new ArrayList<ArrayList<Block>>();
+	public ArrayList<ArrayList<Block>> cloneSequenceList = new ArrayList<ArrayList<Block>>();
 
 	public SubTreeCollector(Visitor v) {
 		this.v = v;
