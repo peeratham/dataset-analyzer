@@ -173,27 +173,27 @@ public class AnalysisManager {
 	private AnalysisConfigurator getDefaultConfig() {
 		AnalysisConfigurator defaultConfig = new AnalysisConfigurator();
 		try {
-//			defaultConfig.addAnalysis(MasteryAnalyzer.class.getName());
-//			defaultConfig.addAnalysis(UnreachableScriptAnalyzer.class
-//					.getName());
-//			defaultConfig.addAnalysis(TooLongScriptAnalyzer.class.getName());
-//			defaultConfig.addAnalysis(BroadCastWorkAroundAnalyzer.class
-//					.getName());
-//			defaultConfig.addAnalysis(UncommunicativeNamingAnalyzer.class
-//					.getName());
-//			defaultConfig.addAnalysis(BroadVarScopeAnalyzer.class.getName());
+			defaultConfig.addAnalysis(MasteryAnalyzer.class.getName());
+			defaultConfig.addAnalysis(UnreachableScriptAnalyzer.class
+					.getName());
+			defaultConfig.addAnalysis(TooLongScriptAnalyzer.class.getName());
+			defaultConfig.addAnalysis(BroadCastWorkAroundAnalyzer.class
+					.getName());
+			defaultConfig.addAnalysis(UncommunicativeNamingAnalyzer.class
+					.getName());
+			defaultConfig.addAnalysis(BroadVarScopeAnalyzer.class.getName());
 			defaultConfig.addAnalysis(DuplicateCodeAnalyzer.class.getName());
-//			defaultConfig.addAnalysis(UnnecessaryBroadcastAnalyzer.class
-//					.getName());
-//			defaultConfig.addAnalysis(UnusedVariableAnalyzer.class.getName());
-//			defaultConfig.addAnalysis(UnusedCustomBlockAnalyzer.class.getName());
-//			defaultConfig.addAnalysis(ScriptLengthMetricAnalyzer.class
-//					.getName());
-//			defaultConfig.addAnalysis(DuplicateValueAnalyzer.class.getName());
-//			defaultConfig.addAnalysis(TooFineGrainScriptAnalyzer.class
-//					.getName());
-//			defaultConfig.addAnalysis(HardCodedMediaSequenceAnalyzer.class
-//					.getName());
+			defaultConfig.addAnalysis(UnnecessaryBroadcastAnalyzer.class
+					.getName());
+			defaultConfig.addAnalysis(UnusedVariableAnalyzer.class.getName());
+			defaultConfig.addAnalysis(UnusedCustomBlockAnalyzer.class.getName());
+			defaultConfig.addAnalysis(ProjectSizeMetricAnalyzer.class
+					.getName());
+			defaultConfig.addAnalysis(DuplicateValueAnalyzer.class.getName());
+			defaultConfig.addAnalysis(TooFineGrainScriptAnalyzer.class
+					.getName());
+			defaultConfig.addAnalysis(HardCodedMediaSequenceAnalyzer.class
+					.getName());
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
