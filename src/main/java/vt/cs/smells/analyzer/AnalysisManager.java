@@ -158,9 +158,6 @@ public class AnalysisManager {
 			metrics.put(metricReport.get("name"), metricReport.get("records"));
 		}
 		report.put("metrics", metrics);
-//		// additional
-//					metrics.put("scriptCount", project.getScriptCount());
-//					metrics.put("spriteCount", project.getSpriteCount());
 
 		return report;
 	}
