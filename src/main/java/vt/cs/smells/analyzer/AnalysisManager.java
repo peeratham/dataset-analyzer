@@ -23,7 +23,7 @@ import vt.cs.smells.analyzer.analysis.DuplicateCodeAnalyzer;
 import vt.cs.smells.analyzer.analysis.DuplicateValueAnalyzer;
 import vt.cs.smells.analyzer.analysis.HardCodedMediaSequenceAnalyzer;
 import vt.cs.smells.analyzer.analysis.MasteryAnalyzer;
-import vt.cs.smells.analyzer.analysis.ScriptLengthMetricAnalyzer;
+import vt.cs.smells.analyzer.analysis.ProjectSizeMetricAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooFineGrainScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooLongScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.UncommunicativeNamingAnalyzer;

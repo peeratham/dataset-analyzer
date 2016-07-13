@@ -22,15 +22,18 @@ import vt.cs.smells.analyzer.visitor.Sequence;
 import vt.cs.smells.analyzer.visitor.VisitFailure;
 import vt.cs.smells.analyzer.visitor.Visitor;
 
-public class ScriptLengthMetricAnalyzer extends Analyzer {
-	private static final String name = "ScriptLength";
-	private static final String abbr = "SL";
+public class ProjectSizeMetricAnalyzer extends Analyzer {
+	private static final String name = "ProjectSize";
+	private static final String abbr = "PS";
 	
 	DictAnalysisReport report = new DictAnalysisReport(name, abbr);
 	DescriptiveStatistics stats = new DescriptiveStatistics();
 	Frequency freqCount = new Frequency();
 	HashSet<Integer> uniqueScriptLengths = new HashSet<Integer>();
 	JSONObject record = new JSONObject();
+	protected int scriptableNum;
+	protected int scriptCount;
+	
 	
 
 	class TopDownNestedNonConditional extends Sequence {
@@ -77,6 +80,18 @@ public class ScriptLengthMetricAnalyzer extends Analyzer {
 
 	@Override
 	public void analyze() throws AnalysisException {
+		scriptableNum = project.getAllScriptables().size();
+		scriptCount = 0;
+		
+		for (String name : project.getAllScriptables().keySet()) {
+			Scriptable sc = project.getScriptable(name);
+			for(Script s: sc.getScripts()){
+				if(s.getBlocks().get(0).getBlockType().getShape().equals("hat")){
+					scriptCount++;
+				}
+			}
+		}
+		
 		try {
 			for (String name : project.getAllScriptables().keySet()) {
 				Scriptable sc = project.getScriptable(name);
@@ -118,6 +133,9 @@ public class ScriptLengthMetricAnalyzer extends Analyzer {
 		report.setReportType(ReportType.METRIC);
 		JSONObject conciseReport = new JSONObject();
 		conciseReport.put("length", stats.getMean());
+		conciseReport.put("spritecount", scriptableNum);
+		conciseReport.put("scriptCount", scriptCount);
+		
 		report.setConciseJSONReport(conciseReport);
 		
 		return report;

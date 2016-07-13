@@ -46,7 +46,7 @@ public class TooFineGrainScriptAnalyzer extends Analyzer {
 				Block hatBlock = sc.getBlocks().get(0);
 				int scriptSize;
 				try {
-					scriptSize = new ScriptLengthMetricAnalyzer().measureLength(sc);
+					scriptSize = new ProjectSizeMetricAnalyzer().measureLength(sc);
 				} catch (VisitFailure e) {
 					continue;
 				}
