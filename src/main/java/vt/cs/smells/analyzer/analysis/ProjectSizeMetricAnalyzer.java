@@ -31,8 +31,8 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 	Frequency freqCount = new Frequency();
 	HashSet<Integer> uniqueScriptLengths = new HashSet<Integer>();
 	JSONObject record = new JSONObject();
-	protected int scriptableNum;
-	protected int scriptCount;
+	int scriptableNum = 0;
+	int scriptCount = 0;
 	
 	
 
@@ -133,7 +133,7 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 		report.setReportType(ReportType.METRIC);
 		JSONObject conciseReport = new JSONObject();
 		conciseReport.put("length", stats.getMean());
-		conciseReport.put("spritecount", scriptableNum);
+		conciseReport.put("spriteCount", scriptableNum);
 		conciseReport.put("scriptCount", scriptCount);
 		
 		report.setConciseJSONReport(conciseReport);
