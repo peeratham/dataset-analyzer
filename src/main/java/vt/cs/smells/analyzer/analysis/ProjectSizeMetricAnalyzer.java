@@ -132,9 +132,11 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 	public Report getReport() {
 		report.setReportType(ReportType.METRIC);
 		JSONObject conciseReport = new JSONObject();
-		conciseReport.put("length", stats.getMean());
-		conciseReport.put("spriteCount", scriptableNum);
-		conciseReport.put("scriptCount", scriptCount);
+		conciseReport.put("sprite", scriptableNum);
+		conciseReport.put("script", scriptCount);
+		conciseReport.put("script_length", stats.getMean());
+		conciseReport.put("bloc", stats.getSum());
+		
 		
 		report.setConciseJSONReport(conciseReport);
 		
