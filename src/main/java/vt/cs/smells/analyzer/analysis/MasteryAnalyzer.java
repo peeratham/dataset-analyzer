@@ -222,7 +222,7 @@ public class MasteryAnalyzer extends Analyzer {
 
 		ArrayList<String> messages = new ArrayList<String>();
 		ArrayList<String> backdrops = new ArrayList<String>();
-		ArrayList<Pair<String, Long>> multimedia = new ArrayList<Pair<String, Long>>();
+		ArrayList<Pair<String, Number>> multimedia = new ArrayList<Pair<String, Number>>();
 		ArrayList<String> keys = new ArrayList<String>();
 		int greenFlag = 0;
 
@@ -256,9 +256,9 @@ public class MasteryAnalyzer extends Analyzer {
 			else if (firstBlockOf(script).getCommand().equals(
 					"whenSensorGreaterThan")
 					&& script.getBlocks().size() > 1) {
-				Pair<String, Long> multimediaEvent = Pair.of(
+				Pair<String, Number> multimediaEvent = Pair.of(
 						(String) firstBlockOf(script).getArgs(0),
-						(Long) firstBlockOf(script).getArgs(1));
+						(Number) firstBlockOf(script).getArgs(1));
 				if (multimedia.contains(multimediaEvent)) {
 					score = 3;
 					break;
