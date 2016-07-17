@@ -50,6 +50,39 @@ public class AnalysisManager {
 	public static final String largeTestInput = "C:/Users/Peeratham/workspace/dataset/sources-0.json";
 	private ArrayList<Report> reports;
 
+	public ArrayList<Report> analyze(ScratchProject project) throws AnalysisException{
+		reports = new ArrayList<>();
+		if (config == null) {
+			config = getDefaultConfig();
+		}
+		try {
+			projectID = project.getProjectID();
+
+			for (Class klass : config.listAnalyzers()) {
+				Analyzer analyzer = null;
+				if (Arrays.asList(klass.getInterfaces()).contains(
+						AnalysisVisitor.class)) {
+					AnalysisVisitor v = (AnalysisVisitor) klass.newInstance();
+					analyzer = new VisitorBasedAnalyzer();
+					((VisitorBasedAnalyzer) analyzer).addAnalysisVisitor(v);
+				} else {
+					analyzer = (Analyzer) klass.newInstance();
+				}
+
+				analyzer.setProject(project);
+				analyzer.analyze();
+				reports.add(analyzer.getReport());
+			}
+		} catch (AnalysisException e) {
+//			logger.error(klass + " fail to analyze project " + projectID);
+			throw new AnalysisException("Analysis Error:"+e.getMessage());
+//					+ analyzer.getClass() + "]:\n" + e.getMessage());
+		} catch (InstantiationException|IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		
+		return reports;
+	}
 
 	public ArrayList<Report> analyze(String src) throws ParsingException,
 			AnalysisException {
@@ -344,24 +377,21 @@ public class AnalysisManager {
 	
 	public static void main(String[] args) throws IOException {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
-		String src = null;
-		int projectID = 115235566;
+		int projectID = 115388615;
+		ScratchProject project = null;
 		try {
-			src = Util.retrieveProjectOnline(projectID);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-//			JSONObject result = blockAnalyzer.analyze(src);
-			blockAnalyzer.analyze(src);
+			String src = Util.retrieveProjectOnline(projectID);
+			project = ScratchProject.loadProject(src);
+			blockAnalyzer.analyze(project);
 			JSONObject result = blockAnalyzer.getConciseJSONReports();
 			System.out.println(result.toJSONString());
-		} catch (AnalysisException e) {
-			e.printStackTrace();
+		} catch (ParseException e) {
+			logger.error("Fail to parse JSON for projectID:"+projectID+"..."+e.getMessage());
 		} catch (ParsingException e) {
+			logger.error("Fail to parse projectID:"+projectID+"...");
 			e.printStackTrace();
+		} catch (AnalysisException e) {
+			logger.error("Fail to analyze projectID:"+projectID+"..."+e.getMessage()+e.getCause());
 		}
 	}
 

@@ -38,39 +38,44 @@ public class Parser {
 		ScratchProject project = new ScratchProject();
 		CommandLoader.loadCommand();
 		JSONObject stageObj = jsonObject;
-
+		int projectID = 0;
 		if (stageObj.containsKey("info")) {
 			JSONObject infoObj = (JSONObject) stageObj.get("info");
 			if ((String) ((JSONObject) infoObj).get("projectID") != null) {
-				int projectID = Integer
-						.parseInt((String) ((JSONObject) infoObj)
-								.get("projectID"));
+				projectID = Integer.parseInt((String) ((JSONObject) infoObj)
+						.get("projectID"));
 				project.setProjectID(projectID);
 				logger.debug("Load projectID:" + projectID);
 			} else {
 				throw new ParsingException("Project ID Not Found");
 			}
-			
-			project.setScriptCount((Long) ((JSONObject) infoObj).get("scriptCount"));
-			project.setSpriteCount((Long) ((JSONObject) infoObj).get("spriteCount"));
+
+			project.setScriptCount((Long) ((JSONObject) infoObj)
+					.get("scriptCount"));
+			project.setSpriteCount((Long) ((JSONObject) infoObj)
+					.get("spriteCount"));
 		}
-		
-		Scriptable stage = loadScriptable(stageObj);
-		project.addScriptable("Stage", stage);
 
-		JSONArray children = (JSONArray) jsonObject.get("children");
+		try {
+			Scriptable stage = loadScriptable(stageObj);
+			project.addScriptable("Stage", stage);
 
-		for (int i = 0; i < children.size(); i++) {
-			JSONObject spriteJSON = (JSONObject) children.get(i);
-			if (!spriteJSON.containsKey("objName")) { // not a sprite
-				continue;
+			JSONArray children = (JSONArray) jsonObject.get("children");
+
+			for (int i = 0; i < children.size(); i++) {
+				JSONObject spriteJSON = (JSONObject) children.get(i);
+				if (!spriteJSON.containsKey("objName")) { // not a sprite
+					continue;
+				}
+
+				Scriptable sprite = loadScriptable(spriteJSON);
+				project.addScriptable(sprite.getName(), sprite);
 			}
-
-			Scriptable sprite = loadScriptable(spriteJSON);
-			project.addScriptable(sprite.getName(), sprite);
+			CommandLoader.addCustomBlockIndex();
+		} catch (Exception e) {
+			throw new ParsingException("Fail to parse project ID: "+projectID,e);
 		}
-		CommandLoader.addCustomBlockIndex();
-		
+
 		return project;
 	}
 
@@ -86,7 +91,7 @@ public class Parser {
 		if (variables != null) {
 			sprite.setVars(loadVariables(variables));
 		}
-		
+
 		if (costumes != null) {
 			sprite.setCostumes(loadCostumes(costumes));
 		}
@@ -125,11 +130,10 @@ public class Parser {
 				sprite.addScript(scrpt);
 				scrpt.setParent(sprite);
 			} catch (ParsingException e) {
-				logger.error("Error Parsing a script in Scriptable:"
-						+ spriteName);
-				logger.error("=>" + scriptStr);
-				logger.error("==>" + e.getMessage());
-				throw new ParsingException(e);
+				String parseInfo = "Parsing Scriptable="+ spriteName;
+//				parseInfo += "\n" + scriptStr;
+				// logger.error(parseInfo);
+				throw new ParsingException(parseInfo,e);
 			}
 		}
 		return sprite;
@@ -137,7 +141,7 @@ public class Parser {
 
 	private static ArrayList<String> loadCostumes(JSONArray costumes) {
 		ArrayList<String> costumeList = new ArrayList<String>();
-		for (int i = 0; i < costumes.size(); i++){
+		for (int i = 0; i < costumes.size(); i++) {
 			JSONObject costume = (JSONObject) costumes.get(i);
 			costumeList.add((String) costume.get("costumeName"));
 		}
@@ -166,21 +170,22 @@ public class Parser {
 
 		Iterator blockIter = jsonBlocks.iterator();
 		Block previous = null;
+		try {
+			while (blockIter.hasNext()) {
+				Block current = null;
 
-		while (blockIter.hasNext()) {
-			Block current = null;
-			try {
 				current = loadBlock(blockIter.next());
-			} catch (Exception e) {
-				throw new ParsingException("Error Parsing Block:" + e);
+
+				if (previous != null) {
+					previous.setNextBlock(current);
+				}
+				current.setPreviousBlock(previous);
+				current.setParent(script);
+				blocks.add(current);
+				previous = current;
 			}
-			if (previous != null) {
-				previous.setNextBlock(current);
-			}
-			current.setPreviousBlock(previous);
-			current.setParent(script);
-			blocks.add(current);
-			previous = current;
+		} catch (ParsingException e) {
+			throw new ParsingException("Fail after parse ["+blocks.get(0)+"..."+previous+"]",e);
 		}
 
 		script.setBlocks(blocks);
@@ -196,10 +201,10 @@ public class Parser {
 
 		String command = (String) blockArray.get(0);
 		BlockType blockSpec;
-		
+
 		if (command.equals("procDef")) { // CustomBlock
 			return Block.makeCustomBlock(blockArray);
-//			return new CustomBlock(blockArray);
+			// return new CustomBlock(blockArray);
 		}
 
 		if (command.equals("call")) { // CustomBlockType call
@@ -225,8 +230,11 @@ public class Parser {
 		Object arg = null;
 		for (int argi = 0; argi < blockArray.size(); argi++) {
 			if (blockArray.get(argi) instanceof JSONArray) {
-				if (((JSONArray) blockArray.get(argi)).get(0) instanceof JSONArray) { // nested blocks
-					arg = new ArrayList<Block>();// stack shape insert (nested blocks) will be list of blocks
+				if (((JSONArray) blockArray.get(argi)).get(0) instanceof JSONArray) { // nested
+																						// blocks
+					arg = new ArrayList<Block>();// stack shape insert (nested
+													// blocks) will be list of
+													// blocks
 					JSONArray blocks = (JSONArray) blockArray.get(argi); // it's
 																			// a
 																			// list
@@ -257,7 +265,6 @@ public class Parser {
 
 			args.add(arg);
 		}
-
 
 		resultBlock.setArgs(args);
 
