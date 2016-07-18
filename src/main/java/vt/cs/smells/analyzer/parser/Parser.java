@@ -13,7 +13,6 @@ import org.json.simple.JSONObject;
 
 import vt.cs.smells.analyzer.nodes.Block;
 import vt.cs.smells.analyzer.nodes.BlockType;
-import vt.cs.smells.analyzer.nodes.CustomBlock;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Script;
 import vt.cs.smells.analyzer.nodes.Scriptable;
@@ -34,7 +33,7 @@ public class Parser {
 	}
 
 	public static ScratchProject loadProject(JSONObject jsonObject)
-			throws ParsingException {
+			throws ParsingException, ProjectIDNotFoundException {
 		ScratchProject project = new ScratchProject();
 		CommandLoader.loadCommand();
 		JSONObject stageObj = jsonObject;
@@ -47,7 +46,9 @@ public class Parser {
 				project.setProjectID(projectID);
 				logger.debug("Load projectID:" + projectID);
 			} else {
-				throw new ParsingException("Project ID Not Found");
+				ParsingException e = new ParsingException();
+				e.initCause(new ProjectIDNotFoundException());
+				throw e;
 			}
 
 			project.setScriptCount((Long) ((JSONObject) infoObj)
@@ -73,7 +74,8 @@ public class Parser {
 			}
 			CommandLoader.addCustomBlockIndex();
 		} catch (Exception e) {
-			throw new ParsingException("Fail to parse project ID: "+projectID,e);
+			throw new ParsingException(
+					"Fail to parse project ID: " + projectID, e);
 		}
 
 		return project;
@@ -107,17 +109,15 @@ public class Parser {
 					.get(2);
 			JSONArray firstBlockJSON = (JSONArray) scriptJSON.get(0);
 			String command = (String) firstBlockJSON.get(0);
-
-			if (command.equals("procDef")) {
-				try {
+			try {
+				if (command.equals("procDef")) {
 					loadCustomBlock(firstBlockJSON);
-
-				} catch (ParsingException e) {
-					logger.error("Error Parsing Custom Block in Scriptable:"
-							+ spriteName);
-					logger.error("=>" + firstBlockJSON);
-					throw new ParsingException(e);
 				}
+			} catch (ParsingException e) {
+				logger.error("Error Parsing Custom Block in Scriptable:"
+						+ spriteName);
+				logger.error("=>" + firstBlockJSON);
+				throw new ParsingException(e);
 			}
 		}
 
@@ -130,10 +130,10 @@ public class Parser {
 				sprite.addScript(scrpt);
 				scrpt.setParent(sprite);
 			} catch (ParsingException e) {
-				String parseInfo = "Parsing Scriptable="+ spriteName;
-//				parseInfo += "\n" + scriptStr;
+				String parseInfo = "Parsing Scriptable=" + spriteName;
+				// parseInfo += "\n" + scriptStr;
 				// logger.error(parseInfo);
-				throw new ParsingException(parseInfo,e);
+				throw new ParsingException(parseInfo, e);
 			}
 		}
 		return sprite;
@@ -157,9 +157,9 @@ public class Parser {
 		return vars;
 	}
 
-	public static Script loadScript(Object s) throws ParsingException {
+	public static Script loadScript(Object scriptJSON) throws ParsingException {
 		Script script = new Script();
-		JSONArray scriptArray = (JSONArray) s;
+		JSONArray scriptArray = (JSONArray) scriptJSON;
 		int x = ((Number) scriptArray.remove(0)).intValue();
 		int y = ((Number) scriptArray.remove(0)).intValue();
 
@@ -185,7 +185,14 @@ public class Parser {
 				previous = current;
 			}
 		} catch (ParsingException e) {
-			throw new ParsingException("Fail after parse ["+blocks.get(0)+"..."+previous+"]",e);
+			if (!blocks.isEmpty()) {
+				throw new ParsingException("Fail after parse [" + blocks.get(0)
+						+ "..." + previous + "]", e);
+			} else {
+				throw new ParsingException("Fail parsing script JSON ["
+						+ scriptJSON + "]", e);
+			}
+
 		}
 
 		script.setBlocks(blocks);
@@ -212,13 +219,13 @@ public class Parser {
 			blockSpec = CommandLoader.COMMAND_TO_CUSTOM_BLOCKSPEC
 					.get(customSpecStr);
 			if (blockSpec == null) {
-				throw new ParsingException("Custom Block: " + customSpecStr
-						+ " is not defined");
+				throw new UndefinedBlockException("Custom Block: "
+						+ customSpecStr + " is not defined");
 			}
 		} else { // Normal Block
 			blockSpec = CommandLoader.COMMAND_TO_BLOCKSPEC.get(command);
 			if (!command.equals("Position") && blockSpec == null) {
-				throw new ParsingException("Block: " + command
+				throw new UndefinedBlockException("Block: " + command
 						+ " is not defined");
 			}
 		}

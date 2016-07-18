@@ -11,6 +11,7 @@ import org.json.simple.parser.ParseException;
 
 import vt.cs.smells.analyzer.parser.Parser;
 import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.ProjectIDNotFoundException;
 import vt.cs.smells.analyzer.visitor.VisitFailure;
 import vt.cs.smells.analyzer.visitor.Visitor;
 

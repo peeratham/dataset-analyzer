@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
 import org.bson.Document;
@@ -34,6 +35,7 @@ import vt.cs.smells.analyzer.analysis.UnusedVariableAnalyzer;
 import vt.cs.smells.analyzer.analysis.VisitorBasedAnalyzer;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.UndefinedBlockException;
 import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.analyzer.visitor.AnalysisVisitor;
 import vt.cs.smells.analyzer.visitor.Visitor;
@@ -50,7 +52,8 @@ public class AnalysisManager {
 	public static final String largeTestInput = "C:/Users/Peeratham/workspace/dataset/sources-0.json";
 	private ArrayList<Report> reports;
 
-	public ArrayList<Report> analyze(ScratchProject project) throws AnalysisException{
+	public ArrayList<Report> analyze(ScratchProject project)
+			throws AnalysisException {
 		reports = new ArrayList<>();
 		if (config == null) {
 			config = getDefaultConfig();
@@ -74,13 +77,13 @@ public class AnalysisManager {
 				reports.add(analyzer.getReport());
 			}
 		} catch (AnalysisException e) {
-//			logger.error(klass + " fail to analyze project " + projectID);
-			throw new AnalysisException("Analysis Error:"+e.getMessage());
-//					+ analyzer.getClass() + "]:\n" + e.getMessage());
-		} catch (InstantiationException|IllegalAccessException e) {
+			// logger.error(klass + " fail to analyze project " + projectID);
+			throw new AnalysisException("Analysis Error:" + e.getMessage());
+			// + analyzer.getClass() + "]:\n" + e.getMessage());
+		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		
+
 		return reports;
 	}
 
@@ -111,7 +114,8 @@ public class AnalysisManager {
 				try {
 					analyzer.analyze();
 				} catch (AnalysisException e) {
-					logger.error(klass + " fail to analyze project " + projectID);
+					logger.error(klass + " fail to analyze project "
+							+ projectID);
 					throw new AnalysisException("Analysis Error["
 							+ analyzer.getClass() + "]:\n" + e.getMessage());
 				}
@@ -158,8 +162,8 @@ public class AnalysisManager {
 
 		return report;
 	}
-	
-	public JSONObject getFullJSONReport(){
+
+	public JSONObject getFullJSONReport() {
 		boolean concise = false;
 		ArrayList<JSONObject> smellReports = new ArrayList<JSONObject>();
 		ArrayList<JSONObject> metricReports = new ArrayList<JSONObject>();
@@ -195,7 +199,6 @@ public class AnalysisManager {
 		return report;
 	}
 
-
 	public int getProjectID() {
 		return projectID;
 	}
@@ -204,8 +207,8 @@ public class AnalysisManager {
 		AnalysisConfigurator defaultConfig = new AnalysisConfigurator();
 		try {
 			defaultConfig.addAnalysis(MasteryAnalyzer.class.getName());
-			defaultConfig.addAnalysis(UnreachableScriptAnalyzer.class
-					.getName());
+			defaultConfig
+					.addAnalysis(UnreachableScriptAnalyzer.class.getName());
 			defaultConfig.addAnalysis(TooLongScriptAnalyzer.class.getName());
 			defaultConfig.addAnalysis(BroadCastWorkAroundAnalyzer.class
 					.getName());
@@ -216,9 +219,10 @@ public class AnalysisManager {
 			defaultConfig.addAnalysis(UnnecessaryBroadcastAnalyzer.class
 					.getName());
 			defaultConfig.addAnalysis(UnusedVariableAnalyzer.class.getName());
-			defaultConfig.addAnalysis(UnusedCustomBlockAnalyzer.class.getName());
-			defaultConfig.addAnalysis(ProjectSizeMetricAnalyzer.class
-					.getName());
+			defaultConfig
+					.addAnalysis(UnusedCustomBlockAnalyzer.class.getName());
+			defaultConfig
+					.addAnalysis(ProjectSizeMetricAnalyzer.class.getName());
 			defaultConfig.addAnalysis(DuplicateValueAnalyzer.class.getName());
 			defaultConfig.addAnalysis(TooFineGrainScriptAnalyzer.class
 					.getName());
@@ -257,8 +261,6 @@ public class AnalysisManager {
 		System.out.println(sb.toString());
 		return sb.toString();
 	}
-
-	
 
 	public static void runSingleAnalysis(String inputFile,
 			String analysisClassURL) throws FileNotFoundException, IOException {
@@ -374,10 +376,10 @@ public class AnalysisManager {
 		analyzer.analyze();
 		return analyzer.getReport();
 	}
-	
+
 	public static void main(String[] args) throws IOException {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
-		int projectID = 115388615;
+		int projectID = 106297236;
 		ScratchProject project = null;
 		try {
 			String src = Util.retrieveProjectOnline(projectID);
@@ -386,12 +388,14 @@ public class AnalysisManager {
 			JSONObject result = blockAnalyzer.getConciseJSONReports();
 			System.out.println(result.toJSONString());
 		} catch (ParseException e) {
-			logger.error("Fail to parse JSON for projectID:"+projectID+"..."+e.getMessage());
+			logger.error("Fail to parse JSON for projectID:" + projectID
+					+ "..." + e.getMessage());
 		} catch (ParsingException e) {
-			logger.error("Fail to parse projectID:"+projectID+"...");
+			logger.error("Fail to parse projectID:" + projectID + "...");
 			e.printStackTrace();
 		} catch (AnalysisException e) {
-			logger.error("Fail to analyze projectID:"+projectID+"..."+e.getMessage()+e.getCause());
+			logger.error("Fail to analyze projectID:" + projectID + "..."
+					+ e.getMessage() + e.getCause());
 		}
 	}
 

@@ -149,6 +149,9 @@ public class Block implements Visitable, Cloneable {
 				if (parts.get(i) instanceof String) {
 					formattedStringArray.add((String) parts.get(i));
 				} else if (parts.get(i) instanceof Insert) {
+					if(argString.isEmpty()){
+						break;
+					}
 					formattedStringArray.add(argString.remove(0));
 				}
 
@@ -156,7 +159,7 @@ public class Block implements Visitable, Cloneable {
 			formattedString = String.join("", formattedStringArray);
 
 		} catch (Exception e) {
-			System.err.println(obj);
+//			System.err.println(obj);
 			throw new Exception(e);
 		}
 

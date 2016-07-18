@@ -12,5 +12,9 @@ public class ParsingException extends Exception {
 	public ParsingException(Throwable e) {
 		super(e);
 	}
+
+	public ParsingException() {
+		super();
+	}
 	
 }
