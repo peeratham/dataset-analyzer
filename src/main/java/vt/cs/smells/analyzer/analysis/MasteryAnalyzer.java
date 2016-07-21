@@ -205,16 +205,19 @@ public class MasteryAnalyzer extends Analyzer {
 		for (String operation : operations) {
 			if (blocks.containsKey(operation)) {
 				concepts.put("Logic", 3);
+				score = 3;
+				total+=score;
 				return;
 			}
-			if (blocks.containsKey("doIfElse")) {
-				score = 2;
-			} else if (blocks.containsKey("doIf")) {
-				score = 1;
-			}
-			concepts.put("Logic", score);
-			total+=score;
 		}
+		
+		if (blocks.containsKey("doIfElse")) {
+			score = 2;
+		} else if (blocks.containsKey("doIf")) {
+			score = 1;
+		}
+		concepts.put("Logic", score);
+		total+=score;
 	}
 
 	public void parallelization() {
