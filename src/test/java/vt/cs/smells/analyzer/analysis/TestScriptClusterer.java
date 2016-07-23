@@ -12,7 +12,7 @@ import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.visual.Node;
-import vt.cs.smells.visual.ScriptCoordsAnalyzer;
+import vt.cs.smells.visual.ScriptOrganizationAnalyzer;
 
 public class TestScriptClusterer {
 
@@ -30,22 +30,23 @@ public class TestScriptClusterer {
 
 	@Test
 	public void test() throws AnalysisException {
-//		ScriptClusterer clusterer = new ScriptClusterer();
-//		ScriptCoordsAnalyzer analyzer = new ScriptCoordsAnalyzer();
-//		analyzer.setProject(project);
-//		analyzer.analyze();
-//		HashMap<String, List<Node>> scriptNodes = analyzer.getAllScriptNodes();
-//		for(String scriptable:scriptNodes.keySet()){
-//			List nodes = scriptNodes.get(scriptable);
-//			List<Cluster> clusters = clusterer.cluster(nodes);
-//			if(clusters.size()<2){
-//				continue;
-//			}
-//			for(Cluster c : clusters){
-//				System.out.println(scriptable);
-//				System.out.println(c.getPoints());
-//			}
-//		}
+		ScriptClusterer clusterer = new ScriptClusterer();
+		ScriptOrganizationAnalyzer analyzer = new ScriptOrganizationAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		HashMap<String, List<Node>> scriptNodes = analyzer.getAllScriptNodes();
+		for(String scriptable:scriptNodes.keySet()){
+			List nodes = scriptNodes.get(scriptable);
+			
+			List<Cluster> clusters = clusterer.cluster(nodes,0.001);
+			if(clusters.size()<2){
+				continue;
+			}
+			for(Cluster c : clusters){
+				System.out.println(scriptable);
+				System.out.println(c.getPoints());
+			}
+		}
 	
 		
 	}

@@ -322,7 +322,6 @@ public class MasteryAnalyzer extends Analyzer {
 		JSONObject conciseReport = new JSONObject();
 		conciseReport.put("total", total);
 		report.setConciseJSONReport(conciseReport);
-		
 		return report;
 	}
 	

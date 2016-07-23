@@ -379,7 +379,7 @@ public class AnalysisManager {
 
 	public static void main(String[] args) throws IOException {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
-		int projectID = 106297236;
+		int projectID = 94329153;
 		ScratchProject project = null;
 		try {
 			String src = Util.retrieveProjectOnline(projectID);
