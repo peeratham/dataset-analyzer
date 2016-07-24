@@ -263,7 +263,7 @@ public class CouplingMetricAnalyzer extends Analyzer {
 		CouplingMetricAnalyzer analyzer = new CouplingMetricAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-//		showGraph(graph);
+		showGraph(graph);
 		
 //		AnalysisManager.runAnalysis(CouplingMetricAnalyzer.class.getName());
 	}

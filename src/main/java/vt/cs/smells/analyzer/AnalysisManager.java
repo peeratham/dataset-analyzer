@@ -23,6 +23,7 @@ import vt.cs.smells.analyzer.analysis.BroadVarScopeAnalyzer;
 import vt.cs.smells.analyzer.analysis.DuplicateCodeAnalyzer;
 import vt.cs.smells.analyzer.analysis.DuplicateValueAnalyzer;
 import vt.cs.smells.analyzer.analysis.HardCodedMediaSequenceAnalyzer;
+import vt.cs.smells.analyzer.analysis.InappropriateIntimacy;
 import vt.cs.smells.analyzer.analysis.MasteryAnalyzer;
 import vt.cs.smells.analyzer.analysis.ProjectSizeMetricAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooFineGrainScriptAnalyzer;
@@ -228,6 +229,9 @@ public class AnalysisManager {
 					.getName());
 			defaultConfig.addAnalysis(HardCodedMediaSequenceAnalyzer.class
 					.getName());
+			defaultConfig.addAnalysis(InappropriateIntimacy.class
+					.getName());
+			
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
