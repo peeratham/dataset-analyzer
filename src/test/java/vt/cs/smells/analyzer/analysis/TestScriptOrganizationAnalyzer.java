@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.bson.Document;
 import org.json.simple.parser.ParseException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import vt.cs.smells.analyzer.AnalysisException;
@@ -15,7 +16,7 @@ import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.visual.ScriptOrganizationAnalyzer;
 
 public class TestScriptOrganizationAnalyzer {
-
+	@Ignore
 	@Test
 	public void test() throws AnalysisException, IOException, ParseException, ParsingException {
 		String projectSrc = Util.retrieveProjectOnline(94833586);
@@ -28,7 +29,7 @@ public class TestScriptOrganizationAnalyzer {
 		assertEquals(0.8, analyzer.purityStats.getMean(),0.01);
 //		analyzer.showVisualization();
 	}
-	
+	@Ignore
 	@Test
 	public void testMinusOneForProjectWithOneScriptInASprite() throws IOException, ParseException, ParsingException, AnalysisException{
 		String projectSrc = Util.retrieveProjectOnline(116825938);
