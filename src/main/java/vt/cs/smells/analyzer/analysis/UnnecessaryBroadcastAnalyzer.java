@@ -115,7 +115,7 @@ public class UnnecessaryBroadcastAnalyzer extends Analyzer{
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException{
-		AnalysisManager.runAnalysis(UnnecessaryBroadcastAnalyzer.class.getName());
+		AnalysisManager.runAnalysis(UnnecessaryBroadcastAnalyzer.class.getName(), AnalysisManager.smallTestInput);
 	}
 
 }

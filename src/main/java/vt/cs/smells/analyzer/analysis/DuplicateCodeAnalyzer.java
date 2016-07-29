@@ -238,7 +238,7 @@ public class DuplicateCodeAnalyzer extends Analyzer {
 	}
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		AnalysisManager.runAnalysis(DuplicateCodeAnalyzer.class.getName());
+		AnalysisManager.runAnalysis(DuplicateCodeAnalyzer.class.getName(), AnalysisManager.smallTestInput);
 	}
 
 }

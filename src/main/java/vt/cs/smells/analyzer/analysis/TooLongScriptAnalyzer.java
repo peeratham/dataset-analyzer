@@ -110,6 +110,6 @@ public class TooLongScriptAnalyzer extends Analyzer {
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException{
-		AnalysisManager.runAnalysis(TooLongScriptAnalyzer.class.getName());
+		AnalysisManager.runAnalysis(TooLongScriptAnalyzer.class.getName(), AnalysisManager.smallTestInput);
 	}
 }

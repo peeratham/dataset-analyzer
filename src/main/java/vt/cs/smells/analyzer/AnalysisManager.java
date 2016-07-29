@@ -49,8 +49,8 @@ public class AnalysisManager {
 	private AnalysisConfigurator config = null;
 	private int projectID;
 	static Logger logger = Logger.getLogger(AnalysisManager.class);
-	public static final String smallTestInput = "C:/Users/Peeratham/workspace/dataset/hundred.json";
-	public static final String largeTestInput = "C:/Users/Peeratham/workspace/dataset/sources-0.json";
+	public static final String smallTestInput = "/home/peeratham/tpeera4/smell-analysis/hundred.json";
+	public static final String largeTestInput = "/home/peeratham/tpeera4/smell-analysis/sources-0.json";
 	private ArrayList<Report> reports;
 
 	public ArrayList<Report> analyze(ScratchProject project)
@@ -266,8 +266,8 @@ public class AnalysisManager {
 		return sb.toString();
 	}
 
-	public static void runSingleAnalysis(String inputFile,
-			String analysisClassURL) throws FileNotFoundException, IOException {
+	public static void runSingleAnalysis(String analysisClassURL, String inputFile
+			) throws FileNotFoundException, IOException {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
 		JSONParser jsonParser = new JSONParser();
 		AnalysisConfigurator mainConfig = new AnalysisConfigurator();
@@ -316,17 +316,17 @@ public class AnalysisManager {
 				+ " per project");
 	}
 
-	public static void runAnalysis(String analysisClassName)
+	public static void runAnalysis(String analysisClassName, String pathToJSONdata)
 			throws FileNotFoundException, IOException {
-		runSingleAnalysis(smallTestInput, analysisClassName);
+		runSingleAnalysis(analysisClassName, pathToJSONdata);
 	}
 
 	public static String runAnalysis2(Analyzer analyzer, double percent)
 			throws IOException {
 		DatasetFilter filter = new DatasetFilter();
-		FileInputStream is = new FileInputStream(AnalysisManager.largeTestInput);
+		FileInputStream is = new FileInputStream(AnalysisManager.smallTestInput);
 		AnalysisDBManager dbManager = new AnalysisDBManager("localhost",
-				"exploration");
+				"analysis");
 
 		String[] lines = IOUtils.toString(is).split("\n");
 		List<String> data = new ArrayList<>(Arrays.asList(lines));
@@ -383,7 +383,7 @@ public class AnalysisManager {
 
 	public static void main(String[] args) throws IOException {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
-		int projectID = 94329153;
+		int projectID = 91723110;
 		ScratchProject project = null;
 		try {
 			String src = Util.retrieveProjectOnline(projectID);
