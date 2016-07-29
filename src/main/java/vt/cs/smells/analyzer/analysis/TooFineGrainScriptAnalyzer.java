@@ -1,5 +1,6 @@
 package vt.cs.smells.analyzer.analysis;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.bson.Document;
 import org.json.simple.JSONArray;
@@ -123,8 +125,8 @@ public class TooFineGrainScriptAnalyzer extends Analyzer {
 			throws FileNotFoundException, IOException, AnalysisException, ParseException, ParsingException {
 		 String csvResult = AnalysisManager.runAnalysis2(new
 		 TooFineGrainScriptAnalyzer(), 1);
-		// FileUtils.writeStringToFile(new
-		// File(UnnecessaryForeverAnalyzer.class+".csv"), csvResult);
+		 FileUtils.writeStringToFile(new
+		 File(TooFineGrainScriptAnalyzer.class+".csv"), csvResult);
 //		Report result = AnalysisManager.runSingleAnalysis(18801413, new ExtremeEventBasedScriptAnalyzer());
 		// System.out.println(result.getJSONReport().toJSONString());
 		// Document doc = Document.parse(result.getJSONReport().toJSONString());
