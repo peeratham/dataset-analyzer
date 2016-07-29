@@ -150,6 +150,7 @@ public class MasteryAnalyzer extends Analyzer {
 		for (String item : lists) {
 			if (blocks.containsKey(item)) {
 				concepts.put("DataRepresentation", 3);
+				total+=3;
 				return;
 			}
 		}
@@ -177,21 +178,32 @@ public class MasteryAnalyzer extends Analyzer {
 		ArrayList<String> developing = new ArrayList<String>(Arrays.asList(
 				"whenKeyPressed", "whenClicked", "mousePressed", "keyPressed:",
 				"doAsk", "answer"));
+		
+		boolean havingProficiencyBlock = false;
 		for (String item : proficiency) {
 			if (blocks.containsKey(item)) {
-				concepts.put("User Interactivity", 3);
-				return;
+				havingProficiencyBlock = true;
+				break;
 			}
 		}
+		
+		
+		boolean isDeveloping = false;
 		for (String item : developing) {
 			if (blocks.containsKey(item)) {
-				concepts.put("User Interactivity", 2);
-				return;
+				isDeveloping = true;
+				break;
 			}
 		}
-
-		if (blocks.containsKey("whenGreenFlag")) {
+		
+		if(havingProficiencyBlock){
+			score = 3;
+		}else if(isDeveloping){
+			score = 2;
+		}else if (blocks.containsKey("whenGreenFlag")) {
 			score = 1;
+		}else{
+			score = 0;
 		}
 
 		concepts.put("User Interactivity", score);
