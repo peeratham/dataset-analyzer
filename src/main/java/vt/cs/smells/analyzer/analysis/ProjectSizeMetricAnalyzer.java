@@ -25,7 +25,7 @@ import vt.cs.smells.analyzer.visitor.Visitor;
 public class ProjectSizeMetricAnalyzer extends Analyzer {
 	private static final String name = "ProjectSize";
 	private static final String abbr = "PS";
-	
+
 	DictAnalysisReport report = new DictAnalysisReport(name, abbr);
 	DescriptiveStatistics stats = new DescriptiveStatistics();
 	Frequency freqCount = new Frequency();
@@ -33,8 +33,6 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 	JSONObject record = new JSONObject();
 	int scriptableNum = 0;
 	int scriptCount = 0;
-	
-	
 
 	class TopDownNestedNonConditional extends Sequence {
 		public TopDownNestedNonConditional(Visitor v) {
@@ -57,7 +55,6 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 					}
 				}
 			}
-
 		}
 	}
 
@@ -82,35 +79,36 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 	public void analyze() throws AnalysisException {
 		scriptableNum = project.getAllScriptables().size();
 		scriptCount = 0;
-		
+
 		for (String name : project.getAllScriptables().keySet()) {
 			Scriptable sc = project.getScriptable(name);
-			for(Script s: sc.getScripts()){
-				if(s.getBlocks().get(0).getBlockType().getShape().equals("hat")){
+			for (Script s : sc.getScripts()) {
+				if (s.getBlocks().get(0).getBlockType().getShape()
+						.equals("hat")) {
 					scriptCount++;
 				}
 			}
 		}
-		
+
 		try {
 			for (String name : project.getAllScriptables().keySet()) {
 				Scriptable sc = project.getScriptable(name);
-				for(Script s: sc.getScripts()){
-					int length= measureLength(s);
+				for (Script s : sc.getScripts()) {
+					int length = measureLength(s);
 					if (length > 0) {
 						stats.addValue(length);
 						freqCount.addValue(length);
 						uniqueScriptLengths.add(length);
 					}
 				}
-				
+
 			}
 			record.put("mean", stats.getMean());
 			record.put("max", stats.getMax());
 			record.put("min", stats.getMin());
 			record.put("sum", stats.getSum());
 			JSONObject dist = new JSONObject();
-			for(Integer cnt : uniqueScriptLengths){
+			for (Integer cnt : uniqueScriptLengths) {
 				dist.put(cnt, freqCount.getCount(cnt));
 			}
 			record.put("dist", dist);
@@ -118,12 +116,13 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 		} catch (VisitFailure e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public int measureLength(Script s) throws VisitFailure {
 		CountScriptLengthVisitor counter = new CountScriptLengthVisitor();
-		TopDownNestedNonConditional visitor = new TopDownNestedNonConditional(counter);
+		TopDownNestedNonConditional visitor = new TopDownNestedNonConditional(
+				counter);
 		s.accept(visitor);
 		return counter.getCount();
 	}
@@ -136,10 +135,9 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 		conciseReport.put("script", scriptCount);
 		conciseReport.put("script_length", stats.getMean());
 		conciseReport.put("bloc", stats.getSum());
-		
-		
+
 		report.setConciseJSONReport(conciseReport);
-		
+
 		return report;
 	}
 

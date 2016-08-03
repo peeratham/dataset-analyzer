@@ -25,6 +25,7 @@ import vt.cs.smells.analyzer.analysis.DuplicateValueAnalyzer;
 import vt.cs.smells.analyzer.analysis.HardCodedMediaSequenceAnalyzer;
 import vt.cs.smells.analyzer.analysis.InappropriateIntimacy;
 import vt.cs.smells.analyzer.analysis.MasteryAnalyzer;
+import vt.cs.smells.analyzer.analysis.ProgrammingElementMetricAnalyzer;
 import vt.cs.smells.analyzer.analysis.ProjectSizeMetricAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooFineGrainScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooLongScriptAnalyzer;
@@ -52,6 +53,7 @@ public class AnalysisManager {
 	public static final String smallTestInput = "/home/peeratham/tpeera4/smell-analysis/hundred.json";
 	public static final String largeTestInput = "/home/peeratham/tpeera4/smell-analysis/sources-0.json";
 	private ArrayList<Report> reports;
+	private String currentAnalyzerClass = "";
 
 	public ArrayList<Report> analyze(ScratchProject project)
 			throws AnalysisException {
@@ -73,13 +75,15 @@ public class AnalysisManager {
 					analyzer = (Analyzer) klass.newInstance();
 				}
 
+				currentAnalyzerClass = klass.getName();
 				analyzer.setProject(project);
 				analyzer.analyze();
 				reports.add(analyzer.getReport());
 			}
 		} catch (AnalysisException e) {
 			// logger.error(klass + " fail to analyze project " + projectID);
-			throw new AnalysisException("Analysis Error:" + e.getMessage());
+			throw new AnalysisException("Analysis Error:"
+					+ currentAnalyzerClass + "--" + e.getMessage());
 			// + analyzer.getClass() + "]:\n" + e.getMessage());
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
@@ -224,14 +228,15 @@ public class AnalysisManager {
 					.addAnalysis(UnusedCustomBlockAnalyzer.class.getName());
 			defaultConfig
 					.addAnalysis(ProjectSizeMetricAnalyzer.class.getName());
+			defaultConfig.addAnalysis(ProgrammingElementMetricAnalyzer.class
+					.getName());
 			defaultConfig.addAnalysis(DuplicateValueAnalyzer.class.getName());
 			defaultConfig.addAnalysis(TooFineGrainScriptAnalyzer.class
 					.getName());
 			defaultConfig.addAnalysis(HardCodedMediaSequenceAnalyzer.class
 					.getName());
-			defaultConfig.addAnalysis(InappropriateIntimacy.class
-					.getName());
-			
+			defaultConfig.addAnalysis(InappropriateIntimacy.class.getName());
+
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -266,8 +271,8 @@ public class AnalysisManager {
 		return sb.toString();
 	}
 
-	public static void runSingleAnalysis(String analysisClassURL, String inputFile
-			) throws FileNotFoundException, IOException {
+	public static void runSingleAnalysis(String analysisClassURL,
+			String inputFile) throws FileNotFoundException, IOException {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
 		JSONParser jsonParser = new JSONParser();
 		AnalysisConfigurator mainConfig = new AnalysisConfigurator();
@@ -316,8 +321,8 @@ public class AnalysisManager {
 				+ " per project");
 	}
 
-	public static void runAnalysis(String analysisClassName, String pathToJSONdata)
-			throws FileNotFoundException, IOException {
+	public static void runAnalysis(String analysisClassName,
+			String pathToJSONdata) throws FileNotFoundException, IOException {
 		runSingleAnalysis(analysisClassName, pathToJSONdata);
 	}
 
@@ -383,7 +388,7 @@ public class AnalysisManager {
 
 	public static void main(String[] args) throws IOException {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
-		int projectID = 91723110;
+		int projectID = 115735599;
 		ScratchProject project = null;
 		try {
 			String src = Util.retrieveProjectOnline(projectID);
