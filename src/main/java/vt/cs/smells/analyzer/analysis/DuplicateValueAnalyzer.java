@@ -1,5 +1,7 @@
 package vt.cs.smells.analyzer.analysis;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +35,9 @@ public class DuplicateValueAnalyzer extends Analyzer {
 	HashMap<String, SortedMap<String, List<BlockPath>>> subStringDupGroupMap = new HashMap<>();
 	public int count = 0;
 	DescriptiveStatistics groupSizeStats = new DescriptiveStatistics();
+	DescriptiveStatistics stringLengthStats = new DescriptiveStatistics();
+	int stringValueCount = 0;
+	int numberValueCount = 0;
 
 	public DuplicateValueAnalyzer() {
 	}
@@ -115,6 +120,17 @@ public class DuplicateValueAnalyzer extends Analyzer {
 				subCloneJSON.put(subKey, subStrInstanceJSON);
 				size += subStrMap.get(subKey).size();
 			}
+			
+			boolean isNumber = false;
+			try {
+				NumberFormat.getInstance().parse(key);
+				isNumber = true;
+				numberValueCount +=1;
+			} catch (ParseException e) {
+				stringValueCount +=1;
+				stringLengthStats.addValue(key.length());
+			}
+			
 			cloneGroupJSON.put("value", key);
 			cloneGroupJSON.put("instances", subCloneJSON);
 			cloneGroupJSON.put("size", size);
@@ -130,6 +146,9 @@ public class DuplicateValueAnalyzer extends Analyzer {
 		conciseReport.put("count", count);
 		if(count>0){
 			conciseReport.put("groupSize", groupSizeStats.getMean());
+			conciseReport.put("stringCount", stringValueCount);
+			conciseReport.put("numberCount", numberValueCount);
+			conciseReport.put("stringLength", stringLengthStats.getMean());
 		}else{
 			conciseReport.put("groupSize", 0);
 		}

@@ -61,6 +61,11 @@ public class TestCloneUtil {
 	}
 	
 	@Test
+	public void differentArgHashForBlocksWithDifferentArgs(){
+		
+	}
+	
+	@Test
 	public void differentHashForDifferentOrderingOfCommands() {
 		Scriptable sprite3 = project.getScriptable("CloneUtil2");
 		Script s0 = sprite3.getScript(0);
