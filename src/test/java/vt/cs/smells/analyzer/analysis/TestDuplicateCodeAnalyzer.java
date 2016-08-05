@@ -24,9 +24,12 @@ public class TestDuplicateCodeAnalyzer {
 		
 		analyzer.setProject(project);
 		analyzer.analyze();
-		assertEquals(4, analyzer.cloneGroupCount);
+		assertEquals(5, analyzer.cloneGroupCount);
 //		assertEquals(9, analyzer.cloneGroupSizeStats.getSum(), 0.01);
 //		assertEquals(17, analyzer.cloneInstanceSizeStats.getSum(), 0.01);
+		assertEquals(4, analyzer.sameSpriteCount);
+		assertEquals(1, analyzer.interSpriteCount);
 		System.out.println(analyzer.getReport().getConciseJSONReport());
+		System.out.println(analyzer.getReport().getJSONReport());
 	}
 }
