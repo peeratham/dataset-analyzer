@@ -51,5 +51,21 @@ public class TestProjectSizeMetrics {
 		assertEquals(3, analyzer.scriptableNum);
 		assertEquals(1, analyzer.scriptCount);
 	}
+	
+	@Test
+	public void testBlocPerScriptable() throws AnalysisException {
+		ProjectSizeMetricAnalyzer analyzer = new ProjectSizeMetricAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		assertEquals(3, analyzer.blocPerSprite.size());
+	}
+	
+	@Test
+	public void testBlocPerScript() throws AnalysisException {
+		ProjectSizeMetricAnalyzer analyzer = new ProjectSizeMetricAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		assertEquals(4, analyzer.blocPerScript.size());
+	}
 
 }

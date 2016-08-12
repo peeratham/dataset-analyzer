@@ -3,6 +3,7 @@ package vt.cs.smells.analyzer.analysis;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.apache.commons.math3.stat.Frequency;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -33,6 +34,8 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 	JSONObject record = new JSONObject();
 	int scriptableNum = 0;
 	int scriptCount = 0;
+	List<Integer> blocPerSprite = new ArrayList<>();
+	List<Integer> blocPerScript = new ArrayList<>();
 
 	class TopDownNestedNonConditional extends Sequence {
 		public TopDownNestedNonConditional(Visitor v) {
@@ -93,14 +96,18 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 		try {
 			for (String name : project.getAllScriptables().keySet()) {
 				Scriptable sc = project.getScriptable(name);
+				int totalBlockInSprite = 0;
 				for (Script s : sc.getScripts()) {
 					int length = measureLength(s);
+					totalBlockInSprite += length;
 					if (length > 0) {
 						stats.addValue(length);
+						blocPerScript.add(length);
 						freqCount.addValue(length);
 						uniqueScriptLengths.add(length);
 					}
 				}
+				blocPerSprite.add(totalBlockInSprite);
 
 			}
 			record.put("mean", stats.getMean());
@@ -135,7 +142,8 @@ public class ProjectSizeMetricAnalyzer extends Analyzer {
 		conciseReport.put("script", scriptCount);
 		conciseReport.put("script_length", stats.getMean());
 		conciseReport.put("bloc", stats.getSum());
-
+		conciseReport.put("blocPerSprite", blocPerSprite);
+		conciseReport.put("blocPerScript", blocPerScript);
 		report.setConciseJSONReport(conciseReport);
 
 		return report;
