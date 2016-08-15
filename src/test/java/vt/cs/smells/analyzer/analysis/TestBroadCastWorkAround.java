@@ -31,6 +31,7 @@ public class TestBroadCastWorkAround {
 		BroadCastWorkAroundAnalyzer analyzer = new BroadCastWorkAroundAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();	
+		System.out.println(analyzer.getReport().getJSONReport());
 		assertEquals(2, analyzer.count);
 	}
 

@@ -18,9 +18,13 @@ import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.Report;
 import vt.cs.smells.analyzer.nodes.Block;
+import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Script;
 import vt.cs.smells.analyzer.nodes.Scriptable;
 import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.Util;
+import vt.cs.smells.select.Collector;
+import vt.cs.smells.select.Evaluator;
 
 public class HardCodedMediaSequenceAnalyzer extends Analyzer {
 	private static final String name = "HardCodedMediaSequence";
@@ -29,19 +33,35 @@ public class HardCodedMediaSequenceAnalyzer extends Analyzer {
 
 	private Report report;
 	int count = 0;
+	boolean multipleCostume = false;
+	List<Block> costumeRelatedBlocks = new ArrayList<>();
 
 	@Override
 	public void analyze() throws AnalysisException {
 		report = new ListAnalysisReport(name,abbr);
-
+		//check if there are more than one costume
+		for (Scriptable s : project.getAllScriptables().values()) {
+			List<String> mediaSeq = s.getCostumes();
+			multipleCostume = multipleCostume||mediaSeq.size()>1;
+		}
+		
+		//check if there are usage of costume related commands at all
+		String[] costumeRelatedCommands = new String[]{"lookLike:", "nextCostume","startScene"};
+		
+		for(String command: costumeRelatedCommands){
+			costumeRelatedBlocks.addAll(Collector.collect(new Evaluator.BlockCommand(command), project));
+		}
+		
+		
 		for (Scriptable s : project.getAllScriptables().values()) {
 			List<String> mediaSeq = s.getCostumes();
 			List<List<String>> patterns = getMediaAccessSameControlStructure(s);
-			JSONObject record = new JSONObject();
+			
 			for (List<String> accessSeq : patterns) {
 				List<String> subseq = matchSubsequence(accessSeq, mediaSeq);
 				if (subseq.size() > 2) {
-					record.put("seq", subseq);
+					JSONObject record = new JSONObject();
+					record.put("seq", accessSeq);
 					sequenceSizeStats.addValue(subseq.size());
 					record.put("scriptable", s.getName());
 					report.addRecord(record);
@@ -98,10 +118,12 @@ public class HardCodedMediaSequenceAnalyzer extends Analyzer {
 	public Report getReport() {
 		
 		JSONObject conciseReport = new JSONObject();
-		conciseReport.put("count", count);
+		
 		if(count>0){
+			conciseReport.put("count", count);
 			conciseReport.put("groupSize", sequenceSizeStats.getMean());
-		}else{
+		}else if(count ==0 && multipleCostume==true && !costumeRelatedBlocks.isEmpty()){
+			conciseReport.put("count", count);
 			conciseReport.put("groupSize", 0);
 		}
 	
@@ -113,7 +135,12 @@ public class HardCodedMediaSequenceAnalyzer extends Analyzer {
 	public static void main(String[] args) throws FileNotFoundException, IOException, AnalysisException, ParseException, ParsingException {
 //		String csvResult = AnalysisManager.runAnalysis2(new HardCodedMediaSequenceAnalyzer(), 1);
 //		FileUtils.writeStringToFile(new File(HardCodedMediaSequenceAnalyzer.class+".csv"), csvResult);
-		Report result= AnalysisManager.runSingleAnalysis(17407891, new HardCodedMediaSequenceAnalyzer());
-		System.out.println(result.getJSONReport());
+		String projectSrc = Util.retrieveProjectOnline(17407891);
+		ScratchProject project = ScratchProject.loadProject(projectSrc);
+		Analyzer analyzer = new HardCodedMediaSequenceAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		System.out.println(analyzer.getReport().getConciseJSONReport());
+//		System.out.println(analyzer.getReport().getJSONReport());
 	}
 }

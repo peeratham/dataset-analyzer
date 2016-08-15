@@ -53,25 +53,29 @@ public class BroadCastWorkAroundAnalyzer extends Analyzer {
 	public void analyze() throws AnalysisException {
 		collectFlagVars();
 		ArrayList<Block> foreverBlocks = AnalysisUtil.findBlock(project, "doForever");	
+		HashSet<String> setVarNames = new HashSet<String>();
 		for(Block loopBlock: foreverBlocks){
-			HashSet<String> setVarNames = new HashSet<String>();
 			for(Block setVar :AnalysisUtil.getVarDefBlocks(loopBlock)){
 				setVarNames.add((String) setVar.arg("varName"));
 			}
-
-			HashSet<String> waitUntilVarNames = new HashSet<String>();
+		}
+		
+		for(Block loopBlock: foreverBlocks){
+			HashSet<String> conditionalBlockOnVarNames = new HashSet<String>();
 			ArrayList<Block> waitUntilBlocksInForever = AnalysisUtil.findBlock(loopBlock, "doWaitUntil");
+			ArrayList<Block> ifBlocksInForever = AnalysisUtil.findBlock(loopBlock, "doIf");
+			waitUntilBlocksInForever.addAll(ifBlocksInForever);
 			for(Block wait: waitUntilBlocksInForever){
 				ArrayList<Block> varBlocks = AnalysisUtil.getVarRefBlocks(wait);
 				if(!varBlocks.isEmpty()){
 					Block readVar = varBlocks.get(0);
-					waitUntilVarNames.add((String) readVar.arg("varName"));
+					conditionalBlockOnVarNames.add((String) readVar.arg("varName"));
 				}				
 			}
 
-			waitUntilVarNames.retainAll(setVarNames);
-			if(!waitUntilVarNames.isEmpty()){
-				report.addRecord(Arrays.toString(waitUntilVarNames.toArray())+"@"+loopBlock.getBlockPath().toString());
+			conditionalBlockOnVarNames.retainAll(setVarNames);
+			if(!conditionalBlockOnVarNames.isEmpty()){
+				report.addRecord(Arrays.toString(conditionalBlockOnVarNames.toArray())+"@"+loopBlock.getBlockPath().toString());
 				count++;
 			}
 		}

@@ -1,21 +1,27 @@
 package vt.cs.smells.analyzer.analysis;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.Report;
 import vt.cs.smells.analyzer.nodes.Block;
+import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Scriptable;
 import vt.cs.smells.analyzer.parser.Insert;
+import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
@@ -26,6 +32,7 @@ public class BroadVarScopeAnalyzer extends Analyzer {
 	private String abbr = "BVS";
 	private ListAnalysisReport report = new ListAnalysisReport(name, abbr);
 	int count = 0;
+	int varCount = 0;
 	
 	public BroadVarScopeAnalyzer(){
 		varRelatedCommands.add("setVar:to:");
@@ -39,13 +46,19 @@ public class BroadVarScopeAnalyzer extends Analyzer {
 	public void analyze() throws AnalysisException {
 		Scriptable stage = project.getScriptable("Stage");
 		Map<String, Object> globals = stage.getAllVariables();
+		
+		for(String scriptableName: project.getAllScriptables().keySet()){
+			Scriptable sprite = project.getScriptable(scriptableName);
+			varCount +=sprite.getAllVariables().size();
+		}
+		
 		for (String varName : globals.keySet()) {
 			globalVarRef.put(varName, new HashSet<String>());
 		}
 		
 		for(String varCommand : varRelatedCommands){
-			ArrayList<Block> varBlocks = Collector.collect(new Evaluator.BlockCommand(varCommand), project);
-			for (Block block : varBlocks) {
+			ArrayList<Block> varBlockUsages = Collector.collect(new Evaluator.BlockCommand(varCommand), project);
+			for (Block block : varBlockUsages) {
 				List<Object> parts = block.getBlockType().getParts();
 				Iterator<Object> args = block.getArgs().iterator();
 				for (int i = 0; i < parts.size(); i++) {
@@ -70,9 +83,20 @@ public class BroadVarScopeAnalyzer extends Analyzer {
 	@Override
 	public Report getReport() {
 		JSONObject conciseReport = new JSONObject();
-		conciseReport.put("count", count);
+		if(varCount!=0){
+			conciseReport.put("count", count);
+		}
 		report.setConciseJSONReport(conciseReport);
 		
 		return report;
+	}
+	
+	public static void main(String[] args) throws ParseException, ParsingException, IOException, AnalysisException{
+		String projectSrc = Util.retrieveProjectOnline(116455523);
+		ScratchProject project = ScratchProject.loadProject(projectSrc);
+		BroadVarScopeAnalyzer analyzer = new BroadVarScopeAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
 }
