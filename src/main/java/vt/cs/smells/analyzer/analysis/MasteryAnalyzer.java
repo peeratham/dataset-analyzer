@@ -1,7 +1,5 @@
 package vt.cs.smells.analyzer.analysis;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,7 +8,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.json.simple.JSONObject;
 
 import vt.cs.smells.analyzer.AnalysisException;
-import vt.cs.smells.analyzer.AnalysisManager;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.DictAnalysisReport;
 import vt.cs.smells.analyzer.Report;

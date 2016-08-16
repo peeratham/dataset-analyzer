@@ -1,13 +1,9 @@
 package vt.cs.smells.analyzer.analysis;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -18,11 +14,8 @@ import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.Report;
 import vt.cs.smells.analyzer.nodes.Block;
-import vt.cs.smells.analyzer.nodes.BlockType;
-import vt.cs.smells.analyzer.nodes.CustomBlock;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Scriptable;
-import vt.cs.smells.analyzer.parser.Insert;
 import vt.cs.smells.analyzer.parser.ParsingException;
 import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.select.Collector;

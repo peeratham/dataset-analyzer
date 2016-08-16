@@ -1,19 +1,16 @@
 package vt.cs.smells.analyzer.analysis;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import vt.cs.smells.analyzer.AnalysisException;
-import vt.cs.smells.analyzer.AnalysisManager;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.Report;

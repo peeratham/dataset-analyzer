@@ -1,6 +1,4 @@
 package vt.cs.smells.analyzer.analysis;
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,7 +10,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import vt.cs.smells.analyzer.AnalysisException;
-import vt.cs.smells.analyzer.AnalysisManager;
 import vt.cs.smells.analyzer.AnalysisUtil;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
