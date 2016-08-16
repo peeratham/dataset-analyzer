@@ -31,7 +31,7 @@ public class TestProgrammingElementMetricAnalyzer {
 		analyzer.setProject(project);
 		analyzer.analyze();	
 		assertEquals(2, analyzer.totalCustomBlock);
-//		System.out.println(analyzer.getReport().getJSONReport());
+		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
 
 

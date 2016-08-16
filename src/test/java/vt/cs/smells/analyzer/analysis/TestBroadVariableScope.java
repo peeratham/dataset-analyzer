@@ -31,6 +31,7 @@ public class TestBroadVariableScope {
 		analyzer.setProject(project);
 		analyzer.analyze();
 		assertEquals(1, analyzer.count);
+		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
 	
 	
