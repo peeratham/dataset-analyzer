@@ -1,11 +1,15 @@
 package vt.cs.smells.analyzer.analysis;
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.AnalysisManager;
@@ -13,8 +17,13 @@ import vt.cs.smells.analyzer.AnalysisUtil;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.nodes.Block;
+import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Script;
 import vt.cs.smells.analyzer.nodes.Scriptable;
+import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.Util;
+import vt.cs.smells.select.Collector;
+import vt.cs.smells.select.Evaluator;
 
 public class UnnecessaryBroadcastAnalyzer extends Analyzer{
 	private static final String name = "UnnecessaryBroadcast";
@@ -22,6 +31,7 @@ public class UnnecessaryBroadcastAnalyzer extends Analyzer{
 	
 	ListAnalysisReport report = new ListAnalysisReport(name,abbr);
 	int count = 0;
+	private List<Block> anyCallsAndBroadcastBlocks;
 	
 	class BroadCastReceivePair {
 		private String message;
@@ -53,6 +63,12 @@ public class UnnecessaryBroadcastAnalyzer extends Analyzer{
 	}
 	@Override
 	public void analyze() throws AnalysisException {
+	anyCallsAndBroadcastBlocks = new ArrayList<>();
+		String[] callsAndBroadcastCommands = new String[]{"call", "doBroadcastAndWait"};
+		for(String command: callsAndBroadcastCommands){
+			anyCallsAndBroadcastBlocks.addAll(Collector.collect(new Evaluator.BlockCommand(command), project));	
+		}
+
 		HashMap<String, BroadCastReceivePair> map = new HashMap<String, BroadCastReceivePair>();
 		for(Scriptable scriptable: project.getAllScriptables().values()){
 			for(Script s : scriptable.getScripts()){
@@ -109,13 +125,23 @@ public class UnnecessaryBroadcastAnalyzer extends Analyzer{
 	@Override
 	public ListAnalysisReport getReport() {
 		JSONObject conciseReport = new JSONObject();
-		conciseReport.put("count", count);
+		if(!anyCallsAndBroadcastBlocks.isEmpty()){
+			conciseReport.put("count", count);
+		}
+		
 		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException, IOException{
-		AnalysisManager.runAnalysis(UnnecessaryBroadcastAnalyzer.class.getName(), AnalysisManager.smallTestInput);
+	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException, ParsingException, AnalysisException{
+//		AnalysisManager.runAnalysis(UnnecessaryBroadcastAnalyzer.class.getName(), AnalysisManager.largeTestInput);
+		String projectSrc = Util.retrieveProjectOnline(118377854);
+		ScratchProject project = ScratchProject.loadProject(projectSrc);
+		UnnecessaryBroadcastAnalyzer analyzer = new UnnecessaryBroadcastAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		System.out.println(analyzer.getReport().getConciseJSONReport());
+
 	}
 
 }

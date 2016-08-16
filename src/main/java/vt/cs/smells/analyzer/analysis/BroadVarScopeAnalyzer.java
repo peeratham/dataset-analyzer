@@ -46,7 +46,8 @@ public class BroadVarScopeAnalyzer extends Analyzer {
 	public void analyze() throws AnalysisException {
 		Scriptable stage = project.getScriptable("Stage");
 		Map<String, Object> globals = stage.getAllVariables();
-		
+
+		//check if there's variable declaration at all
 		for(String scriptableName: project.getAllScriptables().keySet()){
 			Scriptable sprite = project.getScriptable(scriptableName);
 			varCount +=sprite.getAllVariables().size();

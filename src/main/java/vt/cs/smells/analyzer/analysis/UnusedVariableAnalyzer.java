@@ -1,5 +1,6 @@
 package vt.cs.smells.analyzer.analysis;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,14 +9,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.Report;
 import vt.cs.smells.analyzer.nodes.Block;
+import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Scriptable;
 import vt.cs.smells.analyzer.parser.Insert;
+import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
@@ -27,6 +32,8 @@ public class UnusedVariableAnalyzer extends Analyzer{
 	List<String> varRelatedCommands = new ArrayList<String>();
 	private ListAnalysisReport report = new ListAnalysisReport(name,abbr);
 	int count = 0;
+	List<String> varDeclarations = new ArrayList<>();
+	
 	
 	public UnusedVariableAnalyzer(){
 		varRelatedCommands.add("setVar:to:");
@@ -37,11 +44,18 @@ public class UnusedVariableAnalyzer extends Analyzer{
 	}
 	@Override
 	public void analyze() throws AnalysisException {
-		Scriptable stage = project.getScriptable("Stage");
-		Map<String, Object> globals = stage.getAllVariables();
-		for (String varName : globals.keySet()) {
-			allVar.add(varName);
+		//all variable declarations
+		for(Scriptable scriptable : project.getAllScriptables().values()){
+			varDeclarations.addAll(scriptable.getAllVariables().keySet());
+			allVar.addAll(scriptable.getAllVariables().keySet());
 		}
+		
+		
+//		Scriptable stage = project.getScriptable("Stage");
+//		Map<String, Object> globals = stage.getAllVariables();
+//		for (String varName : globals.keySet()) {
+//			allVar.add(varName);
+//		}
 		for(String varCommand : varRelatedCommands){
 			ArrayList<Block> varBlocks = Collector.collect(new Evaluator.BlockCommand(varCommand), project);
 			for (Block block : varBlocks) {
@@ -66,9 +80,23 @@ public class UnusedVariableAnalyzer extends Analyzer{
 	@Override
 	public Report getReport() {
 		JSONObject conciseReport = new JSONObject();
-		conciseReport.put("count", count);
+		if(!varDeclarations.isEmpty()){
+			conciseReport.put("count", count);
+		}
+
 		report.setConciseJSONReport(conciseReport);
 		return report;
+	}
+	
+	public static void main(String[] args) throws IOException, ParseException, ParsingException, AnalysisException{
+		String projectSrc = Util.retrieveProjectOnline(118377854);
+		ScratchProject project = ScratchProject.loadProject(projectSrc);
+		UnusedVariableAnalyzer analyzer = new UnusedVariableAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		System.out.println(analyzer.getReport().getJSONReport());
+		System.out.println(analyzer.getReport().getConciseJSONReport());
+		
 	}
 
 }

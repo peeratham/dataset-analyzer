@@ -1,5 +1,8 @@
 package vt.cs.smells.analyzer.analysis;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -7,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.AnalysisUtil;
@@ -19,6 +23,8 @@ import vt.cs.smells.analyzer.nodes.CustomBlock;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Scriptable;
 import vt.cs.smells.analyzer.parser.Insert;
+import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
@@ -32,12 +38,15 @@ public class UnusedCustomBlockAnalyzer extends Analyzer{
 	private ListAnalysisReport report = new ListAnalysisReport(name,abbr);
 	public  ArrayList<Block> allBlocks;
 	int count = 0;
+	private List<Block> allCustomBlocks;
 	
 	public UnusedCustomBlockAnalyzer(){
 		blockRelatedCommands.add("call");
 	}
 
 	public void analyze() throws AnalysisException{
+		allCustomBlocks = Collector.collect(new Evaluator.BlockCommand("procDef"), project);
+		
 		Scriptable stage = project.getScriptable("Stage");		
 		for (String name : project.getAllScriptables().keySet()) {
 			if(name!="Stage"){
@@ -71,8 +80,21 @@ public class UnusedCustomBlockAnalyzer extends Analyzer{
 	
 	public Report getReport() {
 		JSONObject conciseReport = new JSONObject();
-		conciseReport.put("count", count);
+		if(!allCustomBlocks.isEmpty()){
+			conciseReport.put("count", count);
+		}
 		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
+	
+	public static void main(String[] args) throws IOException, ParseException, ParsingException, AnalysisException{
+		String projectSrc = Util.retrieveProjectOnline(118377854);
+		ScratchProject project = ScratchProject.loadProject(projectSrc);
+		UnusedCustomBlockAnalyzer analyzer = new UnusedCustomBlockAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		System.out.println(analyzer.getReport().getJSONReport());
+		System.out.println(analyzer.getReport().getConciseJSONReport());
+	}
+	
 }

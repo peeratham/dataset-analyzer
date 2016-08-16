@@ -28,10 +28,4 @@ public class TestUncommunicativeNaming {
 		assertEquals(4, analyzer.count);
 		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
-	
-	@Test
-	public void testAnalysisOutput(){
-		
-	}
-
 }

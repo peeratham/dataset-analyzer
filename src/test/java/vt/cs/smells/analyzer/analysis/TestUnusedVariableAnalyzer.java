@@ -16,7 +16,7 @@ public class TestUnusedVariableAnalyzer {
 
 	@Before
 	public void setUp() throws Exception {
-		String projectSrc = Util.retrieveProjectOnline(104981444);
+		String projectSrc = Util.retrieveProjectOnline(118395466);
 		project = ScratchProject.loadProject(projectSrc);
 	}
 
@@ -25,7 +25,7 @@ public class TestUnusedVariableAnalyzer {
 		UnusedVariableAnalyzer analyzer = new UnusedVariableAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-		assertEquals(2, analyzer.count);
+		assertEquals(3, analyzer.count);
 		
 		System.out.println(analyzer.getReport().getJSONReport());
 		System.out.println(analyzer.getReport().getConciseJSONReport());
