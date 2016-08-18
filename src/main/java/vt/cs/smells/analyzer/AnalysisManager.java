@@ -42,6 +42,7 @@ import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.analyzer.visitor.AnalysisVisitor;
 import vt.cs.smells.analyzer.visitor.Visitor;
 import vt.cs.smells.crawler.AnalysisDBManager;
+import vt.cs.smells.visual.ScriptOrganizationAnalyzer;
 
 public class AnalysisManager {
 	JSONParser jsonParser = new JSONParser();;
@@ -235,7 +236,8 @@ public class AnalysisManager {
 					.getName());
 			defaultConfig.addAnalysis(HardCodedMediaSequenceAnalyzer.class
 					.getName());
-			defaultConfig.addAnalysis(InappropriateIntimacy.class.getName());
+//			defaultConfig.addAnalysis(InappropriateIntimacy.class.getName());
+			defaultConfig.addAnalysis(ScriptOrganizationAnalyzer.class.getName());
 
 		} catch (InstantiationException e) {
 			e.printStackTrace();
@@ -307,7 +309,7 @@ public class AnalysisManager {
 				if (count > 0) {
 					found += 1;
 					logger.info(id);
-					;
+//					System.out.println(report);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

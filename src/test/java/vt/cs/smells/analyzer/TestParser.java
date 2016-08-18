@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -210,6 +212,21 @@ public class TestParser {
 		expected.add("costume3");
 		expected.add("costume4");
 		assertEquals(expected, costumes);
+	}
+	
+	@Test
+	public void testParseList() throws IOException, ParseException, ParsingException{
+		String projectSrc = Util.retrieveProjectOnline(118518088);
+		JSONObject spriteJSON = TestUtils.getJSONScriptable(projectSrc, "Sprite1");
+		Scriptable sprite= Parser.loadScriptable(spriteJSON);
+		assertEquals(1,sprite.getAllList().size());
+		Map<String, List<String>> lists = sprite.getAllList();
+		
+		List<String> expected = new ArrayList<String>();
+		expected.add("1");
+		expected.add("2");
+		expected.add("3");
+		assertEquals(expected, lists.get("list2"));
 	}
 		
 }

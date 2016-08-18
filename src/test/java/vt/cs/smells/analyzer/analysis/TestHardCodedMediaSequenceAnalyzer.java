@@ -2,10 +2,12 @@ package vt.cs.smells.analyzer.analysis;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +16,7 @@ import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Scriptable;
+import vt.cs.smells.analyzer.parser.ParsingException;
 import vt.cs.smells.analyzer.parser.Util;
 
 public class TestHardCodedMediaSequenceAnalyzer {
@@ -63,25 +66,7 @@ public class TestHardCodedMediaSequenceAnalyzer {
 		assertTrue(seq1.equals(seq2));
 	}
 	
-	@Test
-	public void testSubSequenceMatch(){
-		List<String> seq1 = new ArrayList<>();
-		seq1.add("a");
-		seq1.add("2");
-		seq1.add("3");
-		
-		List<String> seq2 = new ArrayList<>();
-		seq2.add("a");
-		seq2.add("2");
-		seq2.add("3");
-		Analyzer analyzer = new HardCodedMediaSequenceAnalyzer();
-		List<String> matched = ((HardCodedMediaSequenceAnalyzer) analyzer).matchSubsequence(seq1,seq2);
-		System.out.println(matched);
-		
-	}
-	
 
-	
 
 	@Test
 	public void testMediaOrderingNotMatchedFrequentMediaReference() throws AnalysisException {
@@ -111,9 +96,20 @@ public class TestHardCodedMediaSequenceAnalyzer {
 		HardCodedMediaSequenceAnalyzer analyzer = new HardCodedMediaSequenceAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-		assertEquals(3, analyzer.count);
-		assertEquals(10, analyzer.sequenceSizeStats.getSum(),0.001);
+		assertEquals(4, analyzer.count);
+		assertEquals(14, analyzer.sequenceSizeStats.getSum(),0.001);
+		System.out.println(analyzer.getReport().getJSONReport());
 		System.out.println(analyzer.getReport().getConciseJSONReport());
+	}
+	
+	@Test
+	public void testIfSwitchToCostumeIsParameterized() throws AnalysisException, IOException, ParseException, ParsingException{
+		String projectSrc = Util.retrieveProjectOnline(109963080);
+		project = ScratchProject.loadProject(projectSrc);
+		HardCodedMediaSequenceAnalyzer analyzer = new HardCodedMediaSequenceAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		assertTrue(analyzer.parameterized);
 	}
 	
 

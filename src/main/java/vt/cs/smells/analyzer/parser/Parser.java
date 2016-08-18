@@ -88,10 +88,15 @@ public class Parser {
 		JSONArray scripts = (JSONArray) spriteJSON.get("scripts");
 		JSONArray variables = (JSONArray) spriteJSON.get("variables");
 		JSONArray costumes = (JSONArray) spriteJSON.get("costumes");
+		JSONArray lists = (JSONArray) spriteJSON.get("lists");
 		sprite.setName(spriteName);
 
 		if (variables != null) {
 			sprite.setVars(loadVariables(variables));
+		}
+		
+		if (lists != null) {
+			sprite.setLists(loadLists(lists));
 		}
 
 		if (costumes != null) {
@@ -137,6 +142,15 @@ public class Parser {
 			}
 		}
 		return sprite;
+	}
+
+	private static Map<String, List<String>> loadLists(JSONArray JSONlists) {
+		Map<String, List<String>> lists = new HashMap<>();
+		for (int i = 0; i < JSONlists.size(); i++) {
+			JSONObject o = (JSONObject) JSONlists.get(i);
+			lists.put((String) o.get("listName"), (List<String>) o.get("contents"));
+		}
+		return lists;
 	}
 
 	private static ArrayList<String> loadCostumes(JSONArray costumes) {

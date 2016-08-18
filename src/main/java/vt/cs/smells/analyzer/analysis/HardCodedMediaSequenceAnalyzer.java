@@ -5,21 +5,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import vt.cs.smells.analyzer.AnalysisException;
+import vt.cs.smells.analyzer.AnalysisManager;
 import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.Report;
 import vt.cs.smells.analyzer.nodes.Block;
-import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Script;
 import vt.cs.smells.analyzer.nodes.Scriptable;
 import vt.cs.smells.analyzer.parser.ParsingException;
-import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
@@ -32,7 +30,8 @@ public class HardCodedMediaSequenceAnalyzer extends Analyzer {
 	int count = 0;
 	boolean multipleCostume = false;
 	List<Block> costumeRelatedBlocks = new ArrayList<>();
-
+	boolean parameterized = false;
+	
 	@Override
 	public void analyze() throws AnalysisException {
 		report = new ListAnalysisReport(name,abbr);
@@ -55,21 +54,30 @@ public class HardCodedMediaSequenceAnalyzer extends Analyzer {
 			List<List<String>> patterns = getMediaAccessSameControlStructure(s);
 			
 			for (List<String> accessSeq : patterns) {
-				List<String> subseq = matchSubsequence(accessSeq, mediaSeq);
-				if (subseq.size() > 2) {
+				if (accessSeq.size() > 2) {
 					JSONObject record = new JSONObject();
 					record.put("seq", accessSeq);
-					sequenceSizeStats.addValue(subseq.size());
+					sequenceSizeStats.addValue(accessSeq.size());
 					record.put("scriptable", s.getName());
 					report.addRecord(record);
 					count++;
 				}
 			}
 		}
-	}
-
-	public List<String> matchSubsequence(List<String> seq1, List<String> seq2) {
-		return ListUtils.longestCommonSubsequence(seq1, seq2);
+		
+		
+		//check if switchCostumeTo is parameterized
+		String[] parameterizableCostumeCommand = new String[]{"lookLike:", "startScene"};
+		for(String command : parameterizableCostumeCommand){
+			List<Block> switchCostumeBlocks = Collector.collect(new Evaluator.BlockCommand(command), project);
+			
+			for(Block b: switchCostumeBlocks){
+				if(b.getArgs(0) instanceof Block){
+					parameterized = parameterized||true;
+				}
+			}
+		}
+		
 	}
 
 	public List<List<String>> getMediaAccessSameControlStructure(Scriptable sprite1) {
@@ -119,6 +127,7 @@ public class HardCodedMediaSequenceAnalyzer extends Analyzer {
 		if(count>0){
 			conciseReport.put("count", count);
 			conciseReport.put("groupSize", sequenceSizeStats.getMean());
+			conciseReport.put("parameterized", parameterized);
 		}else if(count ==0 && multipleCostume==true && !costumeRelatedBlocks.isEmpty()){
 			conciseReport.put("count", count);
 			conciseReport.put("groupSize", 0);
@@ -132,12 +141,17 @@ public class HardCodedMediaSequenceAnalyzer extends Analyzer {
 	public static void main(String[] args) throws FileNotFoundException, IOException, AnalysisException, ParseException, ParsingException {
 //		String csvResult = AnalysisManager.runAnalysis2(new HardCodedMediaSequenceAnalyzer(), 1);
 //		FileUtils.writeStringToFile(new File(HardCodedMediaSequenceAnalyzer.class+".csv"), csvResult);
-		String projectSrc = Util.retrieveProjectOnline(17407891);
-		ScratchProject project = ScratchProject.loadProject(projectSrc);
-		Analyzer analyzer = new HardCodedMediaSequenceAnalyzer();
-		analyzer.setProject(project);
-		analyzer.analyze();
-		System.out.println(analyzer.getReport().getConciseJSONReport());
+//		String projectSrc = Util.retrieveProjectOnline(17407891);
+//		ScratchProject project = ScratchProject.loadProject(projectSrc);
+//		Analyzer analyzer = new HardCodedMediaSequenceAnalyzer();
+//		analyzer.setProject(project);
+//		analyzer.analyze();
+//		System.out.println(analyzer.getReport().getConciseJSONReport());
 //		System.out.println(analyzer.getReport().getJSONReport());
+		
+		AnalysisManager.runAnalysis(HardCodedMediaSequenceAnalyzer.class.getName(), AnalysisManager.largeTestInput);
+		
+		
+		
 	}
 }

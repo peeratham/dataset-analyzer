@@ -123,14 +123,16 @@ public class TooFineGrainScriptAnalyzer extends Analyzer {
 	
 	public static void main(String[] args)
 			throws FileNotFoundException, IOException, AnalysisException, ParseException, ParsingException {
-		 String csvResult = AnalysisManager.runAnalysis2(new
-		 TooFineGrainScriptAnalyzer(), 1);
-		 FileUtils.writeStringToFile(new
-		 File(TooFineGrainScriptAnalyzer.class+".csv"), csvResult);
+//		 String csvResult = AnalysisManager.runAnalysis2(new
+//		 TooFineGrainScriptAnalyzer(), 1);
+//		 FileUtils.writeStringToFile(new
+//		 File(TooFineGrainScriptAnalyzer.class+".csv"), csvResult);
 //		Report result = AnalysisManager.runSingleAnalysis(18801413, new ExtremeEventBasedScriptAnalyzer());
 		// System.out.println(result.getJSONReport().toJSONString());
 		// Document doc = Document.parse(result.getJSONReport().toJSONString());
 		// System.out.println(result.getJSONReport());
+		
+		AnalysisManager.runAnalysis(TooFineGrainScriptAnalyzer.class.getName(), AnalysisManager.smallTestInput);
 	}
 
 }
