@@ -16,20 +16,18 @@ import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.visual.ScriptOrganizationAnalyzer;
 
 public class TestScriptOrganizationAnalyzer {
-	@Ignore
+	
 	@Test
 	public void test() throws AnalysisException, IOException, ParseException, ParsingException {
-		String projectSrc = Util.retrieveProjectOnline(94833586);
+		String projectSrc = Util.retrieveProjectOnline(118102681);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
 		ScriptOrganizationAnalyzer analyzer = new ScriptOrganizationAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
 		System.out.println(analyzer.getReport().getJSONReport());
 		System.out.println(analyzer.getReport().getConciseJSONReport());
-		assertEquals(0.8, analyzer.purityStats.getMean(),0.01);
-//		analyzer.showVisualization();
+//		assertEquals(0.8, analyzer.purityStats.getMean(),0.01);
 	}
-	@Ignore
 	@Test
 	public void testMinusOneForProjectWithOneScriptInASprite() throws IOException, ParseException, ParsingException, AnalysisException{
 		String projectSrc = Util.retrieveProjectOnline(116825938);

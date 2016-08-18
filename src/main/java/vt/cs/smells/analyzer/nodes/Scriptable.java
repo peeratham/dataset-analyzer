@@ -13,6 +13,7 @@ public class Scriptable implements Visitable {
 	ArrayList<Script> scripts;
 	private Map<String,Object> variables;
 	private ArrayList<String> costumes;
+	private Map<String, List<String>> lists = new HashMap<>();
 
 	public Scriptable(){
 		scripts = new ArrayList<Script>();
@@ -79,6 +80,20 @@ public class Scriptable implements Visitable {
 
 	public void setCostumes(ArrayList<String> costumes) {
 		this.costumes.addAll(costumes);
+		
+	}
+
+	public Map<String, List<String>> getAllList() {
+		return lists;
+	}
+	
+	public List<String> getList(String listName){
+		return lists.get(listName);
+	}
+	
+
+	public void setLists(Map<String, List<String>> listMap) {
+		this.lists = listMap;
 		
 	}
 	

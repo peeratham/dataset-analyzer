@@ -22,6 +22,7 @@ import vt.cs.smells.analyzer.visitor.VisitFailure;
 import vt.cs.smells.analyzer.visitor.Visitor;
 
 public class TooLongScriptAnalyzer extends Analyzer {
+	private static final int NINETY_PERCENTILE = 11;
 	private static final String name = "TooLongScript";
 	private static final String abbr = "TLS";
 	
@@ -80,7 +81,7 @@ public class TooLongScriptAnalyzer extends Analyzer {
 					CountScriptLengthVisitor counter = new CountScriptLengthVisitor();
 					TopDownNestedNonConditional visitor = new TopDownNestedNonConditional(counter);
 					s.accept(visitor);
-					if (counter.getCount() > 10) {
+					if (counter.getCount() > NINETY_PERCENTILE) {
 						report.addRecord(s.getPath());
 						sizeStats.addValue(counter.getCount());
 						count++;
