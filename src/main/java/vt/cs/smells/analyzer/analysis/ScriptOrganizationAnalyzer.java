@@ -1,4 +1,4 @@
-package vt.cs.smells.visual;
+package vt.cs.smells.analyzer.analysis;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,10 +15,13 @@ import vt.cs.smells.analyzer.Analyzer;
 import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.Report;
 import vt.cs.smells.analyzer.Report.ReportType;
-import vt.cs.smells.analyzer.analysis.ScriptClusterer;
 import vt.cs.smells.analyzer.nodes.Block;
+import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Script;
 import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.Util;
+import vt.cs.smells.visual.Node;
+import vt.cs.smells.visual.NodeClass;
 
 public class ScriptOrganizationAnalyzer extends Analyzer {
 	private static final String name = "ScriptOrganization";
@@ -80,6 +83,12 @@ public class ScriptOrganizationAnalyzer extends Analyzer {
 				}
 				int majorityCount = -1;
 				int totalNodes = cluster.size();
+
+				//no grouping can be done, every script is different
+				if(totalNodes == clusterCount.keySet().size()){
+					continue;
+				}
+				
 				for (NodeClass nc : clusterCount.keySet()) {
 					if (clusterCount.get(nc) > majorityCount) {
 						majorityCount = clusterCount.get(nc);
@@ -89,11 +98,13 @@ public class ScriptOrganizationAnalyzer extends Analyzer {
 				double purityVal = (double) majorityCount / totalNodes;
 				purityPerSprite.addValue(purityVal);
 			}
-			purityMap.put(scriptableName, purityPerSprite.getMean());
-			purityStats.addValue(purityPerSprite.getMean());
-			JSONObject record = new JSONObject();
-			record.put(scriptableName, purityPerSprite.getMean());
-			report.addRecord(record);
+			if(purityPerSprite.getN()>0){
+				purityMap.put(scriptableName, purityPerSprite.getMean());
+				purityStats.addValue(purityPerSprite.getMean());
+				JSONObject record = new JSONObject();
+				record.put(scriptableName, purityPerSprite.getMean());
+				report.addRecord(record);
+			}
 
 		}
 		if(purityMap.isEmpty()){
@@ -114,16 +125,25 @@ public class ScriptOrganizationAnalyzer extends Analyzer {
 		report.setAbbr("SO");
 		report.setReportType(ReportType.METRIC);
 		JSONObject conciseReport = new JSONObject();
-
-		conciseReport.put("avg", averagePurity);
-		conciseReport.put("purity_vals", purityMap.values());
+		if(averagePurity!=-1){
+			conciseReport.put("avg", averagePurity);
+			conciseReport.put("purity_vals", purityMap.values());
+		}
+		
 		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
 
 	public static void main(String[] args) throws IOException, ParseException,
 			ParsingException, AnalysisException {
-
+		
+		String projectSrc = Util.retrieveProjectOnline(118536074);
+		ScratchProject project = ScratchProject.loadProject(projectSrc);
+		ScriptOrganizationAnalyzer analyzer = new ScriptOrganizationAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		System.out.println(analyzer.getReport().getJSONReport());
+		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
 
 }

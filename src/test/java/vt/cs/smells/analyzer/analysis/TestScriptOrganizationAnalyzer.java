@@ -13,7 +13,6 @@ import vt.cs.smells.analyzer.AnalysisException;
 import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.parser.ParsingException;
 import vt.cs.smells.analyzer.parser.Util;
-import vt.cs.smells.visual.ScriptOrganizationAnalyzer;
 
 public class TestScriptOrganizationAnalyzer {
 	

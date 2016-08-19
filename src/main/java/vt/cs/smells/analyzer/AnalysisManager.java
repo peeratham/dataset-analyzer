@@ -27,6 +27,7 @@ import vt.cs.smells.analyzer.analysis.InappropriateIntimacy;
 import vt.cs.smells.analyzer.analysis.MasteryAnalyzer;
 import vt.cs.smells.analyzer.analysis.ProgrammingElementMetricAnalyzer;
 import vt.cs.smells.analyzer.analysis.ProjectSizeMetricAnalyzer;
+import vt.cs.smells.analyzer.analysis.ScriptOrganizationAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooFineGrainScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooLongScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.UncommunicativeNamingAnalyzer;
@@ -42,7 +43,6 @@ import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.analyzer.visitor.AnalysisVisitor;
 import vt.cs.smells.analyzer.visitor.Visitor;
 import vt.cs.smells.crawler.AnalysisDBManager;
-import vt.cs.smells.visual.ScriptOrganizationAnalyzer;
 
 public class AnalysisManager {
 	JSONParser jsonParser = new JSONParser();;
@@ -390,14 +390,17 @@ public class AnalysisManager {
 
 	public static void main(String[] args) throws IOException {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
-		int projectID = 115735599;
+		int projectID = 40867092;
 		ScratchProject project = null;
 		try {
 			String src = Util.retrieveProjectOnline(projectID);
 			project = ScratchProject.loadProject(src);
 			blockAnalyzer.analyze(project);
 			JSONObject result = blockAnalyzer.getConciseJSONReports();
+			JSONObject fullResult = blockAnalyzer.getFullJSONReport();
+			System.out.println(fullResult .toJSONString());
 			System.out.println(result.toJSONString());
+			
 		} catch (ParseException e) {
 			logger.error("Fail to parse JSON for projectID:" + projectID
 					+ "..." + e.getMessage());
