@@ -21,6 +21,7 @@ public class ProgrammingElementMetricAnalyzer extends Analyzer{
 	
 	public int totalVariableCount = 0;
 	public int totalCustomBlock = 0;
+	public int totalComment = 0;
 
 	@Override
 	public void analyze() throws AnalysisException {
@@ -35,9 +36,17 @@ public class ProgrammingElementMetricAnalyzer extends Analyzer{
 			List<Block> allBlocks = Collector.collect(new Evaluator.BlockCommand("procDef"), sprite);
 			totalCustomBlock += allBlocks.size();
 		}
+		//comment count
+		for(String scriptableName: project.getAllScriptables().keySet()){
+			Scriptable sprite = project.getScriptable(scriptableName);
+			int scriptComment = sprite.getScriptComments().size();
+			totalComment += scriptComment;
+		}
+		
 		JSONObject record = new JSONObject();
 		record.put("varCount", totalVariableCount);
 		record.put("customBlockCount", totalCustomBlock);
+		record.put("scriptCommentCount", totalComment);
 		report.addRecord(record);
 	}
 
@@ -47,6 +56,7 @@ public class ProgrammingElementMetricAnalyzer extends Analyzer{
 		JSONObject conciseReport = new JSONObject();
 		conciseReport.put("varCount", totalVariableCount);
 		conciseReport.put("customBlockCount", totalCustomBlock);
+		conciseReport.put("commentCount", totalComment);
 		report.setConciseJSONReport(conciseReport);
 		return report;
 	}

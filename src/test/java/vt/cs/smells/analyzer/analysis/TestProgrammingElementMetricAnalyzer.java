@@ -34,5 +34,12 @@ public class TestProgrammingElementMetricAnalyzer {
 		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
 
-
+	@Test
+	public void testTotalCommentCount() throws AnalysisException {
+		ProgrammingElementMetricAnalyzer analyzer = new ProgrammingElementMetricAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();	
+		assertEquals(2, analyzer.totalComment);
+		System.out.println(analyzer.getReport().getConciseJSONReport());
+	}
 }

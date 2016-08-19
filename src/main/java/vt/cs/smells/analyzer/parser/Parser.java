@@ -89,6 +89,7 @@ public class Parser {
 		JSONArray variables = (JSONArray) spriteJSON.get("variables");
 		JSONArray costumes = (JSONArray) spriteJSON.get("costumes");
 		JSONArray lists = (JSONArray) spriteJSON.get("lists");
+		JSONArray comments = (JSONArray) spriteJSON.get("scriptComments");
 		sprite.setName(spriteName);
 
 		if (variables != null) {
@@ -105,6 +106,10 @@ public class Parser {
 
 		if (scripts == null) { // empty script
 			return sprite;
+		}
+		
+		if (comments != null) {
+			sprite.setScriptComments(comments);
 		}
 
 		// parse custom block for each sprite first

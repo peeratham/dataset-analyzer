@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
+
 import vt.cs.smells.analyzer.visitor.VisitFailure;
 import vt.cs.smells.analyzer.visitor.Visitor;
 
@@ -14,6 +16,7 @@ public class Scriptable implements Visitable {
 	private Map<String,Object> variables;
 	private ArrayList<String> costumes;
 	private Map<String, List<String>> lists = new HashMap<>();
+	private JSONArray scriptComments = new JSONArray();
 
 	public Scriptable(){
 		scripts = new ArrayList<Script>();
@@ -94,6 +97,15 @@ public class Scriptable implements Visitable {
 
 	public void setLists(Map<String, List<String>> listMap) {
 		this.lists = listMap;
+		
+	}
+
+	public JSONArray getScriptComments() {
+		return this.scriptComments ;
+	}
+
+	public void setScriptComments(JSONArray comments) {
+		this.scriptComments = comments;
 		
 	}
 	
