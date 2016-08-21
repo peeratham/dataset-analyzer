@@ -23,16 +23,16 @@ import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.visual.Node;
 import vt.cs.smells.visual.NodeClass;
 
-public class ScriptOrganizationAnalyzer extends Analyzer {
-	private static final String name = "ScriptOrganization";
-	private static final String abbr = "SO";
-	public double averagePurity = -1;
+public class ScriptClusterImpurity extends Analyzer {
+	private static final String name = "ScriptClusterImpurity";
+	private static final String abbr = "SCI";
+	public double averageImpurity = -1;
 
 	HashMap<String, List<Node>> nodesForEachScriptable = new HashMap<>();
 	private static final int max_xi_id = 1000000;
 	private ListAnalysisReport report = null;
-	public DescriptiveStatistics purityStats = new DescriptiveStatistics();
-	private HashMap<String, Double> purityMap = new HashMap<>();
+	public DescriptiveStatistics impurityStats = new DescriptiveStatistics();
+	private HashMap<String, Double> impurityMap = new HashMap<>();
 
 
 	@Override
@@ -70,7 +70,7 @@ public class ScriptOrganizationAnalyzer extends Analyzer {
 				continue;
 			}
 			// purity evaluation
-			DescriptiveStatistics purityPerSprite = new DescriptiveStatistics();
+			DescriptiveStatistics impurityPerSprite = new DescriptiveStatistics();
 			for (List<Node> cluster : clusters) {
 				HashMap<NodeClass, Integer> clusterCount = new HashMap<>();
 				for (Node n : cluster) {
@@ -95,22 +95,22 @@ public class ScriptOrganizationAnalyzer extends Analyzer {
 					}
 				}
 
-				double purityVal = (double) majorityCount / totalNodes;
-				purityPerSprite.addValue(purityVal);
+				double impurityVal =1- (double) majorityCount / totalNodes;
+				impurityPerSprite.addValue(impurityVal);
 			}
-			if(purityPerSprite.getN()>0){
-				purityMap.put(scriptableName, purityPerSprite.getMean());
-				purityStats.addValue(purityPerSprite.getMean());
+			if(impurityPerSprite.getN()>0){
+				impurityMap.put(scriptableName, impurityPerSprite.getMean());
+				impurityStats.addValue(impurityPerSprite.getMean());
 				JSONObject record = new JSONObject();
-				record.put(scriptableName, purityPerSprite.getMean());
+				record.put(scriptableName, impurityPerSprite.getMean());
 				report.addRecord(record);
 			}
 
 		}
-		if(purityMap.isEmpty()){
-			averagePurity = -1;
+		if(impurityMap.isEmpty()){
+			averageImpurity = -1;
 		}else{
-			averagePurity = purityStats.getMean();
+			averageImpurity = impurityStats.getMean();
 		}
 		
 	}
@@ -121,14 +121,11 @@ public class ScriptOrganizationAnalyzer extends Analyzer {
 	
 	@Override
 	public Report getReport() {
-		report.setName("ScriptOrganization");
-		report.setAbbr("SO");
+		report.setName(name);
+		report.setAbbr(abbr);
 		report.setReportType(ReportType.METRIC);
 		JSONObject conciseReport = new JSONObject();
-		if(averagePurity!=-1){
-			conciseReport.put("avg", averagePurity);
-			conciseReport.put("purity_vals", purityMap.values());
-		}
+		conciseReport.put("impurity_vals", impurityMap.values());
 		
 		report.setConciseJSONReport(conciseReport);
 		return report;
@@ -137,13 +134,12 @@ public class ScriptOrganizationAnalyzer extends Analyzer {
 	public static void main(String[] args) throws IOException, ParseException,
 			ParsingException, AnalysisException {
 		
-		String projectSrc = Util.retrieveProjectOnline(117737655);
+		String projectSrc = Util.retrieveProjectOnline(10135365);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
-		ScriptOrganizationAnalyzer analyzer = new ScriptOrganizationAnalyzer();
+		ScriptClusterImpurity analyzer = new ScriptClusterImpurity();
 		analyzer.setProject(project);
 		analyzer.analyze();
 		System.out.println(analyzer.getReport().getJSONReport());
 		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
-
 }
