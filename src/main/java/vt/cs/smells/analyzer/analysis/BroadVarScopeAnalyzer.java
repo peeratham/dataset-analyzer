@@ -28,7 +28,7 @@ import vt.cs.smells.select.Evaluator;
 public class BroadVarScopeAnalyzer extends Analyzer {
 	public HashMap<String, HashSet<String>> globalVarRef = new HashMap<String, HashSet<String>>();
 	List<String> varRelatedCommands = new ArrayList<String>();
-	final String name = "TooBroadVariableScope";
+	final String name = "BroadVariableScope";
 	private String abbr = "BVS";
 	private ListAnalysisReport report = new ListAnalysisReport(name, abbr);
 	int count = 0;

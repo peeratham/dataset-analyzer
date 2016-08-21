@@ -20,8 +20,8 @@ import vt.cs.smells.analyzer.visitor.Visitor;
 import weka.attributeSelection.ConsistencySubsetEval;
 
 public class BroadCastWorkAroundAnalyzer extends Analyzer {
-	final String name = "BroadcastWorkaround";
-	final String abbr = "BCW";
+	final String name = "UnnecessaryWorkaround";
+	final String abbr = "UW";
 	Map<String, HashSet<Object>> varMap = new HashMap<String, HashSet<Object>>();
 	HashSet<String> mayNotBeFlag = new HashSet<String>();
 	HashSet<String> pollingVars = new HashSet<String>();

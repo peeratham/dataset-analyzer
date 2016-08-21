@@ -22,8 +22,8 @@ import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
 public class UnreachableScriptAnalyzer extends Analyzer {
-	private static final String name = "UnreachableScript";
-	private static final String abbr = "US";
+	private static final String name = "UnreachableCode";
+	private static final String abbr = "UC";
 	
 	Report report = new ListAnalysisReport(name,abbr);
 	int count = 0;

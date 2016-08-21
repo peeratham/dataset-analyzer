@@ -30,8 +30,8 @@ import vt.cs.smells.visual.PropertiesCollector;
 import vt.cs.smells.visual.ScriptProperty;
 
 public class TooFineGrainScriptAnalyzer extends Analyzer {
-	private static final String name = "TooFineGrainScript";
-	private static final String abbr = "TFGS";
+	private static final String name = "ExtremelyFineGrainScript";
+	private static final String abbr = "EFGS";
 	
 	
 	private ListAnalysisReport report;

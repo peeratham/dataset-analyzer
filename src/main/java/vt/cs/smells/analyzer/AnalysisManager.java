@@ -27,11 +27,13 @@ import vt.cs.smells.analyzer.analysis.InappropriateIntimacy;
 import vt.cs.smells.analyzer.analysis.MasteryAnalyzer;
 import vt.cs.smells.analyzer.analysis.ProgrammingElementMetricAnalyzer;
 import vt.cs.smells.analyzer.analysis.ProjectSizeMetricAnalyzer;
+import vt.cs.smells.analyzer.analysis.ScriptClusterImpurity;
 import vt.cs.smells.analyzer.analysis.ScriptOrganizationAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooFineGrainScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.TooLongScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.UncommunicativeNamingAnalyzer;
 import vt.cs.smells.analyzer.analysis.UnnecessaryBroadcastAnalyzer;
+import vt.cs.smells.analyzer.analysis.UnorganizedScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.UnreachableScriptAnalyzer;
 import vt.cs.smells.analyzer.analysis.UnusedCustomBlockAnalyzer;
 import vt.cs.smells.analyzer.analysis.UnusedVariableAnalyzer;
@@ -237,7 +239,10 @@ public class AnalysisManager {
 			defaultConfig.addAnalysis(HardCodedMediaSequenceAnalyzer.class
 					.getName());
 //			defaultConfig.addAnalysis(InappropriateIntimacy.class.getName());
-			defaultConfig.addAnalysis(ScriptOrganizationAnalyzer.class.getName());
+//			defaultConfig.addAnalysis(ScriptOrganizationAnalyzer.class.getName());
+			defaultConfig.addAnalysis(ScriptClusterImpurity.class.getName());
+			defaultConfig.addAnalysis(UnorganizedScriptAnalyzer.class.getName());
+			
 
 		} catch (InstantiationException e) {
 			e.printStackTrace();

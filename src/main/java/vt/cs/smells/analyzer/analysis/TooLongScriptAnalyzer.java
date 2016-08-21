@@ -23,8 +23,8 @@ import vt.cs.smells.analyzer.visitor.Visitor;
 
 public class TooLongScriptAnalyzer extends Analyzer {
 	private static final int NINETY_PERCENTILE = 11;
-	private static final String name = "TooLongScript";
-	private static final String abbr = "TLS";
+	private static final String name = "LongScript";
+	private static final String abbr = "LS";
 	
 	private ListAnalysisReport report = new ListAnalysisReport(name,abbr);
 	int count;
