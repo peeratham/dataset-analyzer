@@ -33,7 +33,7 @@ public class UnorganizedScriptAnalyzer extends Analyzer {
 	private ListAnalysisReport report = null;
 	public DescriptiveStatistics impurityStats = new DescriptiveStatistics();
 	private HashMap<String, Double> impurityMap = new HashMap<>();
-
+	int count;
 
 	@Override
 	public void analyze() throws AnalysisException {
@@ -104,6 +104,7 @@ public class UnorganizedScriptAnalyzer extends Analyzer {
 				JSONObject record = new JSONObject();
 				record.put(scriptableName, impurityPerSprite.getMean());
 				report.addRecord(record);
+				count++;
 			}
 
 		}
@@ -126,7 +127,7 @@ public class UnorganizedScriptAnalyzer extends Analyzer {
 		report.setReportType(ReportType.SMELL);
 		JSONObject conciseReport = new JSONObject();
 		if(averageImpurity!=-1){
-			conciseReport.put("count", averageImpurity);
+			conciseReport.put("count", count);
 		}
 		
 		report.setConciseJSONReport(conciseReport);
@@ -136,7 +137,7 @@ public class UnorganizedScriptAnalyzer extends Analyzer {
 	public static void main(String[] args) throws IOException, ParseException,
 			ParsingException, AnalysisException {
 		
-		String projectSrc = Util.retrieveProjectOnline(10135365);
+		String projectSrc = Util.retrieveProjectOnline(114609829);
 		ScratchProject project = ScratchProject.loadProject(projectSrc);
 		UnorganizedScriptAnalyzer analyzer = new UnorganizedScriptAnalyzer();
 		analyzer.setProject(project);
