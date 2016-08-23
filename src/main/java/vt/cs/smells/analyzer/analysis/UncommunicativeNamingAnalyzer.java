@@ -1,7 +1,9 @@
 package vt.cs.smells.analyzer.analysis;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -27,6 +29,7 @@ public class UncommunicativeNamingAnalyzer extends Analyzer {
 	boolean noSprite = false;
 	boolean noMessage = false;
 	public int count;
+	Set<String> UNMessages = new HashSet<String>(); 
 	@Override
 	public void analyze() throws AnalysisException {
 		//check if there is sprite at all
@@ -37,6 +40,10 @@ public class UncommunicativeNamingAnalyzer extends Analyzer {
 		//check if there is broadcast block at all
 		List<Block> allBroadCastBlocks = Collector.collect(
 				new Evaluator.BlockCommand("broadcast:"), project);
+	
+			allBroadCastBlocks.addAll(Collector.collect(new Evaluator.BlockCommand("doBroadcastAndWait"), project));
+
+		
 		if(allBroadCastBlocks.isEmpty()){
 			noMessage = true;
 		}
@@ -50,13 +57,14 @@ public class UncommunicativeNamingAnalyzer extends Analyzer {
 
 			List<Block> broadCastBlocks = Collector.collect(
 					new Evaluator.BlockCommand("broadcast:"), project.getScriptable(scriptableName));
+			broadCastBlocks.addAll(Collector.collect(new Evaluator.BlockCommand("doBroadcastAndWait"), project));
 
 			
 			for (Block block : broadCastBlocks) {
 				String messageName = block.getArgs().get(0).toString();
-				if (messageName.contains("message")) {
+				if (messageName.toLowerCase().contains("message")) {
 					report.addRecord(messageName);
-					messageNameCount++;
+					UNMessages.add(messageName);
 				}
 			}
 		}
@@ -65,13 +73,13 @@ public class UncommunicativeNamingAnalyzer extends Analyzer {
 	@Override
 	public Report getReport() {
 		JSONObject conciseReport = new JSONObject();
-		count = spriteNameCount+messageNameCount;
+		count = spriteNameCount+UNMessages.size();
 		if(!noSprite){
 			conciseReport.put("count", count);
 			conciseReport.put("sprite", spriteNameCount);
 		}
 		if(!noMessage){
-			conciseReport.put("message", messageNameCount);
+			conciseReport.put("message", UNMessages.size());
 		}
 		
 		report.setConciseJSONReport(conciseReport);
