@@ -64,7 +64,7 @@ public class DuplicateCodeAnalyzer extends Analyzer {
 		}
 
 		for (int key : cloneDictionary.keySet()) {
-			if (cloneDictionary.get(key).size() > 1) {
+			if (cloneDictionary.get(key).size() > 2) {
 				ArrayList<Block> clones = cloneDictionary.get(key);
 				JSONObject cloneRecordJSON = new JSONObject();
 				JSONArray loc = new JSONArray();
