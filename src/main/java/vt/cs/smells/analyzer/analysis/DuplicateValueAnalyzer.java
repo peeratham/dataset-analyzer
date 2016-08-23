@@ -28,7 +28,7 @@ import vt.cs.smells.select.Evaluator;
 
 public class DuplicateValueAnalyzer extends Analyzer {
 	private static final String name = "DuplicateValue";
-	private static final String abbr = "DV";
+	private static final String abbr = "DS";
 	
 	private ListAnalysisReport report = new ListAnalysisReport(name, abbr);
 	private HashMap<String, ArrayList<BlockPath>> finalPath = new HashMap<String, ArrayList<BlockPath>>();
