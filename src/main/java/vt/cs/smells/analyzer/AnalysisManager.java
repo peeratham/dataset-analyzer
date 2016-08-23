@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -238,11 +239,11 @@ public class AnalysisManager {
 					.getName());
 			defaultConfig.addAnalysis(HardCodedMediaSequenceAnalyzer.class
 					.getName());
-//			defaultConfig.addAnalysis(InappropriateIntimacy.class.getName());
-//			defaultConfig.addAnalysis(ScriptOrganizationAnalyzer.class.getName());
+			// defaultConfig.addAnalysis(InappropriateIntimacy.class.getName());
+			// defaultConfig.addAnalysis(ScriptOrganizationAnalyzer.class.getName());
 			defaultConfig.addAnalysis(ScriptClusterImpurity.class.getName());
-			defaultConfig.addAnalysis(UnorganizedScriptAnalyzer.class.getName());
-			
+			defaultConfig
+					.addAnalysis(UnorganizedScriptAnalyzer.class.getName());
 
 		} catch (InstantiationException e) {
 			e.printStackTrace();
@@ -314,7 +315,7 @@ public class AnalysisManager {
 				if (count > 0) {
 					found += 1;
 					logger.info(id);
-//					System.out.println(report);
+					// System.out.println(report);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -395,17 +396,34 @@ public class AnalysisManager {
 
 	public static void main(String[] args) throws IOException {
 		AnalysisManager blockAnalyzer = new AnalysisManager();
-		int projectID = 40867092;
+		int projectID = 117800592;
 		ScratchProject project = null;
 		try {
-			String src = Util.retrieveProjectOnline(projectID);
-			project = ScratchProject.loadProject(src);
-			blockAnalyzer.analyze(project);
-			JSONObject result = blockAnalyzer.getConciseJSONReports();
-			JSONObject fullResult = blockAnalyzer.getFullJSONReport();
-			System.out.println(fullResult .toJSONString());
-			System.out.println(result.toJSONString());
-			
+			// String src = Util.retrieveProjectOnline(projectID);
+			// project = ScratchProject.loadProject(src);
+			// blockAnalyzer.analyze(project);
+			// JSONObject result = blockAnalyzer.getConciseJSONReports();
+			// JSONObject fullResult = blockAnalyzer.getFullJSONReport();
+			// System.out.println(fullResult .toJSONString());
+			// System.out.println(result.toJSONString());
+
+			int[] projectIDs = { 118908867, 118908833, 118908806, 118908780,
+					118908558, 118907767, 118905612, 118905268, 118903025,
+					118902731 };
+			Map<Integer, String> idToTitle = new HashMap<>();
+			idToTitle.put(118908867, "Directional");
+			idToTitle.put(118908833, "Brownie Kappa");
+			idToTitle.put(118908806, "Photosynthesis");
+			idToTitle.put(118908780, "In Flight");
+			idToTitle.put(118908558, "Heads or Tails?");
+			idToTitle.put(118907767, "pinball");
+			idToTitle.put(118905612, "Trailed Bouncing");
+			idToTitle.put(118905268, "Boat Race!");
+			idToTitle.put(118903025, "the fite");
+			idToTitle.put(118902731, "Angry Shoppers");
+
+			analyzeMultipleProjects(projectIDs, idToTitle);
+
 		} catch (ParseException e) {
 			logger.error("Fail to parse JSON for projectID:" + projectID
 					+ "..." + e.getMessage());
@@ -416,6 +434,86 @@ public class AnalysisManager {
 			logger.error("Fail to analyze projectID:" + projectID + "..."
 					+ e.getMessage() + e.getCause());
 		}
+	}
+
+	private static void analyzeMultipleProjects(int[] projectIDs,
+			Map<Integer, String> idToTitle) throws IOException, ParseException,
+			ParsingException, AnalysisException {
+		String[] order = { "UC", "UV", "UCB", "DC", "DS", "UN", "LS", "EFGS",
+				"US", "BVS", "UBC", "UW", "HCMS" };
+
+		for (int projectID : projectIDs){
+			AnalysisManager blockAnalyzer = new AnalysisManager();
+			System.out.print(projectID + "\t");
+			System.out.println(idToTitle.get(projectID));
+			String src = Util.retrieveProjectOnline(projectID);
+			ScratchProject project = ScratchProject.loadProject(src);
+			blockAnalyzer.analyze(project);
+			JSONObject fullResult = blockAnalyzer.getFullJSONReport();
+			System.out.println(fullResult.toJSONString());
+		}
+		
+		formatHeaderInOrder(order);
+
+		for (int projectID : projectIDs) {
+			AnalysisManager blockAnalyzer = new AnalysisManager();
+			ScratchProject project = null;
+
+			String src = Util.retrieveProjectOnline(projectID);
+			project = ScratchProject.loadProject(src);
+			blockAnalyzer.analyze(project);
+			JSONObject result = blockAnalyzer.getConciseJSONReports();
+			JSONObject fullResult = blockAnalyzer.getFullJSONReport();
+//			System.out.println(fullResult.toJSONString());
+			// System.out.println(result.toJSONString());
+			System.out.print(idToTitle.get(projectID));
+			System.out.print("\t");
+			formatInOrder(result.toJSONString(), order);
+
+		}
+
+	}
+
+	public static void formatHeaderInOrder(String[] order) {
+		System.out.print("Project \t");
+		System.out.print("&");
+		for (String smellKey : order) {
+			System.out.print("\t");
+			System.out.print(smellKey);
+			System.out.print("\t");
+			System.out.print("&");
+		}
+		System.out.println("  \\\\");
+	}
+
+	private static void formatInOrder(String jsonString, String[] order) {
+
+		Document d = Document.parse(jsonString);
+		Document smells = (Document) d.get("smells");
+
+		System.out.print("&");
+		for (String smellKey : order) {
+			Document smellRecord = (Document) smells.get(smellKey);
+			System.out.print("\t");
+			if (smellRecord.isEmpty()) {
+				System.out.print("--");
+			} else {
+				if(smellKey.equals("DC")){
+					System.out.print(smellRecord.getInteger("sameSpriteClone"));
+				}else if(smellKey.equals("DS")){
+					System.out.print(smellRecord.getInteger("stringCount"));
+				}
+				else{
+					System.out.print(smellRecord.getInteger("count"));
+				}
+				
+			}
+			System.out.print("\t");
+			System.out.print("&");
+
+		}
+		System.out.println("  \\\\");
+
 	}
 
 }
