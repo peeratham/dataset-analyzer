@@ -1,5 +1,6 @@
 package vt.cs.smells.analyzer.analysis;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -20,16 +21,19 @@ import vt.cs.smells.analyzer.ListAnalysisReport;
 import vt.cs.smells.analyzer.Report;
 import vt.cs.smells.analyzer.nodes.Block;
 import vt.cs.smells.analyzer.nodes.BlockPath;
+import vt.cs.smells.analyzer.nodes.ScratchProject;
 import vt.cs.smells.analyzer.nodes.Script;
 import vt.cs.smells.analyzer.nodes.Scriptable;
 import vt.cs.smells.analyzer.parser.Insert;
+import vt.cs.smells.analyzer.parser.ParsingException;
+import vt.cs.smells.analyzer.parser.Util;
 import vt.cs.smells.select.Collector;
 import vt.cs.smells.select.Evaluator;
 
 public class DuplicateValueAnalyzer extends Analyzer {
 	private static final String name = "DuplicateValue";
 	private static final String abbr = "DS";
-	
+
 	private ListAnalysisReport report = new ListAnalysisReport(name, abbr);
 	private HashMap<String, ArrayList<BlockPath>> finalPath = new HashMap<String, ArrayList<BlockPath>>();
 	HashMap<String, SortedMap<String, List<BlockPath>>> subStringDupGroupMap = new HashMap<>();
@@ -42,7 +46,8 @@ public class DuplicateValueAnalyzer extends Analyzer {
 	public DuplicateValueAnalyzer() {
 	}
 
-	public HashMap<String, ArrayList<BlockPath>> updatePath(HashMap<String, ArrayList<BlockPath>> pathMap, Block b) {
+	public HashMap<String, ArrayList<BlockPath>> updatePath(
+			HashMap<String, ArrayList<BlockPath>> pathMap, Block b) {
 		ArrayList<Object> parts = new ArrayList<Object>();
 		for (Object objPart : b.getBlockType().getParts()) {
 			if (objPart instanceof Insert) {
@@ -52,13 +57,16 @@ public class DuplicateValueAnalyzer extends Analyzer {
 		for (int j = 0; j < b.getArgs().size(); j++) {
 			// get potential arg
 			Object objPart = parts.get(j);
-			if ((((Insert) objPart).getType() != null) && (((Insert) objPart).getType().equals("string")
-					|| ((Insert) objPart).getType().equals("number"))) {
+			if ((((Insert) objPart).getType() != null)
+					&& (((Insert) objPart).getType().equals("string") || ((Insert) objPart)
+							.getType().equals("number"))) {
 				Object objectValue = b.getArgs(j);
-				if (objectValue instanceof java.lang.String || objectValue instanceof java.lang.Long) {
+				if (objectValue instanceof java.lang.String
+						|| objectValue instanceof java.lang.Long) {
 					if (pathMap.containsKey(objectValue.toString())) {
 						BlockPath bp = b.getBlockPath();
-						ArrayList<BlockPath> array = pathMap.get(objectValue.toString());
+						ArrayList<BlockPath> array = pathMap.get(objectValue
+								.toString());
 						if (array.contains(bp)) {
 							continue;
 						} else {
@@ -81,13 +89,15 @@ public class DuplicateValueAnalyzer extends Analyzer {
 		for (Scriptable name : project.getAllScriptables().values()) {
 			HashMap<String, ArrayList<BlockPath>> pathMap = new HashMap<String, ArrayList<BlockPath>>();
 			for (Script s : name.getScripts()) {
-				List<Block> allBlocks = Collector.collect(new Evaluator.AnyBlock(), s);
+				List<Block> allBlocks = Collector.collect(
+						new Evaluator.AnyBlock(), s);
 				for (Block b : allBlocks) {
 					int parameterCount = 0;
 					for (Object o : b.getBlockType().getParts()) {
 						if (o instanceof Insert) {
-							if (((Insert) o).getType() != null && (((Insert) o).getType().equals("string")
-									|| ((Insert) o).getType().equals("number"))) {
+							if (((Insert) o).getType() != null
+									&& (((Insert) o).getType().equals("string") || ((Insert) o)
+											.getType().equals("number"))) {
 								parameterCount++;
 							}
 						}
@@ -102,59 +112,74 @@ public class DuplicateValueAnalyzer extends Analyzer {
 			// if value is a substring (prefix or subfix)
 			Trie dict = new PatriciaTrie(pathMap);
 			for (String key : pathMap.keySet()) {
+				if(key.equals("")){
+					continue;
+				}
 				SortedMap prefixMap = dict.prefixMap(key);
 				if (prefixMap.size() > 1 || pathMap.get(key).size() > 1) {
 					subStringDupGroupMap.put(key, prefixMap);
 				}
 			}
 		}
-		
+
 		for (String key : subStringDupGroupMap.keySet()) {
 			JSONObject cloneGroupJSON = new JSONObject();
-			SortedMap<String, List<BlockPath>> subStrMap = subStringDupGroupMap.get(key);
+			SortedMap<String, List<BlockPath>> subStrMap = subStringDupGroupMap
+					.get(key);
 			JSONObject subCloneJSON = new JSONObject();
 			int size = 0;
 			for (String subKey : subStrMap.keySet()) {
 				JSONArray subStrInstanceJSON = new JSONArray();
-				subStrMap.get(subKey).forEach((v) -> subStrInstanceJSON.add(v.toString()));
+				subStrMap.get(subKey).forEach(
+						(v) -> subStrInstanceJSON.add(v.toString()));
 				subCloneJSON.put(subKey, subStrInstanceJSON);
 				size += subStrMap.get(subKey).size();
 			}
-			
+
 			boolean isNumber = false;
 			try {
 				NumberFormat.getInstance().parse(key);
 				isNumber = true;
-				numberValueCount +=1;
+				numberValueCount += 1;
 			} catch (ParseException e) {
-				stringValueCount +=1;
+				stringValueCount += 1;
 				stringLengthStats.addValue(key.length());
+				if (size > 1) {
+					cloneGroupJSON.put("value", key);
+					cloneGroupJSON.put("instances", subCloneJSON);
+					cloneGroupJSON.put("size", size);
+					groupSizeStats.addValue(size);
+					report.addRecord(cloneGroupJSON);
+					count++;
+				}
 			}
+
 			
-			cloneGroupJSON.put("value", key);
-			cloneGroupJSON.put("instances", subCloneJSON);
-			cloneGroupJSON.put("size", size);
-			groupSizeStats.addValue(size);
-			report.addRecord(cloneGroupJSON);
-			count++;
 		}
 	}
 
 	@Override
 	public Report getReport() {
 		JSONObject conciseReport = new JSONObject();
-		conciseReport.put("count", count);
-		if(count>0){
+		
+		if (count > 0) {
+			conciseReport.put("count", count);
 			conciseReport.put("groupSize", groupSizeStats.getMean());
 			conciseReport.put("stringCount", stringValueCount);
 			conciseReport.put("numberCount", numberValueCount);
 			conciseReport.put("stringLength", stringLengthStats.getMean());
-		}else{
-			conciseReport.put("groupSize", 0);
 		}
-		
+
 		report.setConciseJSONReport(conciseReport);
 		return report;
 	}
-
+	
+	public static void main(String[] args) throws ParseException, ParsingException, IOException, AnalysisException, org.json.simple.parser.ParseException{
+		String projectSrc = Util.retrieveProjectOnline(118905268);
+		ScratchProject project = ScratchProject.loadProject(projectSrc);
+		DuplicateValueAnalyzer analyzer = new DuplicateValueAnalyzer();
+		analyzer.setProject(project);
+		analyzer.analyze();
+		System.out.println(analyzer.getReport().getConciseJSONReport());
+	}
 }
