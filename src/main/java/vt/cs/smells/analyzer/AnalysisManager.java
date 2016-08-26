@@ -416,8 +416,8 @@ public class AnalysisManager {
 			idToTitle.put(118908806, "Photosynthesis");
 			idToTitle.put(118908780, "In Flight");
 			idToTitle.put(118908558, "Heads or Tails?");
-			idToTitle.put(118907767, "pinball");
-			idToTitle.put(118905612, "Trailed Bouncing");
+			idToTitle.put(118907767, "pinball     ");
+			idToTitle.put(118905612, "Trailed Bounce");
 			idToTitle.put(118905268, "Boat Race!");
 			idToTitle.put(118903025, "the fite");
 			idToTitle.put(118902731, "Angry Shoppers");
@@ -440,7 +440,7 @@ public class AnalysisManager {
 			Map<Integer, String> idToTitle) throws IOException, ParseException,
 			ParsingException, AnalysisException {
 		String[] order = { "UC", "UV", "UCB", "DC", "DS", "UN", "LS", "EFGS",
-				"US", "BVS", "UBC", "UW", "HCMS" };
+				"US", "BVS", "UW", "HCMS" };
 
 		for (int projectID : projectIDs){
 			AnalysisManager blockAnalyzer = new AnalysisManager();
@@ -462,13 +462,13 @@ public class AnalysisManager {
 			String src = Util.retrieveProjectOnline(projectID);
 			project = ScratchProject.loadProject(src);
 			blockAnalyzer.analyze(project);
-			JSONObject result = blockAnalyzer.getConciseJSONReports();
+			JSONObject conciseResult = blockAnalyzer.getConciseJSONReports();
 			JSONObject fullResult = blockAnalyzer.getFullJSONReport();
 //			System.out.println(fullResult.toJSONString());
-			// System.out.println(result.toJSONString());
+//			 System.out.println(conciseResult.toJSONString());
 			System.out.print(idToTitle.get(projectID));
 			System.out.print("\t");
-			formatInOrder(result.toJSONString(), order);
+			formatInOrder(conciseResult.toJSONString(), order);
 
 		}
 
@@ -483,7 +483,7 @@ public class AnalysisManager {
 			System.out.print("\t");
 			System.out.print("&");
 		}
-		System.out.println("  \\\\");
+		System.out.println("\t total  \\\\");
 	}
 
 	private static void formatInOrder(String jsonString, String[] order) {
@@ -492,6 +492,7 @@ public class AnalysisManager {
 		Document smells = (Document) d.get("smells");
 
 		System.out.print("&");
+		int total = 0;
 		for (String smellKey : order) {
 			Document smellRecord = (Document) smells.get(smellKey);
 			System.out.print("\t");
@@ -499,11 +500,14 @@ public class AnalysisManager {
 				System.out.print("--");
 			} else {
 				if(smellKey.equals("DC")){
+					total+=smellRecord.getInteger("sameSpriteClone");
 					System.out.print(smellRecord.getInteger("sameSpriteClone"));
 				}else if(smellKey.equals("DS")){
+					total+=smellRecord.getInteger("stringCount");
 					System.out.print(smellRecord.getInteger("stringCount"));
 				}
 				else{
+					total+=smellRecord.getInteger("count");
 					System.out.print(smellRecord.getInteger("count"));
 				}
 				
@@ -512,7 +516,7 @@ public class AnalysisManager {
 			System.out.print("&");
 
 		}
-		System.out.println("  \\\\");
+		System.out.println("\t "+total+"  \\\\");
 
 	}
 
