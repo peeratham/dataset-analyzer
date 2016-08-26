@@ -18,7 +18,7 @@ public class TopDownSubTreeCollector extends Sequence{
 		return ((SubTreeCollector) then).getSubTreeList();
 	}
 	
-	public ArrayList<ArrayList<Block>> getCloneSequenceList(){
+	public List<List<Block>> getCloneSequenceList(){
 		return ((SubTreeCollector) then).getCloneSequenceList();
 	}
 

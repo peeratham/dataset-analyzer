@@ -2,6 +2,7 @@ package vt.cs.smells.analyzer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import vt.cs.smells.analyzer.nodes.Block;
 import vt.cs.smells.analyzer.parser.CommandLoader;
@@ -56,7 +57,7 @@ public class CloneUtil {
 		return count;
 	}
 
-	public static int hashBlockSequence(ArrayList<Block> blockSeq) {
+	public static int hashBlockSequence(List<Block> blockSeq) {
 		int hash = 7;
 		for(Block b : blockSeq){
 			int blockIndex = getBlockIndex(b);

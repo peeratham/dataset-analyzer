@@ -25,7 +25,7 @@ public class TestUnusedCustomBlockAnalyzer {
 		UnusedCustomBlockAnalyzer analyzer = new UnusedCustomBlockAnalyzer();
 		analyzer.setProject(project);
 		analyzer.analyze();
-		assertEquals(1, analyzer.count);
+		assertEquals(2, analyzer.count);
 		System.out.println(analyzer.getReport().getJSONReport());
 		System.out.println(analyzer.getReport().getConciseJSONReport());
 	}
